@@ -45,8 +45,9 @@ export const loginUser = async (req, res) => {
 	if (!validPass) return res.status(400).json({ message: "Email or Password is invalid..." });
 
 	// Create and assign a token
-	const token = jwt.sign({ _id: userData._id, admin: userData.isSuperuser }, process.env.SECRET_TOKEN);
-	res.header("auth-token", token).send(token);
-
-	// res.json({ message: "Logged in!" });
+	const token = jwt.sign(userData.toJSON(), process.env.ACCESS_TOKEN_SECRET);
+	res.json({ accessToken: token });
 };
+
+
+

@@ -14,6 +14,7 @@ db.once("open", () => console.log("Arsim Database Connected..."));
 
 // Import Routes
 import authRoute from "./routes/auth.js";
+import lectureRoute from "./routes/lecture.js";
 
 // Middleware
 app.use(cors());
@@ -21,5 +22,6 @@ app.use(express.json());
 
 // Route MiddleWare
 app.use("/api/user", authRoute);
+app.use("/api/lecture", lectureRoute);
 
 app.listen(8000, () => console.log(`Server is running at http://localhost:8000`));
