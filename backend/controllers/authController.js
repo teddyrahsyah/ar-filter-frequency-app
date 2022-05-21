@@ -1,9 +1,9 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+import User from "../models/UserModel.js";
 import { registerValidation, loginValidation } from "../validation.js";
 
-export const registerUser = async (req, res) => {
+export const register = async (req, res) => {
 	// Validate the request
 	const { error } = registerValidation(req.body);
 	if (error) return res.status(401).json({ message: error.details[0].message });
@@ -21,7 +21,7 @@ export const registerUser = async (req, res) => {
 		name: req.body.name,
 		email: req.body.email,
 		password: hashedPassword,
-		isSuperuser: req.body.isSuperuser,
+		isSuperuser: req.body.isSuperuser ? req.body.isSuperuser : false,
 	});
 	try {
 		const savedUser = await user.save();
@@ -31,7 +31,7 @@ export const registerUser = async (req, res) => {
 	}
 };
 
-export const loginUser = async (req, res) => {
+export const login = async (req, res) => {
 	// Validate the request
 	const { error } = loginValidation(req.body);
 	if (error) return res.status(401).json({ message: error.details[0].message });

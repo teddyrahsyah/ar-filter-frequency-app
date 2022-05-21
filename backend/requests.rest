@@ -9,6 +9,18 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:8000/api/user/register
+Content-Type: application/json
+
+{
+    "name": "Super Admin",
+    "email": "adminsuper@gmail.com",
+    "password": "teddy123",
+    "isSuperuser": true
+}
+
+###
+
 POST http://localhost:8000/api/user/login
 Content-Type: application/json
 
@@ -31,3 +43,43 @@ Content-Type: application/json
 	"modelAR": "Model/AR",
 	"tags": ["Filter RC", "HPF"]
 }
+
+###
+
+POST http://localhost:8000/api/lecture/create
+Content-Type: application/json
+
+{
+    "moduleNumber": 2,
+	"name": "High Pass Filter",
+	"title": "Teori 2",
+	"description": "dasdawdasdasdawdad asdawdasdasdawd  dasdawdasdasdawd asasdawdsasdgfgjhg",
+	"imageUrl": "Image/Url",
+	"modelAR": "Model/AR",
+	"tags": ["Filter LR", "HPF"]
+}
+
+###
+
+PUT http://localhost:8000/api/lecture/6288ebb3658ae08ad2934392/update
+Content-Type: application/json
+
+{
+    "moduleNumber": 2,
+	"name": "Band Pass Filter",
+	"title": "Lab 2",
+	"description": "============= asdawdasdasdawd  dasdawdasdasdawd asasdawdsasdgfgjhg",
+	"imageUrl": "Image/Url",
+	"modelAR": "Model/AR",
+	"tags": ["Filter LR", "BPF"]
+}
+
+### GET Single Lecture
+
+GET http://localhost:8000/api/lecture/6288ecd963a105913189900a
+
+### GET All Lectures
+GET http://localhost:8000/api/lecture/
+
+### DELETE Single Lecture
+DELETE http://localhost:8000/api/lecture/6288ebb3658ae08ad2934392

@@ -28,4 +28,9 @@ const UserSchema = mongoose.Schema({
 	},
 });
 
+UserSchema.method("toJSON", function () {
+	const { _v, _id, ...object } = this.toObject();
+	object.id = _id;
+	return object;
+});
 export default mongoose.model("Users", UserSchema);

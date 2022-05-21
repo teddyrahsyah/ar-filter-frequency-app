@@ -44,4 +44,10 @@ const LectureSchema = mongoose.Schema({
 	},
 });
 
+LectureSchema.method("toJSON", function () {
+	const { _v, _id, ...object } = this.toObject();
+	object.id = _id;
+	return object;
+});
+
 export default mongoose.model("Lectures", LectureSchema);
