@@ -1,0 +1,83 @@
+.App {
+    text-align: center;
+    display: block;
+}
+
+.App.ar{ display: none; }
+
+.widgets{
+    display: none;
+    position: fixed;
+    bottom: 0.2rem;
+    left: 5.5rem;
+}
+
+.widgets.ar{ display: block;}
+
+.place-btn{ 
+    transform: translateY(0%);
+    transition: all 0.5s;
+    margin-right: 0.3rem;
+}
+
+.close-btn{
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+}
+
+.open-btn{
+    position: fixed;
+    bottom: 0rem;
+    left: 1rem;
+    background-color: rgb(21, 182, 115);
+    border-radius: 0.4rem 0.4rem 0 0;
+    border: none;
+    outline: none;
+    transform: translateY(-0%);
+    transition: 0.5s;
+    padding: 1rem;
+}
+
+.model-nav{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: fit-content;
+    background-color: rgb(21, 182, 115);
+    padding: 1rem;
+    margin: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow: scroll;
+    white-space: nowrap;
+    transform: translateY(110%);
+    transition: all 0.5s;
+    z-index: 1;
+    list-style-type: none;
+}
+
+
+.ar-object{ 
+    padding: 0.5rem;
+    border-radius: 0.2rem;
+}
+
+.ar-object p { margin: 0.3rem 0; }
+
+.clicked { background-color: rgb(21, 158, 101) ;}
+
+.model-nav li{
+    margin: 0 1rem;
+    min-width: 6rem;
+    text-align: center;
+}
+.model-nav li img{ width: 100%; }
+
+.nav-opened-menu{ transform: translateY(0%); }
+
+.btn-opened-menu{ transform: translateY(-280%); }
+
+.widgets-open{ transform: translateY(-330%);}
