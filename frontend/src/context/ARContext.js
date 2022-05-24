@@ -22,7 +22,7 @@ export const ARContextProvider = ({ children }) => {
         const gl = canvas.getContext('webgl', {xrCompatible: true})
         const scene = new THREE.Scene();
 
-        document.querySelector('.App').classList.add('ar')
+        document.querySelector('.ar-container').classList.add('ar')
         document.querySelector('.widgets').classList.add('ar')
         
         renderer = new THREE.WebGLRenderer({
@@ -182,7 +182,7 @@ export const ARContextProvider = ({ children }) => {
 
         document.querySelector('.close-btn').addEventListener('click', () => {
             session.end();
-            document.querySelector('.App').classList.remove('ar')
+            document.querySelector('.ar-container').classList.remove('ar')
             document.querySelector('.widgets').classList.remove('ar')
             
             renderer.setSize(window.innerWidth, window.innerHeight)

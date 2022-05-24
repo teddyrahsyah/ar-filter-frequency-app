@@ -43,6 +43,7 @@ body {
 
 .btn{
   background-color: var(--accent-light);
+  font-family: 'Inter', sans-serif;
   color: var(--text-dark);
   padding: 0.8rem 1.2rem;
   border: none;

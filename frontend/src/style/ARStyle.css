@@ -1,24 +1,92 @@
-.App {
+.error-big-screen{
+    display: none;
     text-align: center;
-    display: block;
+    margin: 1rem;
 }
 
-.App.ar{ display: none; }
+.ar-container {
+    background-color: var(--main-light);
+    min-height: 100vh;
+}
+
+.ar-container.ar{ display: none; }
+
+.ar-navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.8rem;
+}
+
+.back-btn{ width: 2rem;}
+
+.back-btn img{ width: 100%;}
+
+.ar-content{
+    padding: 0.5rem 1rem;
+}
+
+.ar-content h1{ 
+    text-transform: capitalize;
+    text-align: center;
+    font-weight: 500;
+    margin: 1rem 0;
+}
+
+.card-panduan-ar{
+    background-color: var(--secondary-light);
+    box-shadow: 10px 15px 30px rgba(0, 0, 0, 0.25);
+    width: 80vw;
+    margin: 1rem auto;
+    padding: 1rem;
+    border-radius: 0.7rem;
+}
+
+.card-panduan-ar h3{ font-weight: 500; }
+
+.gambar-panduan{
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.show-object h3{
+    font-weight: 500;
+    text-align: center;
+    width: 22ch;
+    margin: auto;
+}
+
+.object-image-list{
+    display: flex;
+    justify-content: space-between;
+    margin: 1.5rem;
+}
+
+.object-image-list img{
+    width: 5rem;
+    height: 5rem;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    border: 0.25rem solid var(--secondary-light);
+    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.25);
+}
+
+.ar-btn{ 
+    width: 100%;
+    font-size: 1rem;
+}
 
 .widgets{
     display: none;
     position: fixed;
     bottom: 0.2rem;
-    left: 5.5rem;
+    width: 100%;
+    padding: 0.5rem 1rem;
 }
 
 .widgets.ar{ display: block;}
 
-.place-btn{ 
-    transform: translateY(0%);
-    transition: all 0.5s;
-    margin-right: 0.3rem;
-}
+.place-btn{ margin: 0 0.3rem; }
 
 .close-btn{
     position: fixed;
@@ -26,17 +94,15 @@
     right: 1rem;
 }
 
-.open-btn{
-    position: fixed;
-    bottom: 0rem;
-    left: 1rem;
-    background-color: rgb(21, 182, 115);
-    border-radius: 0.4rem 0.4rem 0 0;
-    border: none;
-    outline: none;
+.widgets > .rotate-btn{ margin-right: 0.3rem; }
+
+.place-btn, .close-btn, .open-btn, .rotate-btn{
+    padding: 0.8rem 0.9rem !important;
     transform: translateY(-0%);
     transition: 0.5s;
-    padding: 1rem;
+}
+.place-btn img, .close-btn img, .open-btn img, .rotate-btn img{
+    width: 1.5rem;
 }
 
 .model-nav{
@@ -45,7 +111,7 @@
     left: 0;
     right: 0;
     height: fit-content;
-    background-color: rgb(21, 182, 115);
+    background-color: var(--accent-light);
     padding: 1rem;
     margin: 0;
     display: flex;
@@ -59,25 +125,35 @@
     list-style-type: none;
 }
 
-
-.ar-object{ 
-    padding: 0.5rem;
-    border-radius: 0.2rem;
+.ar-object p { 
+    margin: 0.3rem 0; 
+    width: 100%;
 }
 
-.ar-object p { margin: 0.3rem 0; }
+.ar-object img { 
+    width: 6rem;
+    height: 5rem;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
 
-.clicked { background-color: rgb(21, 158, 101) ;}
+.clicked { background-color: #48adaa ;}
 
 .model-nav li{
     margin: 0 1rem;
-    min-width: 6rem;
+    width: fit-content;
     text-align: center;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
 }
-.model-nav li img{ width: 100%; }
 
 .nav-opened-menu{ transform: translateY(0%); }
 
-.btn-opened-menu{ transform: translateY(-280%); }
+.widgets-open{ transform: translateY(-300%);}
 
-.widgets-open{ transform: translateY(-330%);}
+@media only screen and (min-width: 600px) {
+    .ar-container {
+      display: none;
+    }
+    .error-big-screen{ display: block;}
+}
