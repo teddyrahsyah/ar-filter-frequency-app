@@ -25,6 +25,16 @@ POST http://localhost:8000/api/user/login
 Content-Type: application/json
 
 {
+    "email": "adminsuper@gmail.com",
+    "password": "teddy123"
+}
+
+###
+
+POST http://localhost:8000/api/user/login
+Content-Type: application/json
+
+{
     "email": "miyamarselina@gmail.com",
     "password": "teddy123"
 }
@@ -48,6 +58,7 @@ Content-Type: application/json
 
 POST http://localhost:8000/api/lecture/create
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiU3VwZXIgQWRtaW4iLCJlbWFpbCI6ImFkbWluc3VwZXJAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmEkMTAkMkoxbzhiZ1FJZS9qQXVNbWZDT3NDZVAuMlBqTkl2Q01ZTjJxY2YxTnVVMzFzMzA1Z096REsiLCJkYXRlIjoiMjAyMi0wNS0yMVQxMzozMzo1My4wNDVaIiwiaXNTdXBlcnVzZXIiOnRydWUsIl9fdiI6MCwiaWQiOiI2Mjg4ZWE1OWIwOTgzOWFmN2IyNTcyMzYiLCJpYXQiOjE2NTMzNjI4NjZ9.q1tFBsFYvogUaZrwnDklgSDch8teNxOLYWQvRoie7qc
 
 {
     "moduleNumber": 2,
@@ -63,6 +74,7 @@ Content-Type: application/json
 
 PUT http://localhost:8000/api/lecture/6288ebb3658ae08ad2934392/update
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiU3VwZXIgQWRtaW4iLCJlbWFpbCI6ImFkbWluc3VwZXJAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmEkMTAkMkoxbzhiZ1FJZS9qQXVNbWZDT3NDZVAuMlBqTkl2Q01ZTjJxY2YxTnVVMzFzMzA1Z096REsiLCJkYXRlIjoiMjAyMi0wNS0yMVQxMzozMzo1My4wNDVaIiwiaXNTdXBlcnVzZXIiOnRydWUsIl9fdiI6MCwiaWQiOiI2Mjg4ZWE1OWIwOTgzOWFmN2IyNTcyMzYiLCJpYXQiOjE2NTMzNjI4NjZ9.q1tFBsFYvogUaZrwnDklgSDch8teNxOLYWQvRoie7qc
 
 {
     "moduleNumber": 2,
