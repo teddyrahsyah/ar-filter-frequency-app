@@ -6,11 +6,23 @@ import { registerValidation, loginValidation } from "../helpers/validation.js";
 export const register = async (req, res) => {
 	// Validate the request
 	const { error } = registerValidation(req.body);
-	if (error) return res.status(401).json({ message: error.details[0].message });
+	if (error)
+		return res.status(401).json({
+			status: 401,
+			error: {
+				message: error.details[0].message,
+			},
+		});
 
 	// Checking if the user is already in the database
 	const emailExist = await User.findOne({ email: req.body.email });
-	if (emailExist) return res.status(400).json({ message: "Email already exist..." });
+	if (emailExist)
+		return res.status(400).json({
+			status: 400,
+			error: {
+				message: "Email already exists!",
+			},
+		});
 
 	// Hash password
 	const salt = await bcrypt.genSalt(10);
@@ -26,33 +38,52 @@ export const register = async (req, res) => {
 
 	user.save()
 		.then((result) => {
-			res.status(201).json({ message: "User Created!", data: result });
+			res.status(201).json({
+				status: "201",
+				message: "User created successfully.",
+				data: result,
+			});
 		})
 		.catch((err) => {
 			res.status(409).json({
-				message: err.message || "Some error while creating user!",
+				status: 409,
+				error: {
+					message: err.message || "Some error while creating user!",
+				},
 			});
 		});
-	try {
-		const savedUser = await user.save();
-		res.status(201).json(savedUser);
-	} catch (err) {
-		res.status(404).json({ message: err.message });
-	}
 };
 
 export const login = async (req, res) => {
 	// Validate the request
 	const { error } = loginValidation(req.body);
-	if (error) return res.status(401).json({ message: error.details[0].message });
+	if (error)
+		return res.status(401).json({
+			status: 401,
+			error: {
+				message: error.details[0].message,
+			},
+		});
 
 	// Checking if the email exists
 	const userData = await User.findOne({ email: req.body.email });
-	if (!userData) return res.status(400).json({ message: "Email is not found..." });
+	if (!userData)
+		return res.status(400).json({
+			status: 400,
+			error: {
+				message: "Email not found!",
+			},
+		});
 
 	// Checking if the password is correct
 	const validPass = await bcrypt.compare(req.body.password, userData.password);
-	if (!validPass) return res.status(400).json({ message: "Email or Password is invalid..." });
+	if (!validPass)
+		return res.status(400).json({
+			status: 400,
+			error: {
+				message: "Email or Password is invalid!",
+			},
+		});
 
 	// Create and assign a token
 	const token = jwt.sign(userData.toJSON(), process.env.ACCESS_TOKEN_SECRET);
