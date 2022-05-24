@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/UserModel.js";
-import { registerValidation, loginValidation } from "../validation.js";
+import { registerValidation, loginValidation } from "../helpers/validation.js";
 
 export const register = async (req, res) => {
 	// Validate the request
@@ -23,6 +23,16 @@ export const register = async (req, res) => {
 		password: hashedPassword,
 		isSuperuser: req.body.isSuperuser ? req.body.isSuperuser : false,
 	});
+
+	user.save()
+		.then((result) => {
+			res.status(201).json({ message: "User Created!", data: result });
+		})
+		.catch((err) => {
+			res.status(409).json({
+				message: err.message || "Some error while creating user!",
+			});
+		});
 	try {
 		const savedUser = await user.save();
 		res.status(201).json(savedUser);
@@ -46,8 +56,5 @@ export const login = async (req, res) => {
 
 	// Create and assign a token
 	const token = jwt.sign(userData.toJSON(), process.env.ACCESS_TOKEN_SECRET);
-	res.json({ accessToken: token });
+	res.json({ id: userData.id, username: userData.email, accessToken: token });
 };
-
-
-
