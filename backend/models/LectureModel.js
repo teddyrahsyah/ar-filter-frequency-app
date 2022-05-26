@@ -5,7 +5,7 @@ const LectureSchema = mongoose.Schema({
 		type: Number,
 		required: true,
 	},
-	name: {
+	category: {
 		type: String,
 		required: true,
 		max: 255,
@@ -19,10 +19,9 @@ const LectureSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	imageUrl: {
-		type: String,
-		required: true,
-		max: 255,
+	imageData: {
+		data: Buffer,
+        contentType: String
 	},
 	modelAR: {
 		type: String,

@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import Lecture from "../models/LectureModel.js";
 import { createLectureValidation } from "../helpers/validation.js";
 
@@ -23,10 +25,10 @@ export const create = async (req, res) => {
 
 	const lecture = new Lecture({
 		moduleNumber: req.body.moduleNumber,
-		name: req.body.name,
+		category: req.body.category,
 		title: req.body.title,
 		description: req.body.description,
-		imageUrl: req.body.imageUrl,
+		imageData: { data: fs.readFileSync(path.join(path.resolve() + "/public/uploads/" + req.file.filename)), contentType: "image/png" },
 		modelAR: req.body.modelAR,
 		tags: req.body.tags,
 	});
@@ -51,7 +53,7 @@ export const create = async (req, res) => {
 };
 
 export const findAll = async (req, res) => {
-	Lecture.find({ name: "High Pass Filter" }, { isFavorite: 0, __v: 0 })
+	Lecture.find({ title: "High Pass Filter" }, { isFavorite: 0, __v: 0 })
 		.then((result) => {
 			if (!result)
 				return res.status(404).json({
