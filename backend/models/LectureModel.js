@@ -21,7 +21,7 @@ const LectureSchema = mongoose.Schema({
 	},
 	imageData: {
 		data: Buffer,
-        contentType: String
+		contentType: String,
 	},
 	modelAR: {
 		type: String,
@@ -36,11 +36,14 @@ const LectureSchema = mongoose.Schema({
 			default: null,
 		},
 	],
-	isFavorite: {
-		type: Boolean,
-		required: true,
-		default: false,
-	},
+	favoritedUsers: [
+		{
+			type: String,
+			max: 255,
+			required: true,
+			default: null,
+		},
+	],
 });
 
 LectureSchema.method("toJSON", function () {

@@ -16,15 +16,17 @@ db.once("open", () => console.log("Arsim Database Connected..."));
 // Import Routes
 import authRoute from "./routes/auth.js";
 import lectureRoute from "./routes/lecture.js";
+import articleRoute from "./routes/article.js";
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public/uploads'));
+app.use(express.static("public/uploads"));
 
 // Route MiddleWare
 app.use("/api/user", authRoute);
 app.use("/api/lecture", lectureRoute);
+app.use("/api/article", articleRoute);
 
 app.listen(8000, () =>
 	console.log(`Server is running at http://localhost:8000 ${path.join(path.resolve(), "public", "uploads")}`)

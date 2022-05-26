@@ -26,10 +26,21 @@ export const createLectureValidation = (data) => {
 		category: Joi.string().required(),
 		title: Joi.string().required(),
 		description: Joi.string().required(),
-		imageUrl: Joi.string().dataUri(),
+		imageData: Joi.string().dataUri(),
 		modelAR: Joi.string().required(),
 		tags: Joi.array().items(Joi.string()),
 		isFavorite: Joi.boolean(),
+	});
+
+	return schema.validate(data);
+};
+
+export const createArticleValidation = (data) => {
+	const schema = Joi.object({
+		title: Joi.string().required(),
+		description: Joi.string().required(),
+		imageData: Joi.string().dataUri(),
+		tags: Joi.array().items(Joi.string()),
 	});
 
 	return schema.validate(data);

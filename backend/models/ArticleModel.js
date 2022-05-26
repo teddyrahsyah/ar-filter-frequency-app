@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 const ArticleSchema = mongoose.Schema({
 	author: {
 		type: String,
-		required: true,
 		max: 255,
+		default: "Admin",
 	},
 	title: {
 		type: String,
@@ -15,10 +15,9 @@ const ArticleSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	imageUrl: {
-		type: String,
-		required: true,
-		max: 255,
+	imageData: {
+		data: Buffer,
+		contentType: String,
 	},
 	tags: [
 		{

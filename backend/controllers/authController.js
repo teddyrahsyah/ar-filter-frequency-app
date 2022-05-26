@@ -87,5 +87,5 @@ export const login = async (req, res) => {
 
 	// Create and assign a token
 	const token = jwt.sign(userData.toJSON(), process.env.ACCESS_TOKEN_SECRET);
-	res.json({ id: userData.id, username: userData.email, accessToken: token });
+	res.status(200).json({ status: 200, id: userData.id, username: userData.email, accessToken: token });
 };

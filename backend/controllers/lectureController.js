@@ -28,7 +28,10 @@ export const create = async (req, res) => {
 		category: req.body.category,
 		title: req.body.title,
 		description: req.body.description,
-		imageData: { data: fs.readFileSync(path.join(path.resolve() + "/public/uploads/" + req.file.filename)), contentType: "image/png" },
+		imageData: {
+			data: fs.readFileSync(path.join(path.resolve() + "/public/uploads/" + req.file.filename)),
+			contentType: "image/png",
+		},
 		modelAR: req.body.modelAR,
 		tags: req.body.tags,
 	});
@@ -37,7 +40,7 @@ export const create = async (req, res) => {
 		.save()
 		.then((result) => {
 			res.status(201).json({
-				status: 401,
+				status: 201,
 				message: "Lecture created successfully.",
 				data: result,
 			});
@@ -53,7 +56,7 @@ export const create = async (req, res) => {
 };
 
 export const findAll = async (req, res) => {
-	Lecture.find({ title: "High Pass Filter" }, { isFavorite: 0, __v: 0 })
+	Lecture.find({}, { __v: 0, favoritedUsers: 0 })
 		.then((result) => {
 			if (!result)
 				return res.status(404).json({
@@ -62,7 +65,7 @@ export const findAll = async (req, res) => {
 						message: "Data not found!",
 					},
 				});
-			res.json({
+			res.status(200).json({
 				status: 200,
 				data: result,
 			});
@@ -80,7 +83,7 @@ export const findAll = async (req, res) => {
 export const findOne = async (req, res) => {
 	const id = req.params.id;
 
-	Lecture.findById(id)
+	Lecture.findById(id, { __v: 0, favoritedUsers: 0 })
 		.then((result) => {
 			if (!result)
 				return res.status(404).json({
@@ -90,7 +93,7 @@ export const findOne = async (req, res) => {
 					},
 				});
 
-			res.json({ data: result });
+			res.status(200).json({ data: result });
 		})
 		.catch((err) => {
 			res.status(409).json({
@@ -103,6 +106,16 @@ export const findOne = async (req, res) => {
 };
 
 export const update = async (req, res) => {
+	// Validate the request
+	const { error } = createLectureValidation(req.body);
+	if (error)
+		return res.status(401).json({
+			status: 401,
+			error: {
+				message: error.details[0].message,
+			},
+		});
+
 	const id = req.params.id;
 
 	Lecture.findByIdAndUpdate(id, req.body)
@@ -115,10 +128,9 @@ export const update = async (req, res) => {
 					},
 				});
 
-			res.json({
+			res.status(201).json({
 				status: 201,
-				message: "Data updated successfulyl",
-				data: result,
+				message: "Data updated successfuly.",
 			});
 		})
 		.catch((err) => {
@@ -153,9 +165,9 @@ export const remove = async (req, res) => {
 					},
 				});
 
-			res.json({
+			res.status(204).json({
 				status: 204,
-				message: "Data deleted successfully",
+				message: "Data deleted successfully.",
 			});
 		})
 		.catch((err) => {
@@ -163,6 +175,97 @@ export const remove = async (req, res) => {
 				status: 409,
 				error: {
 					message: err.message || "Some error while deleting data!",
+				},
+			});
+		});
+};
+
+// Favorite Feature
+export const addToFavorite = async (req, res) => {
+	const user = req.user.name;
+
+	const id = req.params.id;
+
+	// return res.json(user)
+
+	Lecture.findByIdAndUpdate(id, { $addToSet: { favoritedUsers: user } })
+		.then((result) => {
+			if (!result)
+				return res.status(404).json({
+					status: 404,
+					error: {
+						message: "Data not found!",
+					},
+				});
+
+			res.status(201).json({
+				status: 201,
+				message: "Data updated successfuly.",
+			});
+		})
+		.catch((err) => {
+			res.status(409).json({
+				status: 409,
+				error: {
+					message: err.message || "Some error while updating data!",
+				},
+			});
+		});
+};
+
+export const deleteFavorite = async (req, res) => {
+	const user = req.user.name;
+
+	const id = req.params.id;
+
+	Lecture.findByIdAndUpdate(id, { $pull: { favoriteUsers: user } })
+		.then((result) => {
+			if (!result)
+				return res.status(404).json({
+					status: 404,
+					error: {
+						message: "Data not found!",
+					},
+				});
+
+			res.status(201).json({
+				status: 201,
+				message: "Data updated successfuly.",
+			});
+		})
+		.catch((err) => {
+			res.status(409).json({
+				status: 409,
+				error: {
+					message: err.message || "Some error while updating data!",
+				},
+			});
+		});
+};
+
+export const findFavorite = async (req, res) => {
+	const user = req.user.name;
+
+	Lecture.find({ favoritedUsers: user }, { __v: 0, favoritedUsers: 0 })
+		.then((result) => {
+			if (!result)
+				return res.status(404).json({
+					status: 404,
+					error: {
+						message: "Data not found!",
+					},
+				});
+
+			res.status(200).json({
+				status: 200,
+				data: result,
+			});
+		})
+		.catch((err) => {
+			res.status(409).json({
+				status: 409,
+				error: {
+					message: err.message || "Some error while retrieving data!",
 				},
 			});
 		});
