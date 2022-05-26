@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import '../style/App.css';
 import { ARContext } from '../context/ARContext';
 import { OutputWaveContext } from '../context/OutputWaveContext';
@@ -8,8 +8,8 @@ import backIcon from '../asset/icons/back.svg'
 import closeIcon from '../asset/icons/close.svg'
 import menuAR from '../asset/icons/menu_ar.svg'
 import placeAR from '../asset/icons/place.svg'
-import rotateRightIcon from '../asset/icons/rotate_right.svg'
-import rotateLeftIcon from '../asset/icons/rotate_left.svg'
+import rotateLeftIcon from '../asset/icons/rotate_right.svg'
+import rotateRightIcon from '../asset/icons/rotate_left.svg'
 
 // import image
 import logo from '../asset/logoDark.png'
@@ -17,11 +17,18 @@ import keyboardImg from '../asset/keyboard.png'
 import MouseImg from '../asset/Mouse.jpg'
 import PCImg from '../asset/pc.jpg'
 import LCDImg from '../asset/Monitor.jpg'
+import { PreviewObject } from '../context/PreviewObject';
 
 
 const ARPages = () => {
     const {activateAR} = useContext(ARContext)
-    const {waveGenerator} = useContext(OutputWaveContext)
+    // const {waveGenerator} = useContext(OutputWaveContext)
+    const {showObject} = useContext(PreviewObject)
+
+    useEffect(() => {
+        showObject();
+        console.log('showed')
+    }, [])
 
     const openMenu = () => {
         document.querySelector('.model-nav').classList.toggle('nav-opened-menu')
@@ -58,18 +65,18 @@ const ARPages = () => {
                             <img src={keyboardImg} alt="Rangkaian HPF" />
                             <img src={keyboardImg} alt="Osilator" />
                         </div>
+                        <div className="canvas-container"></div>
                     </div>
                     <button onClick={activateAR} className='ar-btn btn'>Start AR</button>
                 </div>
             </div>
 
             <div className="error-big-screen">
-                <h1>hanya support di HP</h1>
+                <h1>Oops.. tidak bisa menampilkan halaman, dibuka di layar yang lebih besar ya</h1>
             </div>
 
             {/* inside AR session */}
             <div className="widgets">
-                {/* <button className="rotate-btn btn">ROTATE</button> */}
                 <button className='close-btn btn'>
                     <img src={closeIcon} alt="close" />
                 </button>
@@ -79,11 +86,11 @@ const ARPages = () => {
                 <button className='place-btn btn'>
                     <img src={placeAR} alt="place" />
                 </button>
-                <button className='rotate-btn btn'>
-                    <img src={rotateRightIcon} alt="rotate right" />
-                </button>
-                <button className='rotate-btn btn'>
+                <button className='rotate-btn rotate-left btn'>
                     <img src={rotateLeftIcon} alt="rotate left" />
+                </button>
+                <button className='rotate-btn rotate-right btn'>
+                    <img src={rotateRightIcon} alt="rotate right" />
                 </button>
                 
                 <ul className="model-nav">
