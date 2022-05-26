@@ -13,7 +13,6 @@ export const ARContextProvider = ({ children }) => {
     const { XRWebGLLayer } = window;
     let session, renderer, camera;
     let reticle, currentModel;
-    let touchDown, touchX, touchY, deltaX, deltaY;
 
     const activateAR = async () => {
 
@@ -56,9 +55,7 @@ export const ARContextProvider = ({ children }) => {
         session.updateRenderState({ baseLayer: new XRWebGLLayer(session, gl)})
 
         const referenceSpace = await session.requestReferenceSpace('local');
-       // Create another XRReferenceSpace that has the viewer as the origin.
         const viewerSpace = await session.requestReferenceSpace('viewer');
-        // Perform hit testing using the viewer as origin.
         const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
 
 
@@ -70,49 +67,45 @@ export const ARContextProvider = ({ children }) => {
             scene.add(reticle)
         })
 
+        let box, group;
+        const createCube = () => {
+            const materialA = new THREE.MeshBasicMaterial( {color: 0x00ffff} );
+            box = new THREE.Mesh(new THREE.PlaneGeometry(0.45,0.3), materialA);
+            box.visible = false
+        }
+
         const loadModel = (model) => {
             loader.load(model, (gltf) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
-                scene.add(currentModel)
+                createCube()
+                group = new THREE.Group();
+                group.add( box );
+                group.add( currentModel );                
+                scene.add(group)
+            })
+        }
+        
+        const loadFilterModel = (model) => {
+            loader.load(model, (gltf) => {
+                currentModel = gltf.scene;
+                currentModel.visible = false;
+                group = new THREE.Group();
+                group.add( currentModel );
+                scene.add(group)
             })
         }
 
-        function rotateObject(){
-            if(currentModel && reticle.visible){
-                currentModel.rotation.y += deltaY / 100;
-                console.log('rotated')
-            }
+        // rotate object
+        const rotateObject = degree => {
+            if(currentModel && reticle.visible) group.children.forEach(child =>  child.rotation.y += degree)
+            console.log(group)
+            console.log(currentModel)
         }
 
-        // rotating 3d object
-        renderer.domElement.addEventListener('touchstart', function(e){
-            e.preventDefault();
-            touchDown=true;
-            touchX = e.touches[0].pageX;
-            touchY = e.touches[0].pageY;
-        }, false);
+        document.querySelector('.rotate-left').addEventListener('click', () => rotateObject(-0.1))
+        document.querySelector('.rotate-right').addEventListener('click', () => rotateObject(0.1))
 
-        renderer.domElement.addEventListener('touchend', function(e){
-            e.preventDefault();
-            touchDown = false;
-        }, false);
-
-        renderer.domElement.addEventListener('touchmove', function(e){
-            e.preventDefault();
-            
-            if(!touchDown){
-                return;
-            }
-
-            deltaX = e.touches[0].pageX - touchX;
-            deltaY = e.touches[0].pageY - touchY;
-            touchX = e.touches[0].pageX;
-            touchY = e.touches[0].pageY;
-
-            rotateObject();
-
-        }, false);
 
         // toggle for the clicked object
         const clickedToggle = (element) => {
@@ -125,13 +118,13 @@ export const ARContextProvider = ({ children }) => {
         document.querySelectorAll('.ar-object').forEach(arObject => {
             arObject.addEventListener('click', (e) => {
                 if(e.target.parentNode.id === 'Keyboard') {
-                    loadModel(keyboardModel)
+                    loadFilterModel(keyboardModel)
                     clickedToggle(e.target.parentNode)
                 } else if(e.target.parentNode.id === 'Mouse') {
-                    loadModel(mouseModel)
+                    loadFilterModel(mouseModel)
                     clickedToggle(e.target.parentNode)
                 } else if(e.target.parentNode.id === 'PC') {
-                    loadModel(PCModel)
+                    loadFilterModel(PCModel)
                     clickedToggle(e.target.parentNode)
                 } else if(e.target.parentNode.id === 'Monitor') {
                     loadModel(monitorModel)
@@ -144,7 +137,10 @@ export const ARContextProvider = ({ children }) => {
             
             if(reticle.visible){
                 currentModel.visible = true;
+                box.visible = true
                 currentModel.position.setFromMatrixPosition(reticle.matrix);
+                box.position.set(reticle.position.x, reticle.position.y + 0.25, reticle.position.z + 0.028);
+                console.log(reticle.position);
             }
         })
 
@@ -187,6 +183,7 @@ export const ARContextProvider = ({ children }) => {
             
             renderer.setSize(window.innerWidth, window.innerHeight)
         })
+
     }
 
     return (
