@@ -98,12 +98,12 @@
 
 .widgets > .rotate-btn{ margin-right: 0.3rem; }
 
-.place-btn, .close-btn, .open-btn, .rotate-btn{
+.place-btn, .close-btn, .open-btn, .rotate-btn, .run-btn{
     padding: 0.8rem 0.9rem !important;
     transform: translateY(-0%);
     transition: 0.5s;
 }
-.place-btn img, .close-btn img, .open-btn img, .rotate-btn img{
+.place-btn img, .close-btn img, .open-btn img, .rotate-btn img, .run-btn img{
     width: 1.5rem;
 }
 

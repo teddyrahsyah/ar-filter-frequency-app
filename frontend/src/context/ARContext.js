@@ -2,10 +2,13 @@ import { createContext } from "react";
 import * as THREE from 'three'
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 import { OrbitControls } from "../controller/OrbitControls";
+
 import keyboardModel from '../asset/Keyboard.gltf'
 import mouseModel from '../asset/Mouse.gltf'
 import monitorModel from '../asset/Monitor.gltf'
 import PCModel from '../asset/PC.gltf'
+
+import keyboardImg from '../asset/keyboard.png'
 
 export const ARContext = createContext();
 
@@ -13,6 +16,7 @@ export const ARContextProvider = ({ children }) => {
     const { XRWebGLLayer } = window;
     let session, renderer, camera;
     let reticle, currentModel;
+    let box, group;
 
     const activateAR = async () => {
 
@@ -67,10 +71,21 @@ export const ARContextProvider = ({ children }) => {
             scene.add(reticle)
         })
 
-        let box, group;
+        // runbtn
+        
+        const video = document.getElementById('video')
+        const videoTexture = new THREE.VideoTexture(video)
+        videoTexture.minFilter = THREE.NearestFilter
+        videoTexture.magFilter = THREE.NearestFilter
         const createCube = () => {
-            const materialA = new THREE.MeshBasicMaterial( {color: 0x00ffff} );
-            box = new THREE.Mesh(new THREE.PlaneGeometry(0.45,0.3), materialA);
+            // const texture = new THREE.TextureLoader().load(keyboardImg);
+
+            const movieMaterial = new THREE.MeshBasicMaterial({
+                map: videoTexture,
+                side: THREE.FrontSide
+            })
+            // const materialA = new THREE.MeshBasicMaterial( {map: videoTexture} );
+            box = new THREE.Mesh(new THREE.PlaneGeometry(0.47,0.29), movieMaterial);
             box.visible = false
         }
 
@@ -99,8 +114,6 @@ export const ARContextProvider = ({ children }) => {
         // rotate object
         const rotateObject = degree => {
             if(currentModel && reticle.visible) group.children.forEach(child =>  child.rotation.y += degree)
-            console.log(group)
-            console.log(currentModel)
         }
 
         document.querySelector('.rotate-left').addEventListener('click', () => rotateObject(-0.1))
@@ -143,9 +156,10 @@ export const ARContextProvider = ({ children }) => {
                 console.log(reticle.position);
             }
         })
-
+        
         const onXRFrame = (time, frame) => {
             session.requestAnimationFrame(onXRFrame);
+            videoTexture.needsUpdate = true
 
             gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
 
