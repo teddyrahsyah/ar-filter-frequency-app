@@ -1,15 +1,21 @@
 import { createContext } from "react";
+import * as THREE from 'three'
 
 export const OutputWaveContext = createContext();
 
 export const OutputWaveContextProvider = ({ children }) => {
     const waveGenerator = () => {
-        // console.log('test')
+        
+        const scene = new THREE.Scene()
+        const camera = new THREE.PerspectiveCamera()
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(300, 500);
+
         const canvas = document.createElement('canvas');
-        canvas.style.backgroundColor= "#ff0000";
-        document.querySelector('.widgets').appendChild(canvas)
+        canvas.style.backgroundColor= "#ffffff";
+        // document.querySelector('.widgets').appendChild(canvas)
+        scene.add(canvas)
         const canvasContext = canvas.getContext('2d');
-        console.log(canvas)
     
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight/2;
@@ -29,6 +35,7 @@ export const OutputWaveContextProvider = ({ children }) => {
             }
             canvasContext.stroke()
             inc +=waveFreq
+            renderer.render(scene, camera)
         }
     
         animate()

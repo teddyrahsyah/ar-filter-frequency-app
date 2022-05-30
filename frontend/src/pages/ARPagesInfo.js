@@ -1,7 +1,9 @@
-import { useContext, useEffect } from 'react';
 import '../style/App.css';
+
+import { useContext, useEffect } from 'react';
 import { ARContext } from '../context/ARContext';
 import { OutputWaveContext } from '../context/OutputWaveContext';
+import { PreviewObject } from '../context/PreviewObject';
 
 // import icon
 import backIcon from '../asset/icons/back.svg'
@@ -10,6 +12,7 @@ import menuAR from '../asset/icons/menu_ar.svg'
 import placeAR from '../asset/icons/place.svg'
 import rotateLeftIcon from '../asset/icons/rotate_right.svg'
 import rotateRightIcon from '../asset/icons/rotate_left.svg'
+import runIcon from '../asset/icons/run.svg'
 
 // import image
 import logo from '../asset/logoDark.png'
@@ -17,18 +20,17 @@ import keyboardImg from '../asset/keyboard.png'
 import MouseImg from '../asset/Mouse.jpg'
 import PCImg from '../asset/pc.jpg'
 import LCDImg from '../asset/Monitor.jpg'
-import { PreviewObject } from '../context/PreviewObject';
-
+import video from '../asset/video.mp4'
 
 const ARPages = () => {
     const {activateAR} = useContext(ARContext)
-    // const {waveGenerator} = useContext(OutputWaveContext)
+    const {waveGenerator} = useContext(OutputWaveContext)
     const {showObject} = useContext(PreviewObject)
 
     useEffect(() => {
         showObject();
         console.log('showed')
-    }, [])
+    })
 
     const openMenu = () => {
         document.querySelector('.model-nav').classList.toggle('nav-opened-menu')
@@ -92,6 +94,11 @@ const ARPages = () => {
                 <button className='rotate-btn rotate-right btn'>
                     <img src={rotateRightIcon} alt="rotate right" />
                 </button>
+                <button className='run-btn btn'>
+                    <img src={runIcon} alt="Run" />
+                </button>
+
+                <video src={video} id="video" loop autoPlay style={{display: 'none'}}></video>
                 
                 <ul className="model-nav">
                     <li className='ar-object' id='Keyboard'>
