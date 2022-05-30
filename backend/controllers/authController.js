@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/UserModel.js";
+import { generateAccessToken } from "../helpers/generateToken.js";
 import { registerValidation, loginValidation } from "../helpers/validation.js";
 
 export const register = async (req, res) => {
@@ -86,6 +87,34 @@ export const login = async (req, res) => {
 		});
 
 	// Create and assign a token
-	const token = jwt.sign(userData.toJSON(), process.env.ACCESS_TOKEN_SECRET);
-	res.status(200).json({ status: 200, id: userData.id, username: userData.email, accessToken: token });
+	const accessToken = generateAccessToken(userData.toJSON());
+	const refreshToken = jwt.sign(userData.toJSON(), process.env.REFRESH_TOKEN_SECRET);
+	refreshTokens.push(refreshToken);
+	// const token = jwt.sign(userData.toJSON(), process.env.ACCESS_TOKEN_SECRET);
+	res.status(200).json({
+		status: 200,
+		id: userData.id,
+		username: userData.email,
+		accessToken: accessToken,
+		refreshToken: refreshToken,
+	});
+};
+let refreshTokens = [];
+
+export const logout = async (req, res) => {
+	refreshTokens = refreshTokens.filter(token => token !== req.body.token);
+	res.sendStatus(204);
+};
+
+export const refreshingToken = (req, res) => {
+	const refreshToken = req.body.token;
+
+	if (refreshToken == null) return res.sendStatus(401);
+	if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
+
+	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+		if (err) return res.sendStatus(403);
+		const accessToken = generateAccessToken({ id: user.id, name: user.name });
+		res.json({ accessToken: accessToken });
+	});
 };

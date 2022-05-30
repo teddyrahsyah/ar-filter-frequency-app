@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "Backend Development using ExpressJS and MongoDB",
   "type": "module",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "nodemon server.js",
+    "startAuth": "nodemon authServer.js"
   },
   "keywords": [
     "ExpressJS",
