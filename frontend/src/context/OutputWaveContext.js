@@ -1,44 +1,41 @@
 import { createContext } from "react";
-import * as THREE from 'three'
 
 export const OutputWaveContext = createContext();
 
 export const OutputWaveContextProvider = ({ children }) => {
     const waveGenerator = () => {
-        
-        const scene = new THREE.Scene()
-        const camera = new THREE.PerspectiveCamera()
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(300, 500);
-
         const canvas = document.createElement('canvas');
         canvas.style.backgroundColor= "#ffffff";
-        // document.querySelector('.widgets').appendChild(canvas)
-        scene.add(canvas)
+        document.querySelector('.output-wave').appendChild(canvas)
         const canvasContext = canvas.getContext('2d');
     
         canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight/2;
+        canvas.height = window.innerHeight;
     
-        const waveFreq = 0.02
+        const waveFreq = 0.002
     
         let inc = waveFreq
-        const animate = () => {
-            requestAnimationFrame(animate)
-            canvasContext.clearRect(0, 0, canvas.width, canvas.height)
-            
-            canvasContext.beginPath();
-            canvasContext.moveTo(0, canvas.height/2)
-    
-            for(let i = 0; i < canvas.width; i++){
-                canvasContext.lineTo(i, canvas.height/2 + Math.sin(i * 0.02 + inc)*200)
-            }
-            canvasContext.stroke()
-            inc +=waveFreq
-            renderer.render(scene, camera)
+        canvasContext.moveTo(0, canvas.height/2)
+        for(let i = 0; i < canvas.width; i++){
+            canvasContext.lineTo(i, canvas.height/2 + Math.sin(i * 0.04 + inc)*100)
         }
+        canvasContext.stroke()
+        inc +=waveFreq
+        // const animate = () => {
+        //     requestAnimationFrame(animate)
+        //     canvasContext.clearRect(0, 0, canvas.width, canvas.height)
+            
+        //     canvasContext.beginPath();
+        //     canvasContext.moveTo(0, canvas.height/2)
     
-        animate()
+        //     for(let i = 0; i < canvas.width; i++){
+        //         canvasContext.lineTo(i, canvas.height/2 + Math.sin(i * 0.02 + inc)*200)
+        //     }
+        //     canvasContext.stroke()
+        //     inc +=waveFreq
+        // }
+    
+        // animate()
     }
     return (
         <OutputWaveContext.Provider value={{waveGenerator}}>

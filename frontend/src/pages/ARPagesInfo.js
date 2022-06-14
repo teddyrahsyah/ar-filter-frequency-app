@@ -2,7 +2,7 @@ import '../style/App.css';
 
 import { useContext, useEffect } from 'react';
 import { ARContext } from '../context/ARContext';
-import { OutputWaveContext } from '../context/OutputWaveContext';
+import { RecordScreenContext } from '../context/RecordScreenContext';
 import { PreviewObject } from '../context/PreviewObject';
 
 // import icon
@@ -20,16 +20,16 @@ import keyboardImg from '../asset/keyboard.png'
 import MouseImg from '../asset/Mouse.jpg'
 import PCImg from '../asset/pc.jpg'
 import LCDImg from '../asset/Monitor.jpg'
-import video from '../asset/video.mp4'
+import { OutputWaveContext } from '../context/OutputWaveContext';
 
 const ARPages = () => {
     const {activateAR} = useContext(ARContext)
-    const {waveGenerator} = useContext(OutputWaveContext)
     const {showObject} = useContext(PreviewObject)
+    const {waveGenerator} = useContext(OutputWaveContext)
+    const { stopRecording, startRecording, init} = useContext(RecordScreenContext)
 
     useEffect(() => {
         showObject();
-        console.log('showed')
     })
 
     const openMenu = () => {
@@ -73,10 +73,6 @@ const ARPages = () => {
                 </div>
             </div>
 
-            <div className="error-big-screen">
-                <h1>Oops.. tidak bisa menampilkan halaman, dibuka di layar yang lebih besar ya</h1>
-            </div>
-
             {/* inside AR session */}
             <div className="widgets">
                 <button className='close-btn btn'>
@@ -96,10 +92,7 @@ const ARPages = () => {
                 </button>
                 <button className='run-btn btn'>
                     <img src={runIcon} alt="Run" />
-                </button>
-
-                <video src={video} id="video" loop autoPlay style={{display: 'none'}}></video>
-                
+                </button>                
                 <ul className="model-nav">
                     <li className='ar-object' id='Keyboard'>
                         <img src={keyboardImg} alt="keyboard" />

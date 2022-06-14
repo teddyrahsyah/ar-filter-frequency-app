@@ -4,16 +4,17 @@ import App from './App';
 import { ARContextProvider } from './context/ARContext';
 import { OutputWaveContextProvider } from './context/OutputWaveContext';
 import { PreviewObjectProvider } from './context/PreviewObject';
+import { RecordScreenProvider } from './context/RecordScreenContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <ARContextProvider>
-            <PreviewObjectProvider>
-                <OutputWaveContextProvider>
+    <ARContextProvider>
+        <PreviewObjectProvider>
+            <OutputWaveContextProvider>
+                <RecordScreenProvider>
                     <App />
-                </OutputWaveContextProvider>                
-            </PreviewObjectProvider>
-        </ARContextProvider>
-    </React.StrictMode>
+                </RecordScreenProvider>
+            </OutputWaveContextProvider>                
+        </PreviewObjectProvider>
+    </ARContextProvider>
 );

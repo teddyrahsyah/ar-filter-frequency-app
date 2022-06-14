@@ -6,9 +6,9 @@ import AdminPanelForm from './pages/AdminPanelForm';
 import Home from './pages/Home';
 import AdminPanelListArticle from './pages/AdminPanelListArticle';
 import AdminPanelListMateri from './pages/AdminPanelListMateri';
+import OutputWave from './pages/OutputWave';
 
 function App() {
-
     return (
         <BrowserRouter>
             <Routes>
@@ -18,6 +18,7 @@ function App() {
                 <Route path='/adminPanel' element={<AdminPanelListArticle />} />
                 <Route path='/list-materi' element={<AdminPanelListMateri />} />
                 <Route path='/ARApp' element={<ARPagesInfo />} />
+                <Route path='/outputWave' element={<OutputWave />} />
             </Routes>
         </BrowserRouter>
     );  
