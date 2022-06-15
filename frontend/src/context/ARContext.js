@@ -77,7 +77,7 @@ export const ARContextProvider = ({ children }) => {
         const addImage = () => {
             const imageTextureLoader = new THREE.TextureLoader();
             
-            const imageTexture = localStorage.getItem('image')
+            const imageTexture = sessionStorage.getItem('image')
             console.log(imageTexture)
             
             texture  = [

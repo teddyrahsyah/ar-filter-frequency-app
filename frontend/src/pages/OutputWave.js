@@ -2,7 +2,6 @@ import html2canvas from 'html2canvas';
 import { useContext, useEffect, useState } from 'react';
 import { OutputWaveContext } from '../context/OutputWaveContext';
 import useCapture from '../hooks/useCapture';
-import useScreenShot from '../hooks/useScreenShot';
 
 const OutputWave = () => {
     

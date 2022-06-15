@@ -13,6 +13,7 @@
   --secondary-light: #67B3B8;
   --accent-light: #36827F;
   --text-light: #1c1c1c;
+  --warning: #E7560D;
 }
 
 *{
@@ -34,7 +35,7 @@ body {
   border: none;
   font-size: 1rem;  
   font-family: 'Inter', sans-serif;
-  border-bottom: 0.15rem solid var(--text-light);  
+  border-bottom: 0.12rem solid var(--text-light);  
 }
 
 .input-text::placeholder{

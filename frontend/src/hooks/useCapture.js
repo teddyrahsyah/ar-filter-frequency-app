@@ -15,9 +15,9 @@ const useCapture = () => {
             //     localStorage.setItem('image', imageLink.href)
             // })
             const base64image = canvas.toDataURL("image/png");
-            localStorage.setItem('image', base64image)
+            sessionStorage.setItem('image', base64image)
 
-            imageLink.src = localStorage.getItem('image')
+            imageLink.src = sessionStorage.getItem('image')
             document.querySelector('.output-container').appendChild(imageLink);
         });
     }

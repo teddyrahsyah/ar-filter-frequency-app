@@ -21,21 +21,6 @@ export const OutputWaveContextProvider = ({ children }) => {
         }
         canvasContext.stroke()
         inc +=waveFreq
-        // const animate = () => {
-        //     requestAnimationFrame(animate)
-        //     canvasContext.clearRect(0, 0, canvas.width, canvas.height)
-            
-        //     canvasContext.beginPath();
-        //     canvasContext.moveTo(0, canvas.height/2)
-    
-        //     for(let i = 0; i < canvas.width; i++){
-        //         canvasContext.lineTo(i, canvas.height/2 + Math.sin(i * 0.02 + inc)*200)
-        //     }
-        //     canvasContext.stroke()
-        //     inc +=waveFreq
-        // }
-    
-        // animate()
     }
     return (
         <OutputWaveContext.Provider value={{waveGenerator}}>
