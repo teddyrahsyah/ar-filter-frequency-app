@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import * as THREE from 'three'
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 import { OrbitControls } from "../controller/OrbitControls";
@@ -9,6 +9,7 @@ import monitorModel from '../asset/Monitor.gltf'
 import PCModel from '../asset/PC.gltf'
 
 import keyboardImg from '../asset/keyboard.png'
+import mouseImg from '../asset/Mouse.jpg'
 
 export const ARContext = createContext();
 
@@ -71,30 +72,41 @@ export const ARContextProvider = ({ children }) => {
             scene.add(reticle)
         })
 
-        // runbtn
+        let imageMaterial, texture
         
-        const video = document.getElementById('video')
-        const videoTexture = new THREE.VideoTexture(video)
-        videoTexture.minFilter = THREE.NearestFilter
-        videoTexture.magFilter = THREE.NearestFilter
-        const createCube = () => {
-            // const texture = new THREE.TextureLoader().load(keyboardImg);
-
-            const movieMaterial = new THREE.MeshBasicMaterial({
-                map: videoTexture,
+        const addImage = () => {
+            const imageTextureLoader = new THREE.TextureLoader();
+            
+            const imageTexture = sessionStorage.getItem('image')
+            console.log(imageTexture)
+            
+            texture  = [
+                imageTextureLoader.load(imageTexture),
+                imageTextureLoader.load(mouseImg)
+            ]
+            imageMaterial = new THREE.MeshBasicMaterial({
+                map: texture[1],
                 side: THREE.FrontSide
             })
-            // const materialA = new THREE.MeshBasicMaterial( {map: videoTexture} );
-            box = new THREE.Mesh(new THREE.PlaneGeometry(0.47,0.29), movieMaterial);
+            box = new THREE.Mesh(new THREE.PlaneGeometry(0.47,0.29), imageMaterial);
             box.visible = false
+        }
+
+        const changeTexture = () => {
+            if(imageMaterial.map === texture[1]){
+                imageMaterial.map = texture[0]
+            } else{
+                imageMaterial.map = texture[1]
+            }
         }
 
         const loadModel = (model) => {
             loader.load(model, (gltf) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
-                createCube()
                 group = new THREE.Group();
+                addImage()
+                box.visible = true;
                 group.add( box );
                 group.add( currentModel );                
                 scene.add(group)
@@ -110,6 +122,12 @@ export const ARContextProvider = ({ children }) => {
                 scene.add(group)
             })
         }
+
+        // run btn
+        document.querySelector('.run-btn').addEventListener('click', () => {
+            console.log('clicked');
+            changeTexture()
+        })
 
         // rotate object
         const rotateObject = degree => {
@@ -150,16 +168,14 @@ export const ARContextProvider = ({ children }) => {
             
             if(reticle.visible){
                 currentModel.visible = true;
-                box.visible = true
                 currentModel.position.setFromMatrixPosition(reticle.matrix);
                 box.position.set(reticle.position.x, reticle.position.y + 0.25, reticle.position.z + 0.028);
-                console.log(reticle.position);
             }
         })
         
         const onXRFrame = (time, frame) => {
             session.requestAnimationFrame(onXRFrame);
-            videoTexture.needsUpdate = true
+            // texture.needsUpdate = true
 
             gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
 
@@ -176,7 +192,7 @@ export const ARContextProvider = ({ children }) => {
                 
                 const hitTestResults = frame.getHitTestResults(hitTestSource);
 
-                if (hitTestResults.length > 0 && reticle) {
+                if (hitTestResults.length > 0) {
                     const hitPose = hitTestResults[0].getPose(referenceSpace);
                     reticle.visible = true;
                     reticle.position.set(hitPose.transform.position.x, hitPose.transform.position.y, hitPose.transform.position.z)

@@ -7,13 +7,11 @@ import { PreviewObjectProvider } from './context/PreviewObject';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <ARContextProvider>
-            <PreviewObjectProvider>
-                <OutputWaveContextProvider>
+    <ARContextProvider>
+        <PreviewObjectProvider>
+            <OutputWaveContextProvider>
                     <App />
-                </OutputWaveContextProvider>                
-            </PreviewObjectProvider>
-        </ARContextProvider>
-    </React.StrictMode>
+            </OutputWaveContextProvider>                
+        </PreviewObjectProvider>
+    </ARContextProvider>
 );

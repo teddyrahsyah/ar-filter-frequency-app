@@ -2,7 +2,6 @@ import '../style/App.css';
 
 import { useContext, useEffect } from 'react';
 import { ARContext } from '../context/ARContext';
-import { OutputWaveContext } from '../context/OutputWaveContext';
 import { PreviewObject } from '../context/PreviewObject';
 
 // import icon
@@ -13,6 +12,7 @@ import placeAR from '../asset/icons/place.svg'
 import rotateLeftIcon from '../asset/icons/rotate_right.svg'
 import rotateRightIcon from '../asset/icons/rotate_left.svg'
 import runIcon from '../asset/icons/run.svg'
+import frequencyIcon from '../asset/icons/frequency.svg'
 
 // import image
 import logo from '../asset/logoDark.png'
@@ -20,22 +20,23 @@ import keyboardImg from '../asset/keyboard.png'
 import MouseImg from '../asset/Mouse.jpg'
 import PCImg from '../asset/pc.jpg'
 import LCDImg from '../asset/Monitor.jpg'
-import video from '../asset/video.mp4'
+import { OutputWaveContext } from '../context/OutputWaveContext';
 
 const ARPages = () => {
     const {activateAR} = useContext(ARContext)
-    const {waveGenerator} = useContext(OutputWaveContext)
     const {showObject} = useContext(PreviewObject)
+    const {waveGenerator} = useContext(OutputWaveContext)
 
     useEffect(() => {
         showObject();
-        console.log('showed')
     })
 
     const openMenu = () => {
         document.querySelector('.model-nav').classList.toggle('nav-opened-menu')
         document.querySelector('.open-btn').classList.toggle('widgets-open')
         document.querySelector('.place-btn').classList.toggle('widgets-open')
+        document.querySelector('.run-btn').classList.toggle('widgets-open')
+        document.querySelector('.frequency-btn').classList.toggle('widgets-open')
         document.querySelectorAll('.rotate-btn').forEach(rotate => rotate.classList.toggle('widgets-open'))
     }
 
@@ -73,33 +74,51 @@ const ARPages = () => {
                 </div>
             </div>
 
-            <div className="error-big-screen">
-                <h1>Oops.. tidak bisa menampilkan halaman, dibuka di layar yang lebih besar ya</h1>
-            </div>
-
             {/* inside AR session */}
             <div className="widgets">
+                {/* Navigation */}
+                <div className="top-nav">
+                    <button className='rotate-btn rotate-left btn'>
+                        <img src={rotateLeftIcon} alt="rotate left" />
+                    </button>
+                    <button className='place-btn btn'>
+                        <img src={placeAR} alt="place" />
+                    </button>
+                    <button className='rotate-btn rotate-right btn'>
+                        <img src={rotateRightIcon} alt="rotate right" />
+                    </button>
+                </div>
+                <div className="bottom-nav">
+                    <button className="open-btn btn" onClick={openMenu}>
+                        <img src={menuAR} alt="" />
+                    </button>
+                    <button className='frequency-btn btn'>
+                        <img src={frequencyIcon} alt="Frequency" />
+                    </button>
+                    <button className='run-btn btn'>
+                        <img src={runIcon} alt="Run" />
+                    </button>
+                </div>
+
+                {/* close btn */}
                 <button className='close-btn btn'>
                     <img src={closeIcon} alt="close" />
                 </button>
-                <button className="open-btn btn" onClick={openMenu}>
-                    <img src={menuAR} alt="" />
-                </button>
-                <button className='place-btn btn'>
-                    <img src={placeAR} alt="place" />
-                </button>
-                <button className='rotate-btn rotate-left btn'>
-                    <img src={rotateLeftIcon} alt="rotate left" />
-                </button>
-                <button className='rotate-btn rotate-right btn'>
-                    <img src={rotateRightIcon} alt="rotate right" />
-                </button>
-                <button className='run-btn btn'>
-                    <img src={runIcon} alt="Run" />
-                </button>
 
-                <video src={video} id="video" loop autoPlay style={{display: 'none'}}></video>
+                {/* box model for error and input frequency */}
+                <div className="box-modal-container">
+                    <form className="box-modal input-frequency">
+                        <input type="text" className='input-freq-form input-text'placeholder='Frekuensi (Hz)' />
+                        <button className='change-freq-btn'>Ganti Frekuensi</button>
+                    </form>
+                    
+                    <div className="box-modal error-no-model">
+                        <h3>Error!!</h3>
+                        <p>Pilih Objek yang mau diletakkan terlebih dahulu!</p>
+                    </div>
+                </div>
                 
+                {/* image for menu */}
                 <ul className="model-nav">
                     <li className='ar-object' id='Keyboard'>
                         <img src={keyboardImg} alt="keyboard" />
