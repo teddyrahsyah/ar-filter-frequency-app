@@ -19,9 +19,10 @@ const LectureSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	imageData: {
-		data: Buffer,
-		contentType: String,
+	image: {
+		type: String,
+		required: true,
+		max: 255,
 	},
 	modelAR: {
 		type: String,

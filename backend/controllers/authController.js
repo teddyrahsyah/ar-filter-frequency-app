@@ -99,6 +99,7 @@ export const login = async (req, res) => {
 		refreshToken: refreshToken,
 	});
 };
+
 let refreshTokens = [];
 
 export const logout = async (req, res) => {

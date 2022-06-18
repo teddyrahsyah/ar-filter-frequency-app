@@ -3,6 +3,11 @@ import path from "path";
 import Lecture from "../models/LectureModel.js";
 import { createLectureValidation } from "../helpers/validation.js";
 
+import util from "util";
+const unlinkFile = util.promisify(fs.unlink);
+
+import { uploadFile } from "../helpers/s3.js";
+
 export const create = async (req, res) => {
 	// Verify User if the user is Admin or not
 	if (!req.user.isSuperuser)
@@ -23,15 +28,17 @@ export const create = async (req, res) => {
 			},
 		});
 
+	// Upload Thumbnail Image
+	const file = req.file;
+	const uploadResult = await uploadFile(file);
+	await unlinkFile(file.path);
+
 	const lecture = new Lecture({
 		moduleNumber: req.body.moduleNumber,
 		category: req.body.category,
 		title: req.body.title,
 		description: req.body.description,
-		imageData: {
-			data: fs.readFileSync(path.join(path.resolve() + "/public/uploads/" + req.file.filename)),
-			contentType: "image/png",
-		},
+		image: uploadResult.Location,
 		modelAR: req.body.modelAR,
 		tags: req.body.tags,
 	});
@@ -42,7 +49,7 @@ export const create = async (req, res) => {
 			res.status(201).json({
 				status: 201,
 				message: "Lecture created successfully.",
-				data: result,
+				results: result,
 			});
 		})
 		.catch((err) => {
@@ -67,7 +74,7 @@ export const findAll = async (req, res) => {
 				});
 			res.status(200).json({
 				status: 200,
-				data: result,
+				results: result,
 			});
 		})
 		.catch((err) => {
@@ -93,7 +100,7 @@ export const findOne = async (req, res) => {
 					},
 				});
 
-			res.status(200).json({ data: result });
+			res.status(200).json({ results: result });
 		})
 		.catch((err) => {
 			res.status(409).json({
@@ -258,7 +265,7 @@ export const findFavorite = async (req, res) => {
 
 			res.status(200).json({
 				status: 200,
-				data: result,
+				results: result,
 			});
 		})
 		.catch((err) => {
