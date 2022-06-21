@@ -1,4 +1,10 @@
+import fs from "fs";
 import Article from "../models/ArticleModel.js";
+
+import util from "util";
+const unlinkFile = util.promisify(fs.unlink);
+
+import { uploadFile } from "../helpers/s3.js";
 
 export const create = async (req, res) => {
 	// Verify User if the user is Admin or not
@@ -20,14 +26,16 @@ export const create = async (req, res) => {
 			},
 		});
 
+	// Upload Thumbnail Image
+	const file = req.file;
+	const uploadResult = await uploadFile(file);
+	await unlinkFile(file.path);
+
 	const article = new Article({
 		title: req.body.title,
+		category: req.body.category,
 		description: req.body.description,
-		imageData: {
-			data: fs.readFileSync(path.join(path.resolve() + "/public/uploads/" + req.file.filename)),
-			contentType: "image/png",
-		},
-		tags: req.body.tags,
+		image: uploadResult.Location,
 	});
 
 	article
@@ -61,7 +69,7 @@ export const findAll = async (req, res) => {
 				});
 			res.status(200).json({
 				status: 200,
-				data: result,
+				results: result,
 			});
 		})
 		.catch((err) => {

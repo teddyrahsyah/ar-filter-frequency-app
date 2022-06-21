@@ -20,16 +20,10 @@ export const loginValidation = (data) => {
 	return schema.validate(data);
 };
 
-export const createLectureValidation = (data) => {
+export const createModuleValidation = (data) => {
 	const schema = Joi.object({
 		moduleNumber: Joi.number().required(),
-		category: Joi.string().required(),
 		title: Joi.string().required(),
-		description: Joi.string().required(),
-		imageData: Joi.string().dataUri(),
-		modelAR: Joi.string().required(),
-		tags: Joi.array().items(Joi.string()),
-		isFavorite: Joi.boolean(),
 	});
 
 	return schema.validate(data);

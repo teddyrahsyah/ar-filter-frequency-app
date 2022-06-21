@@ -6,6 +6,6 @@ import { register, login, refreshingToken, logout } from "../controllers/authCon
 router.post("/register", register);
 router.post("/login", login);
 router.post("/token", refreshingToken);
-router.delete("/logout", logout);
+router.delete("/:token/logout", logout);
 
 export default router;

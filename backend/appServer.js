@@ -13,7 +13,7 @@ db.on("error", (err) => console.log(err));
 db.once("open", () => console.log("AppServer: Arsim Database Connected..."));
 
 // Import Routes
-import lectureRoute from "./routes/lecture.js";
+import moduleRoute from "./routes/module.js";
 import articleRoute from "./routes/article.js";
 
 // Middleware
@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.static("public/uploads"));
 
 // Route MiddleWare
-app.use("/api/lecture", lectureRoute);
+app.use("/api/module", moduleRoute);
 app.use("/api/article", articleRoute);
 
 // app.listen(8000, () => console.log(`Server is running at http://localhost:8000`));

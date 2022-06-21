@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/UserModel.js";
+import Token from "../models/TokenModel.js";
+
 import { generateAccessToken } from "../helpers/generateToken.js";
 import { registerValidation, loginValidation } from "../helpers/validation.js";
 
@@ -89,7 +91,15 @@ export const login = async (req, res) => {
 	// Create and assign a token
 	const accessToken = generateAccessToken(userData.toJSON());
 	const refreshToken = jwt.sign(userData.toJSON(), process.env.REFRESH_TOKEN_SECRET);
-	refreshTokens.push(refreshToken);
+
+	// Create a new user
+	const token = new Token({
+		accessToken: accessToken,
+	});
+
+	token.save();
+
+	refreshTokens.push(accessToken);
 	// const token = jwt.sign(userData.toJSON(), process.env.ACCESS_TOKEN_SECRET);
 	res.status(200).json({
 		status: 200,
@@ -103,7 +113,9 @@ export const login = async (req, res) => {
 let refreshTokens = [];
 
 export const logout = async (req, res) => {
-	refreshTokens = refreshTokens.filter(token => token !== req.body.token);
+	refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
+    const id = req.params.id
+    Token.findByIdAndDelete(id);
 	res.sendStatus(204);
 };
 

@@ -6,6 +6,11 @@ const ArticleSchema = mongoose.Schema({
 		max: 255,
 		default: "Admin",
 	},
+	category: {
+		type: String,
+		required: true,
+		max: 255,
+	},
 	title: {
 		type: String,
 		required: true,
@@ -15,18 +20,11 @@ const ArticleSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	imageData: {
-		data: Buffer,
-		contentType: String,
+	image: {
+		type: String,
+		required: true,
+		max: 255,
 	},
-	tags: [
-		{
-			type: String,
-			max: 255,
-			required: true,
-			default: null,
-		},
-	],
 	date: {
 		type: Date,
 		default: Date.now(),
