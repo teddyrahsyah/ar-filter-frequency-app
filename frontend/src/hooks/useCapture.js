@@ -6,18 +6,10 @@ const useCapture = () => {
 
     const capture = () => {
         html2canvas(document.querySelector('.output-wave')).then(function(canvas) {
-            // canvas.toBlob(blob => {
-            //     const url = URL.createObjectURL(blob);
-            //     imageLink.onload = () => URL.revokeObjectURL(url);
-            //     imageLink.innerHTML = 'download'
-            //     imageLink.href = url
-                
-            //     localStorage.setItem('image', imageLink.href)
-            // })
             const base64image = canvas.toDataURL("image/png");
-            sessionStorage.setItem('image', base64image)
+            localStorage.setItem('image', base64image)
 
-            imageLink.src = sessionStorage.getItem('image')
+            imageLink.src = localStorage.getItem('image')
             document.querySelector('.output-container').appendChild(imageLink);
         });
     }

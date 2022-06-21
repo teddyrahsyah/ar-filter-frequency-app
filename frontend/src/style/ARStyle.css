@@ -110,6 +110,7 @@
     transform: translateY(-0%);
     transition: 0.5s;
 }
+.place-btn, .open-btn, .rotate-btn, .run-btn, .frequency-btn{ flex: 1;}
 
 .close-btn img { width: 1.5rem; }
 
@@ -178,9 +179,6 @@
 }
 
 .box-modal{
-    position: relative;
-    margin: 0 auto;
-    top: calc(50% - 50px);
     background-color: var(--accent-light);
     padding: 0.8rem;
     border-radius: 0.2rem;
@@ -193,13 +191,13 @@
 }
 
 .input-freq-form{ 
-    width: 55%;
+    width: 65%;
     margin-right: 0.5rem;
 }
 
 .change-freq-btn{
-    word-wrap: break-word;
     outline: none;
+    text-align: center;
     border: none;
     background-color: var(--secondary-light);
     padding: 0.7rem 0.2rem;
@@ -208,12 +206,22 @@
 
 .error-no-model{
     text-align: center;
+    display: none;
     background-color: var(--warning);
 }
+
+.show{ display: block;}
+
+.output-container{
+    display: none;
+}
+
 
 @media only screen and (min-width: 821px) {
     .ar-container {
       display: none;
     }
     .error-big-screen{ display: block;}
+
+    .output-container{display: block;}
 }

@@ -4,13 +4,14 @@ import logoAplikasi from '../asset/logoAplikasi.png'
 const AdminNavbar = () => {
     return ( 
         <nav className="admin-navbar">
-            <div className="navbar-logo">
-                <Link to='/adminPanel'><img src={logoAplikasi} alt="Filter Frekuensi AR Simulator" /></Link>
-            </div>
-            <div className="menu-list">
-                <Link to='/adminPanel' className="nav-link">List Artikel</Link>
-                <Link to='/list-materi' className="nav-link">List Materi</Link>
-                <Link to='/addForm' className="nav-link">Tambah Artikel / Materi</Link>
+            <div className="logo-menu">
+                <div className="navbar-logo">
+                    <Link to='/adminHomepage'><img src={logoAplikasi} alt="Filter Frekuensi AR Simulator" /></Link>
+                </div>
+                <div className="menu-list">
+                    <Link to='/listArtikel' className="nav-link">List Artikel</Link>
+                    <Link to='/listModul' className="nav-link">List Modul</Link>
+                </div>
             </div>
             <Link to='/adminLogin' className="logout-btn btn">Logout</Link>
         </nav>  

@@ -1,6 +1,21 @@
+/* ModulPage */
+.theory-list, .lab-list{ margin-top: 2rem;}
+
+
+/* adminPanelListArticle.js && adminPanelListMateri.js */
+.list-title{ font-size: 1.5rem; }
+
+.add-module-form{ margin: 2rem 0;}
+
+.add-module-input{
+    padding: 0.5rem 0.8rem;
+    margin-right: 0.8rem;
+}
+
+/* List.js */
 .list-container{
-    width: 70vw;
-    margin: 2rem auto;
+    width: 80vw;
+    margin: 1rem auto;
 }
 
 .list-container h1{ 
@@ -9,28 +24,41 @@
 }
 
 .list{
+    width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     margin: 1rem 0;
-    padding: 1rem 0.5rem;
-    border-bottom: 0.12rem solid var(--text-light);
+    padding: 0.8rem 1rem;
+    border-radius: 0.3rem;
+    background-color: var(--text-dark);
+    outline: none;
+    border: none;
+    box-shadow: 0.4rem 0.4rem 1.5rem rgba(0, 0, 0, 0.15);
+    text-decoration: none;
 }
 
-.judul-artikel{ text-transform: capitalize;}
+.hover-list:hover{ cursor: pointer;}
 
-.edit-btn{ 
+.judul-artikel{ 
+    text-transform: capitalize;
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.edit-btn{
+    display: inline-block;
     margin-right: 0.8rem;
-    background-color: #f7d869;
+    background-color: #fccb1a;
     border: none;
     outline: none;
     border-radius: 0.3rem;
     padding: 0.4rem;
-    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.25);
 }
 
 .delete-btn{
-    background-color: #f76969;
+    display: inline-block;
+    background-color: #f73636;
     border: none;
     outline: none;
     border-radius: 0.3rem;
@@ -38,6 +66,4 @@
     box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.25);
 }
 
-.cta-btn{
-    width: 1.6rem;
-}
+.cta-btn{ width: 1.3rem;}

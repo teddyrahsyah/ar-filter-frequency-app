@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext } from "react";
 import * as THREE from 'three'
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 import { OrbitControls } from "../controller/OrbitControls";
@@ -8,8 +8,8 @@ import mouseModel from '../asset/Mouse.gltf'
 import monitorModel from '../asset/Monitor.gltf'
 import PCModel from '../asset/PC.gltf'
 
-import keyboardImg from '../asset/keyboard.png'
 import mouseImg from '../asset/Mouse.jpg'
+
 
 export const ARContext = createContext();
 
@@ -18,6 +18,7 @@ export const ARContextProvider = ({ children }) => {
     let session, renderer, camera;
     let reticle, currentModel;
     let box, group;
+
 
     const activateAR = async () => {
 
@@ -77,7 +78,7 @@ export const ARContextProvider = ({ children }) => {
         const addImage = () => {
             const imageTextureLoader = new THREE.TextureLoader();
             
-            const imageTexture = sessionStorage.getItem('image')
+            const imageTexture = localStorage.getItem('image')
             console.log(imageTexture)
             
             texture  = [
@@ -100,13 +101,13 @@ export const ARContextProvider = ({ children }) => {
             }
         }
 
+        // loading AR Object
         const loadModel = (model) => {
             loader.load(model, (gltf) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
                 group = new THREE.Group();
                 addImage()
-                box.visible = true;
                 group.add( box );
                 group.add( currentModel );                
                 scene.add(group)
@@ -119,24 +120,10 @@ export const ARContextProvider = ({ children }) => {
                 currentModel.visible = false;
                 group = new THREE.Group();
                 group.add( currentModel );
+                console.log(group)
                 scene.add(group)
             })
         }
-
-        // run btn
-        document.querySelector('.run-btn').addEventListener('click', () => {
-            console.log('clicked');
-            changeTexture()
-        })
-
-        // rotate object
-        const rotateObject = degree => {
-            if(currentModel && reticle.visible) group.children.forEach(child =>  child.rotation.y += degree)
-        }
-
-        document.querySelector('.rotate-left').addEventListener('click', () => rotateObject(-0.1))
-        document.querySelector('.rotate-right').addEventListener('click', () => rotateObject(0.1))
-
 
         // toggle for the clicked object
         const clickedToggle = (element) => {
@@ -164,14 +151,37 @@ export const ARContextProvider = ({ children }) => {
             })
         })
 
+        // place AR object
         document.querySelector('.place-btn').addEventListener('click', () => {
             
             if(reticle.visible){
-                currentModel.visible = true;
+                currentModel.visible = true;                
+                box.visible = true;
                 currentModel.position.setFromMatrixPosition(reticle.matrix);
                 box.position.set(reticle.position.x, reticle.position.y + 0.25, reticle.position.z + 0.028);
             }
         })
+
+        // run btn
+        document.querySelector('.run-btn').addEventListener('click', () => changeTexture())
+
+        // rotate object
+        const rotateObject = degree => {
+            if(currentModel && reticle.visible) group.children.forEach(child =>  child.rotation.y += degree)
+        }
+ 
+        document.querySelector('.rotate-left').addEventListener('click', () => rotateObject(-0.1))
+        document.querySelector('.rotate-right').addEventListener('click', () => rotateObject(0.1))
+
+        // change frequency
+        // document.querySelector('.frequency-btn').addEventListener('click', () => {
+        //     document.querySelector('.box-modal-container').classList.add('show')
+        //     document.querySelector('.input-frequency').style.display = 'flex'
+        //     console.log(document.querySelector('.input-frequency'))
+            
+        // })
+        
+        
         
         const onXRFrame = (time, frame) => {
             session.requestAnimationFrame(onXRFrame);

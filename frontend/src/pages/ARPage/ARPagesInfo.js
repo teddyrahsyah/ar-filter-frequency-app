@@ -1,35 +1,42 @@
-import '../style/App.css';
+import '../../style/App.css';
+import Popup from 'reactjs-popup';
 
 import { useContext, useEffect } from 'react';
-import { ARContext } from '../context/ARContext';
-import { PreviewObject } from '../context/PreviewObject';
+import { ARContext } from '../../context/ARContext';
+import { PreviewObject } from '../../context/PreviewObject';
 
 // import icon
-import backIcon from '../asset/icons/back.svg'
-import closeIcon from '../asset/icons/close.svg'
-import menuAR from '../asset/icons/menu_ar.svg'
-import placeAR from '../asset/icons/place.svg'
-import rotateLeftIcon from '../asset/icons/rotate_right.svg'
-import rotateRightIcon from '../asset/icons/rotate_left.svg'
-import runIcon from '../asset/icons/run.svg'
-import frequencyIcon from '../asset/icons/frequency.svg'
+import backIcon from '../../asset/icons/back.svg'
+import closeIcon from '../../asset/icons/close.svg'
+import menuAR from '../../asset/icons/menu_ar.svg'
+import placeAR from '../../asset/icons/place.svg'
+import rotateLeftIcon from '../../asset/icons/rotate_right.svg'
+import rotateRightIcon from '../../asset/icons/rotate_left.svg'
+import runIcon from '../../asset/icons/run.svg'
+import frequencyIcon from '../../asset/icons/frequency.svg'
 
 // import image
-import logo from '../asset/logoDark.png'
-import keyboardImg from '../asset/keyboard.png'
-import MouseImg from '../asset/Mouse.jpg'
-import PCImg from '../asset/pc.jpg'
-import LCDImg from '../asset/Monitor.jpg'
-import { OutputWaveContext } from '../context/OutputWaveContext';
+import logo from '../../asset/logoDark.png'
+import keyboardImg from '../../asset/keyboard.png'
+import MouseImg from '../../asset/Mouse.jpg'
+import PCImg from '../../asset/pc.jpg'
+import LCDImg from '../../asset/Monitor.jpg'
+import { OutputWaveContext } from '../../context/OutputWaveContext';
+import useCapture from '../../hooks/useCapture';
 
 const ARPages = () => {
     const {activateAR} = useContext(ARContext)
     const {showObject} = useContext(PreviewObject)
     const {waveGenerator} = useContext(OutputWaveContext)
+    const { capture } = useCapture()
 
     useEffect(() => {
         showObject();
+        waveGenerator()
     })
+    setTimeout(() => {
+        capture()
+    },[2000])
 
     const openMenu = () => {
         document.querySelector('.model-nav').classList.toggle('nav-opened-menu')
@@ -39,6 +46,18 @@ const ARPages = () => {
         document.querySelector('.frequency-btn').classList.toggle('widgets-open')
         document.querySelectorAll('.rotate-btn').forEach(rotate => rotate.classList.toggle('widgets-open'))
     }
+    // document.querySelector('.change-freq-btn').addEventListener('click', () => {
+    //     console.log('test')
+    // })
+
+    const Modal = () => (
+        <Popup trigger={<button className="frequency-btn btn"><img src={frequencyIcon} alt="Frequency" /></button>} modal>
+            <form className="box-modal input-frequency">
+                <input type="text" className='input-freq-form input-text'placeholder='Frekuensi (Hz)' />
+                <span className='change-freq-btn' onClick={() => console.log('test')}>Ganti Frekuensi</span>
+            </form>
+        </Popup>
+    );
 
     return ( 
         <div>
@@ -73,6 +92,9 @@ const ARPages = () => {
                     <button onClick={activateAR} className='ar-btn btn'>Start AR</button>
                 </div>
             </div>
+            <div className="output-container">
+                <div className="output-wave"></div>
+            </div>
 
             {/* inside AR session */}
             <div className="widgets">
@@ -92,9 +114,10 @@ const ARPages = () => {
                     <button className="open-btn btn" onClick={openMenu}>
                         <img src={menuAR} alt="" />
                     </button>
-                    <button className='frequency-btn btn'>
+                    {/* <button className='frequency-btn btn'>
                         <img src={frequencyIcon} alt="Frequency" />
-                    </button>
+                    </button> */}
+                    <Modal />
                     <button className='run-btn btn'>
                         <img src={runIcon} alt="Run" />
                     </button>
@@ -106,12 +129,7 @@ const ARPages = () => {
                 </button>
 
                 {/* box model for error and input frequency */}
-                <div className="box-modal-container">
-                    <form className="box-modal input-frequency">
-                        <input type="text" className='input-freq-form input-text'placeholder='Frekuensi (Hz)' />
-                        <button className='change-freq-btn'>Ganti Frekuensi</button>
-                    </form>
-                    
+                <div className="box-modal-container">                    
                     <div className="box-modal error-no-model">
                         <h3>Error!!</h3>
                         <p>Pilih Objek yang mau diletakkan terlebih dahulu!</p>

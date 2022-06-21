@@ -1,6 +1,5 @@
 /* Admin Panel Login */
-.admin-panel-container{
-    background-color: var(--main-light);
+.admin-login-container{
     min-height: 100vh;
     padding-bottom: 4rem;
 }
