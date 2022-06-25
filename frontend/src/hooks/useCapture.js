@@ -5,7 +5,11 @@ const useCapture = () => {
     imageLink.style.width = '7rem'
 
     const capture = () => {
-        html2canvas(document.querySelector('.output-wave')).then(function(canvas) {
+        html2canvas(document.querySelector('.output-wave'), {
+            onclone : (clonedElem) => {
+                clonedElem.querySelector('.output-container').style.display = 'block'
+            }
+        }).then(function(canvas) {
             const base64image = canvas.toDataURL("image/png");
             localStorage.setItem('image', base64image)
 

@@ -81,13 +81,18 @@
 
 .widgets{
     display: none;
+}
+
+.navigation{
     position: fixed;
-    bottom: 0.2rem;
+    bottom: 0rem;
     width: 100%;
     padding: 0.5rem 1rem;
 }
 
-.widgets.ar{ display: block;}
+.widgets.ar{ 
+    display: block;
+}
 
 .close-btn{
     position: fixed;
@@ -121,30 +126,38 @@
 .frequency-btn img { width: 1.8rem;}
 
 
-.model-nav{
+.model-nav-btn{
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: fit-content;
-    background-color: var(--accent-light);
-    padding: 1rem;
-    margin: 0;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    overflow: scroll;
-    white-space: nowrap;
-    transform: translateY(110%);
+    top: calc(50% - 200px);
     transition: all 0.5s;
-    z-index: 1;
-    list-style-type: none;
 }
 
-.ar-object p { 
-    margin: 0.3rem 0; 
-    width: 100%;
+.model-nav-btn .open-btn{
+    border-radius: 0 50% 50% 0;
 }
+
+.model-nav{
+    position: fixed;
+    top: calc(50% - 250px);
+    background-color: var(--accent-light);
+    width: fit-content;
+    margin: 0;
+    padding: 0.4rem 0;
+    border-top-right-radius: 0.3rem;
+    border-bottom-right-radius: 0.3rem;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    word-wrap: break-word;
+    transition: all 0.5s;
+    list-style-type: none;
+    transform: translateX(-100%);
+}
+
+.ar-object{ max-width: fit-content;}
+
+.ar-object p{ margin: 0.2rem 0;}
+
 
 .ar-object img { 
     width: 6rem;
@@ -156,34 +169,54 @@
 .clicked { background-color: #317472 ;}
 
 .model-nav li{
-    margin: 0 1rem;
+    margin: 0 0.5rem;
     width: fit-content;
     text-align: center;
     border-radius: 0.5rem;
     padding: 0.5rem;
 }
 
-.nav-opened-menu{ transform: translateY(0%); }
+.nav-opened-btn{ transform: translateX(200%);}
+.nav-opened-menu{ transform: translateX(0%); }
 
 .widgets-open{ transform: translateY(-300%);}
 
 /* box modal */
 .box-modal-container{
     position: fixed;
-    background: rgba(0, 0, 0, 0.5);
-    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100vh;
-    top: 0;
-    left: 0;
+    width: 100%;
     display: none;
 }
 
 .box-modal{
-    background-color: var(--accent-light);
     padding: 0.8rem;
+    padding-bottom: 1rem;
     border-radius: 0.2rem;
-    width: 80vw;
+    max-width: fit-content;
+    background-color: var(--accent-light);
 }
+
+.input-menu{
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+#indikator{ 
+    padding: 0.5rem;
+    margin-left: 0.5rem;
+    background-color: var(--secondary-light);
+    border: none;
+    border-radius: 0.5rem;
+    outline: none;
+}
+
+.input-menu p{padding: 0.3rem 0.5rem;}
+.input-menu p.selected{ background-color: var(--secondary-light);}
+
 
 .input-frequency{ 
     display: flex;
@@ -191,16 +224,16 @@
 }
 
 .input-freq-form{ 
-    width: 65%;
+    width: 50vw;
     margin-right: 0.5rem;
 }
 
 .change-freq-btn{
     outline: none;
     text-align: center;
-    border: none;
+    border: 0.1rem solid rgba(0, 0, 0, 0.5);
     background-color: var(--secondary-light);
-    padding: 0.7rem 0.2rem;
+    padding: 0.7rem 1rem;
     border-radius: 0.3rem;
 }
 
@@ -211,6 +244,7 @@
 }
 
 .show{ display: block;}
+
 
 .output-container{
     display: none;

@@ -1,10 +1,11 @@
+import axios from "axios";
 import { createContext, useState } from "react";
 
-const TheoryContext = createContext()
+export const TheoryContext = createContext()
 
-const TheoryContextProvider = ({ children }) => {
+export const TheoryContextProvider = ({ children }) => {
     const [ theoryNum, setTheoryNum ] = useState(1)
-    const [ theoryList, setTheoryList ] = useState([])
+    const [ theoryData, setTheoryData ] = useState([])
     const [ theory, setTheory ] = useState({
         theoryNumber: theoryNum,
         title: '',
@@ -14,7 +15,7 @@ const TheoryContextProvider = ({ children }) => {
     
     const addTheory = (e) => {
         e.preventDefault()
-        setTheoryList([...theoryList, theory])
+        setTheoryData([...theoryData, theory])
         setTheoryNum(theoryNum + 1)
     }
     
@@ -30,7 +31,7 @@ const TheoryContextProvider = ({ children }) => {
             addTheory,
             handleChangeTheory,
             theory,
-            theoryList
+            theoryData
         }}>
             {children}
         </TheoryContext.Provider>

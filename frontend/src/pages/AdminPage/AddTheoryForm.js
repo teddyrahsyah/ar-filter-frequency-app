@@ -1,13 +1,19 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "../../components/AdminNavbar";
 import { ModuleContext } from "../../context/ModuleContext";
+import { useParams } from "react-router"
 
 const AddTheoryForm = () => {
-    const {handleChangeTheory, addTheory} = useContext(ModuleContext)
+    const {id} = useParams()
+    const {handleChangeTheory, addTheory, getDetailModule, module} = useContext(ModuleContext)
     const navigate = useNavigate();
 
     const goBack = () => navigate(-1)
+
+    useEffect(() => {
+        addTheory(id)
+    },[])
 
     const handleSubmitTheory = (e) => {
         e.preventDefault()

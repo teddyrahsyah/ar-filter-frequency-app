@@ -6,6 +6,7 @@ import { ModuleContextProvider } from './context/ModuleContext';
 import { ArticleContextProvider } from './context/ArticleContext';
 import { OutputWaveContextProvider } from './context/OutputWaveContext';
 import { PreviewObjectProvider } from './context/PreviewObject';
+import { TheoryContextProvider } from './context/TheoryContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,7 +15,9 @@ root.render(
             <OutputWaveContextProvider>
                 <ModuleContextProvider>
                     <ArticleContextProvider>
-                        <App />
+                        <TheoryContextProvider>
+                            <App />
+                        </TheoryContextProvider>
                     </ArticleContextProvider>
                 </ModuleContextProvider>
             </OutputWaveContextProvider>                

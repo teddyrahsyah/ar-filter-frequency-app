@@ -4,10 +4,19 @@ import AdminNavbar from "../../components/AdminNavbar";
 import editIcon from '../../asset/icons/edit.svg'
 import deleteIcon from '../../asset/icons/delete.svg'
 import { ModuleContext } from "../../context/ModuleContext";
+import { useEffect } from "react";
+import { useParams } from "react-router"
 
 const ModulePage = () => {
+    let { id } = useParams()
 
-    const {module, theoryList, labList, deleteTheory, deleteLab} = useContext(ModuleContext)
+    const {getDetailModule, module, theoryList, labList, deleteTheory, deleteLab} = useContext(ModuleContext)
+
+    useEffect(() => {
+        // console.log(id)
+        getDetailModule(id)
+    })
+
     return (
         <div>
             <AdminNavbar />
@@ -16,7 +25,7 @@ const ModulePage = () => {
                 <div className="theory-list">
                     <div className="title-btn">
                         <h3>Theory</h3>
-                        <Link to='/addTheoryForm' className="btn add-btn">Tambah Materi</Link>
+                        <Link to={`/addTheoryForm/${id}`} className="btn add-btn">Tambah Materi</Link>
                     </div>
                     {theoryList.map(theory => (
                         <div className="list" key={theory.theoryNumber}>

@@ -1,8 +1,13 @@
 import { createContext, useState } from "react";
+import axios from 'axios'
+import Cookies from "js-cookie"
 
 export const ModuleContext = createContext();
 
 export const ModuleContextProvider = ({ children }) => {
+    
+    const token = Cookies.get('token')
+
     // Module State
     const [moduleNum, setModuleNum] = useState(1)
     const [module, setModule] = useState({
@@ -41,17 +46,57 @@ export const ModuleContextProvider = ({ children }) => {
         })
     }
 
-    const addModule = (e) => {
-        e.preventDefault()
-        setModuleList([...moduleList, module])
-        setModuleNum(moduleNum + 1)
+    const getModule = async () => {
+        const result = await axios.get('http://localhost:8000/api/module')
+        const data = result.data.results
+        // console.log(data)
+        setModuleList(data.map(modul => {
+            return {
+                moduleNumber: modul.moduleNumber,
+                moduleTitle: modul.moduleTitle,
+                modulId: modul.id,
+            }
+        }))
     }
 
-    const deleteModule = (num) => setModuleList(moduleList.filter(module => module.moduleNumber !== Number(num)));
+    const getDetailModule = (modulId) => {
+        axios.get(`http://localhost:8000/api/module/${modulId}`, {headers: {"Authorization" : "Bearer "+ token}})
+        .then(res => {
+            const dataModul = res.data.results
+            setModule(dataModul)
+        })
+    }
+
+    const addModule = (e) => {
+        e.preventDefault()
+        axios.post('http://localhost:8000/api/module/create', {
+            moduleNumber: module.moduleNumber,
+            title: module.moduleTitle,
+        }, {headers: {"Authorization" : `Bearer ${token}`}})
+        .catch(err => console.log(err))
+        setModuleNum(moduleNum + 1)
+        console.log(module)
+
+        module.moduleTitle = ''
+    }
+
+    const deleteModule = (moduleId) => {
+        axios.delete(`http://localhost:8000/api/module/${moduleId}`, 
+        {headers: {"Authorization" : `Bearer ${token}`}})
+        .catch(err => console.log(err))
+    }
 
     // Theory CRUD
-    const addTheory = () => {
-        setTheoryList([...theoryList, theory])
+    const addTheory = (moduleId) => {
+        // http://localhost:8000/api/module/:moduleId/create-theory
+        axios.patch(`http://localhost:8000/api/module/${moduleId}/create-theory`, {
+            theoryNumber: theory.theoryNumber,
+            title: theory.title,
+            description: theory.description,
+            image: theory.image
+        },{headers: {"Authorization" : `Bearer ${token}`}})
+        .catch(err => console.log(err))
+        // setTheoryList([...theoryList, theory])
         setTheoryNum(theoryNum + 1)
     }
     
@@ -64,6 +109,7 @@ export const ModuleContextProvider = ({ children }) => {
     }
 
     const deleteTheory = (num) => {
+        
         setTheoryList(theoryList.filter(theory => theory.theoryNumber !== Number(num)));
     }
 
@@ -87,10 +133,12 @@ export const ModuleContextProvider = ({ children }) => {
         <ModuleContext.Provider value={{
                 module, 
                 setModule, 
-                addModule, 
+                addModule,
+                getModule,
                 moduleList,
                 handleChangeModule,
                 deleteModule,
+                getDetailModule,
                 theoryList,
                 theory,
                 addTheory,

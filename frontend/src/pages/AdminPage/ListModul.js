@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useContext } from "react";
 import AdminNavbar from "../../components/AdminNavbar";
 import ModuleCard from "../../components/ModuleCard";
@@ -5,7 +6,11 @@ import { ModuleContext } from "../../context/ModuleContext";
 
 const AdminPanelListMateri = () => {
 
-    const {handleChangeModule, addModule, moduleList} = useContext(ModuleContext)
+    const {handleChangeModule, addModule, moduleList, getModule} = useContext(ModuleContext)
+
+    useEffect(() => {
+        getModule()
+    })
 
     return ( 
         <div className="admin-panel-container">
@@ -23,7 +28,8 @@ const AdminPanelListMateri = () => {
                         <ModuleCard 
                             key={module.moduleTitle} 
                             title={module.moduleTitle} 
-                            number={module.moduleNumber} 
+                            number={module.moduleNumber}
+                            id={module.modulId}
                             type='module' 
                         />
                     ))}

@@ -25,11 +25,10 @@ function App() {
                 <Route path='/adminLogin' element={<AdminPanelLogin />} />
                 <Route path='/adminHomepage' element={<AdminHomePage />} />
                 <Route path='/addForm' element={<AddArticleForm />} />
-                <Route path='/addTheoryForm' element={<AddTheoryForm />} />
+                <Route path='/addTheoryForm/:id' element={<AddTheoryForm />} />
                 <Route path='/addLabForm' element={<AddLabForm />} />
                 <Route path='/listArtikel' element={<ListArticle />} />
                 <Route path='/listModul' element={<ListModul />} />
-                <Route path='/modul' element={<ModulePage />} />
                 <Route path='/modul/:id' element={<ModulePage />} />
 
                 {/* AR PAge */}

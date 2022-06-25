@@ -1,7 +1,17 @@
 import { Link } from "react-router-dom";
 import logoAplikasi from '../asset/logoAplikasi.png'
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie"
 
 const AdminNavbar = () => {
+    const navigate = useNavigate()    
+
+    const handleLogout = () => {
+        Cookies.remove('username')
+        Cookies.remove('token')
+        navigate('/adminLogin')
+    }
+
     return ( 
         <nav className="admin-navbar">
             <div className="logo-menu">
@@ -13,7 +23,7 @@ const AdminNavbar = () => {
                     <Link to='/listModul' className="nav-link">List Modul</Link>
                 </div>
             </div>
-            <Link to='/adminLogin' className="logout-btn btn">Logout</Link>
+            <button onClick={handleLogout} className="logout-btn btn">Logout</button>
         </nav>  
     );
 }
