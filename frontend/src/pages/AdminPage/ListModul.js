@@ -6,11 +6,13 @@ import { ModuleContext } from "../../context/ModuleContext";
 
 const AdminPanelListMateri = () => {
 
-    const {handleChangeModule, addModule, moduleList, getModule} = useContext(ModuleContext)
+    const {handleChangeModule, addModule, moduleList, getModule, checkModuleNumber} = useContext(ModuleContext)
 
     useEffect(() => {
         getModule()
-    })
+        console.log(moduleList)
+        checkModuleNumber()
+    }, [])
 
     return ( 
         <div className="admin-panel-container">

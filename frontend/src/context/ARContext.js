@@ -3,16 +3,11 @@ import * as THREE from 'three'
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 import { OrbitControls } from "../controller/OrbitControls";
 
-import keyboardModel from '../asset/Keyboard.gltf'
-import mouseModel from '../asset/Mouse.gltf'
-import monitorModel from '../asset/Monitor.gltf'
-import PCModel from '../asset/PC.gltf'
-import frequencyGeneratorModel from '../asset/frekuensi_generator.gltf'
-import LPFRCModel from '../asset/LPF_RC.gltf'
-
-import mouseImg from '../asset/Mouse.jpg'
 import useCapture from "../hooks/useCapture";
 
+import osiloskop from '../asset/osiloskop_v5.gltf'
+import frequencyGenerator from '../asset/frekuensi_generator_v4.gltf'
+import filter from '../asset/LPF_RC.gltf'
 
 export const ARContext = createContext();
 
@@ -78,30 +73,21 @@ export const ARContextProvider = ({ children }) => {
             reticle.visible = false;
             scene.add(reticle)
         })
-
-        let imageMaterial, texture, imageTexture
         
+        const texture  = []
+        let imageMaterial;
         const imageTextureLoader = new THREE.TextureLoader();
         const addImage = () => {
+            // const imageTexture = 
+            // const loadedImage = 
             
-            imageTexture = localStorage.getItem('image')
-            console.log(imageTexture)
-            
-            texture  = imageTextureLoader.load(imageTexture)
+            // texture.unshift(loadedImage)
+            // console.log(texture)
             imageMaterial = new THREE.MeshBasicMaterial({
-                map: texture,
+                map: imageTextureLoader.load(localStorage.getItem('image')),
                 side: THREE.FrontSide
             })
-            box = new THREE.Mesh(new THREE.PlaneGeometry(0.47,0.29), imageMaterial);
-        }
-
-        const changeTexture = () => {
-            texture.needsUpdate = true
-            // if(imageMaterial.map === texture[1]){
-            //     imageMaterial.map = texture[0]
-            // } else{
-            //     imageMaterial.map = texture[1]
-            // }
+            return imageMaterial
         }
 
         // loading AR Object
@@ -110,7 +96,7 @@ export const ARContextProvider = ({ children }) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
                 group = new THREE.Group();
-                addImage()
+                box = new THREE.Mesh(new THREE.PlaneGeometry(0.15,0.13), addImage());
                 box.visible = false
                 group.add(box);
                 group.add( currentModel );                
@@ -122,7 +108,9 @@ export const ARContextProvider = ({ children }) => {
             loader.load(model, (gltf) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
-                scene.add(currentModel)
+                group = new THREE.Group();
+                group.add( currentModel );
+                scene.add(group)
             })
         }
 
@@ -136,17 +124,14 @@ export const ARContextProvider = ({ children }) => {
 
         document.querySelectorAll('.ar-object').forEach(arObject => {
             arObject.addEventListener('click', (e) => {
-                if(e.target.parentNode.id === 'Keyboard') {
-                    loadFilterModel(frequencyGeneratorModel)
+                if(e.target.parentNode.id === 'frequencyGenerator') {
+                    loadFilterModel(frequencyGenerator)
                     clickedToggleARObject(e.target.parentNode)
-                } else if(e.target.parentNode.id === 'Mouse') {
-                    loadFilterModel(LPFRCModel)
+                } else if(e.target.parentNode.id === 'filter') {
+                    loadFilterModel(filter)
                     clickedToggleARObject(e.target.parentNode)
-                } else if(e.target.parentNode.id === 'PC') {
-                    loadFilterModel(PCModel)
-                    clickedToggleARObject(e.target.parentNode)
-                } else if(e.target.parentNode.id === 'Monitor') {
-                    loadModel(monitorModel)
+                } else if(e.target.parentNode.id === 'osiloskop') {
+                    loadModel(osiloskop)
                     clickedToggleARObject(e.target.parentNode)
                 }
             })
@@ -154,21 +139,22 @@ export const ARContextProvider = ({ children }) => {
 
         // place AR object
         document.querySelector('.place-btn').addEventListener('click', () => {
-            
             if(reticle.visible){
-                currentModel.visible = true;
-                currentModel.position.setFromMatrixPosition(reticle.matrix);
                 console.log(currentModel)
-                if(currentModel.children[0].name === 'LCD_Monitor'){
-                    console.log(box)
-                    box.visible = true
-                    box.position.set(reticle.position.x, reticle.position.y + 0.25, reticle.position.z + 0.028);
+                currentModel.visible = true;
+                currentModel.castShadow = true
+                currentModel.position.setFromMatrixPosition(reticle.matrix);
+                if(currentModel.children[0].name === 'osiloskop'){
+                    box.position.set(reticle.position.x - 0.08, reticle.position.y + 0.12, reticle.position.z + 0.08);
                 }
             }
         })
 
         // run btn
-        document.querySelector('.run-btn').addEventListener('click', () => changeTexture())
+        document.querySelector('.run-btn').addEventListener('click', () => {
+            box.visible = true
+            imageMaterial.map = imageTextureLoader.load(localStorage.getItem('image'))
+        })
 
         // rotate object
         const rotateObject = degree => {
@@ -206,19 +192,23 @@ export const ARContextProvider = ({ children }) => {
             }
         }
         session.requestAnimationFrame(onXRFrame)
-        
         controls.addEventListener('change', onXRFrame);
-
 
         document.querySelector('.close-btn').addEventListener('click', () => {
             session.end();
             document.querySelector('.ar-container').classList.remove('ar')
             document.querySelector('.widgets').classList.remove('ar')
             localStorage.clear()
+
+            // clearing menu choice
+            document.querySelectorAll('.ar-object').forEach(object => {
+                object.classList.remove('clicked')
+            })
+
+            currentModel = null
             
             renderer.setSize(window.innerWidth, window.innerHeight)
         })
-
     }
 
     return (

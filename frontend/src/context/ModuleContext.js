@@ -23,8 +23,8 @@ export const ModuleContextProvider = ({ children }) => {
         theoryNumber: theoryNum,
         title: '',
         description: '',
-        image: ''
     })
+    const [imageTheory, setImageTheory] = useState(null)
 
     // Lab State
     const [ labNum, setLabNum ] = useState(1)
@@ -36,6 +36,19 @@ export const ModuleContextProvider = ({ children }) => {
         thumbnailAR: '',
         modelAR:''
     })
+
+    // Checking moduleNumber
+    const checkModuleNumber = () => {
+        moduleList.map(modul => {
+            if(moduleNum !== modul.moduleNumber) setModuleNum(modul.moduleNumber +1)
+        })
+    }
+    
+    const checkTheoryNumber = () => {
+        theoryList.map(theory => {
+            if(theoryNum !== theory.theoryNumber) setTheoryNum(theory.theoryNumber +1)
+        })
+    }
     
     // Module CRUD
     const handleChangeModule = (e) => {
@@ -49,7 +62,7 @@ export const ModuleContextProvider = ({ children }) => {
     const getModule = async () => {
         const result = await axios.get('http://localhost:8000/api/module')
         const data = result.data.results
-        // console.log(data)
+        console.log(data)
         setModuleList(data.map(modul => {
             return {
                 moduleNumber: modul.moduleNumber,
@@ -64,6 +77,20 @@ export const ModuleContextProvider = ({ children }) => {
         .then(res => {
             const dataModul = res.data.results
             setModule(dataModul)
+            console.log(dataModul.theory)
+            setTheoryList(dataModul.theory.map(materi => {
+                return {
+                    theoryNumber: materi.theoryNumber,
+                    title: materi.title,
+                    description: materi.description,
+                    image: materi.image,
+                    theoryId: materi._id,
+                    moduleNumber: materi.moduleNumber,
+                    moduleTitle: materi.modulTitle,
+                    moduleId: materi.moduleId,
+
+                }
+            }))
         })
     }
 
@@ -87,18 +114,6 @@ export const ModuleContextProvider = ({ children }) => {
     }
 
     // Theory CRUD
-    const addTheory = (moduleId) => {
-        // http://localhost:8000/api/module/:moduleId/create-theory
-        axios.patch(`http://localhost:8000/api/module/${moduleId}/create-theory`, {
-            theoryNumber: theory.theoryNumber,
-            title: theory.title,
-            description: theory.description,
-            image: theory.image
-        },{headers: {"Authorization" : `Bearer ${token}`}})
-        .catch(err => console.log(err))
-        // setTheoryList([...theoryList, theory])
-        setTheoryNum(theoryNum + 1)
-    }
     
     const handleChangeTheory = (e) => {
         setTheory({
@@ -107,10 +122,34 @@ export const ModuleContextProvider = ({ children }) => {
             [e.target.name]: e.target.value
         })
     }
+    
+    const handleImage = (e) => setImageTheory(e.target.files[0])
 
-    const deleteTheory = (num) => {
-        
-        setTheoryList(theoryList.filter(theory => theory.theoryNumber !== Number(num)));
+    const addTheory = (moduleId, modulNumber, modulTitle) => {
+        // http://localhost:8000/api/module/:moduleId/create-theory
+        const data = new FormData()
+        data.append("theoryNumber", theory.theoryNumber)
+        data.append("title", theory.title)
+        data.append("description", theory.description)
+        data.append("moduleNumber", modulNumber)
+        data.append("moduleTitle", modulTitle)
+        data.append(
+            "image",
+            imageTheory,
+            imageTheory.name
+        )
+        axios.patch(`http://localhost:8000/api/module/${moduleId}/create-theory`, data,
+        {headers: {"Authorization" : `Bearer ${token}`}})
+        .catch(err => console.log(err))
+        setTheoryNum(theoryNum + 1)
+    }
+
+    const deleteTheory = (moduleId, theoryId) => {
+        // api/module/:id/:theoryId/delete-theory
+        axios.patch(`http://localhost:8000/api/module/${moduleId}/${theoryId}/delete-theory`, 
+        {headers: {"Authorization" : `Bearer ${token}`}})
+        .catch(err => console.log(err))
+        // console.log(token)
     }
 
     // Lab CRUD
@@ -147,7 +186,10 @@ export const ModuleContextProvider = ({ children }) => {
                 labList,
                 addLab,
                 handleChangeLab,
-                deleteLab
+                deleteLab,
+                handleImage,
+                checkModuleNumber,
+                checkTheoryNumber
             }}>
             {children}
         </ModuleContext.Provider>

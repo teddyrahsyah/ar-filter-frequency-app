@@ -3,7 +3,8 @@ import { createContext } from 'react';
 import { OrbitControls } from "../controller/OrbitControls";
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 
-import frequencyGeneratorModel from '../asset/frekuensi_generator.gltf'
+import frequencyGeneratorModel from '../asset/frekuensi_generator_v4.gltf'
+import osiloskop from '../asset/osiloskop_v5.gltf'
 import LPFRCModel from '../asset/LPF_RC.gltf'
 
 export const PreviewObject = createContext()
@@ -32,14 +33,10 @@ export const PreviewObjectProvider = ( { children } ) => {
         // load 3d model
          const loader = new GLTFLoader();
          let object;
-        // loader.load(frequencyGeneratorModel , gltf => {
-        //     object = gltf.scene;
-        //     previewScene.add(object)
-        // })
-        const geometry = new THREE.BoxGeometry( .1, .1, .1 );
-        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-        const cube = new THREE.Mesh( geometry, material );
-        previewScene.add( geometry );
+        loader.load(frequencyGeneratorModel , gltf => {
+            object = gltf.scene;
+            previewScene.add(object)
+        })
         
         previewCamera.position.z = 7;
         // previewCamera.aspect(1)

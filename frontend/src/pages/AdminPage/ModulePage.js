@@ -10,12 +10,22 @@ import { useParams } from "react-router"
 const ModulePage = () => {
     let { id } = useParams()
 
-    const {getDetailModule, module, theoryList, labList, deleteTheory, deleteLab} = useContext(ModuleContext)
+    const {
+        getDetailModule, 
+        module, 
+        theoryList, 
+        labList, 
+        deleteTheory, 
+        deleteLab, 
+        checkTheoryNumber, 
+        getDetailTheory,
+    } = useContext(ModuleContext)
 
     useEffect(() => {
-        // console.log(id)
         getDetailModule(id)
-    })
+        checkTheoryNumber()
+        console.log(theoryList)
+    }, [])
 
     return (
         <div>
@@ -30,15 +40,14 @@ const ModulePage = () => {
                     {theoryList.map(theory => (
                         <div className="list" key={theory.theoryNumber}>
                             <p className="judul-materi">
-                                {theory.title}
+                                {`${theory.moduleNumber}.${theory.theoryNumber}: ${theory.title}`}
                             </p>
                             <div className="call-to-action">
-                                <Link to='/addForm' className="edit-btn">
-                                    <img src={editIcon} className='cta-btn' alt="edit"  />
-                                </Link>
-                                {console.log(theory.theoryNumber)}
+                                <button onClick={getDetailTheory} className="edit-btn" value={theory.theoryNumber}>
+                                    <img src={editIcon} className='cta-btn' alt="edit"/>
+                                </button>
                                 <button className="delete-btn" value={theory.theoryNumber}>
-                                    <img src={deleteIcon} className='cta-btn' alt="delete" onClick={(e) => deleteTheory(e.target.parentElement.value)} />
+                                    <img src={deleteIcon} className='cta-btn' alt="delete" onClick={() => deleteTheory(theory.moduleId, theory.theoryId)} />
                                 </button>
                             </div>
                         </div>

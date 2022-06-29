@@ -1,7 +1,7 @@
 import '../../style/App.css';
 import Popup from 'reactjs-popup';
 
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ARContext } from '../../context/ARContext';
 import { PreviewObject } from '../../context/PreviewObject';
 
@@ -17,30 +17,38 @@ import frequencyIcon from '../../asset/icons/wave.svg'
 import osiloskopIcon from '../../asset/icons/osiloskop.svg'
 
 // import image
-import keyboardImg from '../../asset/keyboard.png'
-import frequencyGeneratorImg from '../../asset/frekuensi_generator.png'
+import frequencyGeneratorImg from '../../asset/frequency_generator.png'
 import LPFRCImg from '../../asset/LPF_RC.png'
-import LCDImg from '../../asset/Monitor.jpg'
+import osiloskopImage from '../../asset/osiloskop.jpg'
 import { OutputWaveContext } from '../../context/OutputWaveContext';
 import useCapture from '../../hooks/useCapture';
+import useFormula from '../../hooks/useFormula';
 
 const ARPages = () => {
     const {activateAR} = useContext(ARContext)
     const {showObject} = useContext(PreviewObject)
-    const {draw, handleInput} = useContext(OutputWaveContext)
+    const {draw,  handleRadio} = useContext(OutputWaveContext)
     const { capture } = useCapture()
-
-    useEffect(() => {
-        showObject();
-    })
-    
+    const {LPFRCFormula} = useFormula()
+    let frequency = 10000
 
     const drawAndCapture = () => {
-        draw()
-        setTimeout(() => {
-            capture()
-        },[500])
+        draw(frequency)
+        setTimeout(() => { capture() }, [500] )
+        console.log(frequency)
     }
+
+    const handleSumbit = e => {
+        e.preventDefault()
+        drawAndCapture()
+    }
+
+    const handlefreq = (e) => frequency = e.target.value
+
+    useEffect(() => {
+        drawAndCapture()
+        showObject()
+    }, [])
 
     const openMenu = () => {
         document.querySelector('.model-nav').classList.toggle('nav-opened-menu')
@@ -49,18 +57,23 @@ const ARPages = () => {
 
     const Modal = () => (
         <Popup trigger={<button className="frequency-btn btn"><img src={frequencyIcon} alt="Frequency" /></button>} modal>
-            <form className="box-modal">
+            <form className="box-modal" onSubmit={handleSumbit}>
                 <div className="input-menu">
                     <label htmlFor="indikator">Indikator: </label>
-                    <select name="indikator" id="indikator">
-                        <option value="resistor">Resistor</option>
-                        <option value="kapasitor">kapasitor</option>
+                    <select name="indikator" id="indikator" onChange={handleRadio}>
                         <option value="frekuensi">frekuensi</option>
+                        <option value="kapasitor">kapasitor</option>
+                        <option value="resistor">Resistor</option>
                     </select>
                 </div>
                 <section className='input-frequency'>
-                    <input type="text" className='input-freq-form input-text'placeholder='Frekuensi (Hz)' onChange={handleInput} />
-                    <span className='change-freq-btn' onClick={drawAndCapture}>Ubah</span>
+                    <input 
+                        type="text" 
+                        className='input-freq-form input-text'
+                        placeholder='Frekuensi (Hz)'
+                        onChange={handlefreq}
+                    />
+                    <button className='change-freq-btn'>Ubah</button>
                 </section>
             </form>
         </Popup>
@@ -83,7 +96,7 @@ const ARPages = () => {
                         <div className="object-image-list">
                             <img src={frequencyGeneratorImg} alt="Frekuensi generator" />
                             <img src={LPFRCImg} alt="Rangkaian HPF" />
-                            <img src={keyboardImg} alt="Osilator" />
+                            <img src={osiloskopImage} alt="Osilator" />
                         </div>
                         <div className="canvas-container"></div>
                     </div>
@@ -142,16 +155,16 @@ const ARPages = () => {
                     </button>
                 </div>
                 <ul className="model-nav">
-                    <li className='ar-object' id='Keyboard'>
-                        <img src={frequencyGeneratorImg} alt="keyboard" />
+                    <li className='ar-object' id='frequencyGenerator'>
+                        <img src={frequencyGeneratorImg} alt="frequency generator" />
                         <p>Frekuensi Generator</p>
                     </li>
-                    <li className='ar-object' id='Mouse'>
-                        <img src={LPFRCImg} alt="mouse" />
+                    <li className='ar-object' id='filter'>
+                        <img src={LPFRCImg} alt="filter" />
                         <p>Rangkaian Filter</p>
                     </li>
-                    <li className='ar-object' id='Monitor'>
-                        <img src={LCDImg} alt="LCD Monitor" />
+                    <li className='ar-object' id='osiloskop'>
+                        <img src={osiloskopImage} alt="osiloskop" />
                         <p>LCD Monitor</p>
                     </li>
                 </ul>

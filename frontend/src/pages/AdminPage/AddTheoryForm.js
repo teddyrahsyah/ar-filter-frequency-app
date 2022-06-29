@@ -6,20 +6,20 @@ import { useParams } from "react-router"
 
 const AddTheoryForm = () => {
     const {id} = useParams()
-    const {handleChangeTheory, addTheory, getDetailModule, module} = useContext(ModuleContext)
+    const {handleChangeTheory, addTheory, getDetailModule, module, handleImage} = useContext(ModuleContext)
     const navigate = useNavigate();
 
     const goBack = () => navigate(-1)
 
     useEffect(() => {
-        addTheory(id)
+        getDetailModule(id)
+        console.log(module)
     },[])
 
     const handleSubmitTheory = (e) => {
         e.preventDefault()
-        addTheory()
         goBack()
-    }
+    }   
 
     return (
         <div className="admin-form-container">
@@ -36,7 +36,14 @@ const AddTheoryForm = () => {
                 />
                 <section className="add-image">
                     <label htmlFor="modelAR">Image:</label>
-                    <input type="file" name='image' required className="input-image" accept="image/*"></input>
+                    <input 
+                        type="file" 
+                        name='image' 
+                        required 
+                        className="input-image" 
+                        accept="image/*"
+                        onChange={handleImage}
+                    ></input>
                 </section>
                 <textarea 
                     name="description" 
@@ -45,7 +52,7 @@ const AddTheoryForm = () => {
                     placeholder="Isi Artikel"
                     onChange={handleChangeTheory}
                 ></textarea>
-                <button className="add-form-btn btn">Tambah</button>
+                <button className="add-form-btn btn" onClick={() => addTheory(id, module.moduleNumber, module.moduleTitle)}>Tambah</button>
             </form>
         </div>
     );

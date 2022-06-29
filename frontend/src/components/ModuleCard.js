@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import deleteIcon from '../asset/icons/delete.svg'
+import editIcon from '../asset/icons/edit.svg'
 import { ModuleContext } from '../context/ModuleContext';
 
 const ModuleCard = ({ number, title, id }) => {
@@ -18,6 +19,9 @@ const ModuleCard = ({ number, title, id }) => {
                 {`Modul ${number} : ${title}`}
             </p>
             <div className="call-to-action" id={id}>
+                <button to='/addForm' className="edit-btn">
+                    <img src={editIcon} className='cta-btn' alt="edit"  />
+                </button>
                 <button className="delete-btn" onClick={e => deleteModule(e.target.parentElement.parentElement.id)}>
                     <img src={deleteIcon} className='cta-btn' alt="delete" />
                 </button>
