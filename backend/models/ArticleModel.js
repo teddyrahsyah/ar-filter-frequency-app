@@ -25,11 +25,7 @@ const ArticleSchema = mongoose.Schema({
 		required: true,
 		max: 255,
 	},
-	date: {
-		type: Date,
-		default: Date.now(),
-	},
-});
+}, { timestamps: true });
 
 ArticleSchema.method("toJSON", function () {
 	const { _v, _id, ...object } = this.toObject();

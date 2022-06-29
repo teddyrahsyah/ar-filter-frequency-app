@@ -1,10 +1,19 @@
+import dotenv from "dotenv";
+import db from "./config/dbConfig.js";
 import appServer from "./appServer.js";
 import authServer from "./authServer.js";
 
-appServer.listen(8000, () => {
-    console.log(`App Server is running at http://localhost:8000`);
+// Environment Variable Configuration
+dotenv.config();
+
+// DB Connection
+db.on("error", (err) => console.log(err));
+db.once("open", () => console.log("Arsim Database Connected..."));
+
+appServer.listen(process.env.APP_SERVER_PORT, () => {
+  console.log(`App Server is running at http://localhost:${process.env.APP_SERVER_PORT}`);
 })
 
-authServer.listen(8010, () => {
-	console.log(`Auth Server is running at http://localhost:8010`);
+authServer.listen(process.env.AUTH_SERVER_PORT, () => {
+  console.log(`Auth Server is running at http://localhost:${process.env.AUTH_SERVER_PORT}`);
 });

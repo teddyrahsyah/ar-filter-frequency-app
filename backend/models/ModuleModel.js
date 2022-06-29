@@ -75,11 +75,11 @@ const LabSchema = mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	image: {
-		type: String,
-		required: true,
-		max: 255,
-	},
+	// image: {
+	// 	type: String,
+	// 	required: true,
+	// 	max: 255,
+	// },
 	modelAR: {
 		type: String,
 		required: true,
