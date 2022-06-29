@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext } from "react";
 import * as THREE from 'three'
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 import { OrbitControls } from "../controller/OrbitControls";
@@ -7,17 +7,23 @@ import keyboardModel from '../asset/Keyboard.gltf'
 import mouseModel from '../asset/Mouse.gltf'
 import monitorModel from '../asset/Monitor.gltf'
 import PCModel from '../asset/PC.gltf'
+import frequencyGeneratorModel from '../asset/frekuensi_generator.gltf'
+import LPFRCModel from '../asset/LPF_RC.gltf'
 
-import keyboardImg from '../asset/keyboard.png'
 import mouseImg from '../asset/Mouse.jpg'
+import useCapture from "../hooks/useCapture";
+
 
 export const ARContext = createContext();
 
 export const ARContextProvider = ({ children }) => {
+    
+    const { capture } = useCapture()
     const { XRWebGLLayer } = window;
     let session, renderer, camera;
     let reticle, currentModel;
     let box, group;
+
 
     const activateAR = async () => {
 
@@ -36,6 +42,7 @@ export const ARContextProvider = ({ children }) => {
             context: gl
         })
         renderer.autoClear = false;
+        renderer.outputEncoding = THREE.sRGBEncoding;
 
         camera  = new THREE.PerspectiveCamera()
         camera.matrixAutoUpdate = false;
@@ -72,42 +79,40 @@ export const ARContextProvider = ({ children }) => {
             scene.add(reticle)
         })
 
-        let imageMaterial, texture
+        let imageMaterial, texture, imageTexture
         
+        const imageTextureLoader = new THREE.TextureLoader();
         const addImage = () => {
-            const imageTextureLoader = new THREE.TextureLoader();
             
-            const imageTexture = sessionStorage.getItem('image')
+            imageTexture = localStorage.getItem('image')
             console.log(imageTexture)
             
-            texture  = [
-                imageTextureLoader.load(imageTexture),
-                imageTextureLoader.load(mouseImg)
-            ]
+            texture  = imageTextureLoader.load(imageTexture)
             imageMaterial = new THREE.MeshBasicMaterial({
-                map: texture[1],
+                map: texture,
                 side: THREE.FrontSide
             })
             box = new THREE.Mesh(new THREE.PlaneGeometry(0.47,0.29), imageMaterial);
-            box.visible = false
         }
 
         const changeTexture = () => {
-            if(imageMaterial.map === texture[1]){
-                imageMaterial.map = texture[0]
-            } else{
-                imageMaterial.map = texture[1]
-            }
+            texture.needsUpdate = true
+            // if(imageMaterial.map === texture[1]){
+            //     imageMaterial.map = texture[0]
+            // } else{
+            //     imageMaterial.map = texture[1]
+            // }
         }
 
+        // loading AR Object
         const loadModel = (model) => {
             loader.load(model, (gltf) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
                 group = new THREE.Group();
                 addImage()
-                box.visible = true;
-                group.add( box );
+                box.visible = false
+                group.add(box);
                 group.add( currentModel );                
                 scene.add(group)
             })
@@ -117,29 +122,12 @@ export const ARContextProvider = ({ children }) => {
             loader.load(model, (gltf) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
-                group = new THREE.Group();
-                group.add( currentModel );
-                scene.add(group)
+                scene.add(currentModel)
             })
         }
 
-        // run btn
-        document.querySelector('.run-btn').addEventListener('click', () => {
-            console.log('clicked');
-            changeTexture()
-        })
-
-        // rotate object
-        const rotateObject = degree => {
-            if(currentModel && reticle.visible) group.children.forEach(child =>  child.rotation.y += degree)
-        }
-
-        document.querySelector('.rotate-left').addEventListener('click', () => rotateObject(-0.1))
-        document.querySelector('.rotate-right').addEventListener('click', () => rotateObject(0.1))
-
-
         // toggle for the clicked object
-        const clickedToggle = (element) => {
+        const clickedToggleARObject = (element) => {
             document.querySelectorAll('.ar-object').forEach(object => {
                 object.classList.remove('clicked')
             })
@@ -149,33 +137,49 @@ export const ARContextProvider = ({ children }) => {
         document.querySelectorAll('.ar-object').forEach(arObject => {
             arObject.addEventListener('click', (e) => {
                 if(e.target.parentNode.id === 'Keyboard') {
-                    loadFilterModel(keyboardModel)
-                    clickedToggle(e.target.parentNode)
+                    loadFilterModel(frequencyGeneratorModel)
+                    clickedToggleARObject(e.target.parentNode)
                 } else if(e.target.parentNode.id === 'Mouse') {
-                    loadFilterModel(mouseModel)
-                    clickedToggle(e.target.parentNode)
+                    loadFilterModel(LPFRCModel)
+                    clickedToggleARObject(e.target.parentNode)
                 } else if(e.target.parentNode.id === 'PC') {
                     loadFilterModel(PCModel)
-                    clickedToggle(e.target.parentNode)
+                    clickedToggleARObject(e.target.parentNode)
                 } else if(e.target.parentNode.id === 'Monitor') {
                     loadModel(monitorModel)
-                    clickedToggle(e.target.parentNode)
+                    clickedToggleARObject(e.target.parentNode)
                 }
             })
         })
 
+        // place AR object
         document.querySelector('.place-btn').addEventListener('click', () => {
             
             if(reticle.visible){
                 currentModel.visible = true;
                 currentModel.position.setFromMatrixPosition(reticle.matrix);
-                box.position.set(reticle.position.x, reticle.position.y + 0.25, reticle.position.z + 0.028);
+                console.log(currentModel)
+                if(currentModel.children[0].name === 'LCD_Monitor'){
+                    console.log(box)
+                    box.visible = true
+                    box.position.set(reticle.position.x, reticle.position.y + 0.25, reticle.position.z + 0.028);
+                }
             }
         })
-        
+
+        // run btn
+        document.querySelector('.run-btn').addEventListener('click', () => changeTexture())
+
+        // rotate object
+        const rotateObject = degree => {
+            if(currentModel && reticle.visible) group.children.forEach(child =>  child.rotation.y += degree)
+        }
+ 
+        document.querySelector('.rotate-left').addEventListener('click', () => rotateObject(-0.1)) 
+        document.querySelector('.rotate-right').addEventListener('click', () => rotateObject(0.1)) 
+
         const onXRFrame = (time, frame) => {
             session.requestAnimationFrame(onXRFrame);
-            // texture.needsUpdate = true
 
             gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
 
@@ -210,6 +214,7 @@ export const ARContextProvider = ({ children }) => {
             session.end();
             document.querySelector('.ar-container').classList.remove('ar')
             document.querySelector('.widgets').classList.remove('ar')
+            localStorage.clear()
             
             renderer.setSize(window.innerWidth, window.innerHeight)
         })

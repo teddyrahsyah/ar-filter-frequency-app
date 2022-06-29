@@ -4,17 +4,25 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 1rem;
+    padding: 0.8rem 2.5rem;
 }
 
-.navbar-logo { width: 4rem; }
+.logo-menu{
+    display: flex;
+    align-items: center;
+}
+
+.navbar-logo { 
+    width: 4rem; 
+    margin-right: 2.5rem;
+}
 
 .navbar-logo img { width: 100%;}
 
 .nav-link{
     text-decoration: none;
     color: var(--text-light);
-    margin: 0 1.5rem;
+    margin: 0 1rem;
     font-weight: 600;
 }
 
@@ -25,21 +33,27 @@
     padding: 0.7rem 1.5rem !important;
 }
 
-.admin-panel-form{ 
+/* AddForm.js */
+
+.admin-form-container{ 
     justify-content: flex-start; 
     align-items: flex-start;
+    padding-bottom: 2rem;
 }
 
-.admin-panel-form h1{ 
+.admin-form-container h1{ 
     width: 100%;
+    font-size: 1.5rem;
     text-align: center; 
     margin: 2rem 0;
 }
 
-.admin-panel-form form{
+.admin-form-container form{
     width: 50vw;
     margin: 0 auto;
 }
+
+.admin-form-container form h3{ font-size: 1rem;}
 
 .kategori-section{ 
     display: flex; 
@@ -48,7 +62,7 @@
 }
   
 .kategori-group input{ 
-    margin-left: 3rem;
+    margin-left: 1rem;
 }
 
 .radio-kategori{ margin-right: 0.4rem;}
@@ -58,16 +72,19 @@
     padding: 1rem 1.5rem;
 }
 
+.add-image label, .add-model label{ font-size: 1rem;}
+
+.input-image, .input-model{ margin: 1.5rem 0.5rem;}
+
+
 .input-isi{
-    margin: 1.5rem 0;
     width: 100%;
     height: 50vh;
-    border: 0.13rem solid var(--text-light) !important; 
+    border: 0.12rem solid var(--text-light) !important; 
     padding: 0.7rem 1rem;
 }
 
-.add-btn{
-    margin-top: 1rem;
+.add-form-btn{
     border-radius: 6rem !important;
     width: 15vw;
     font-size: 0.9rem;

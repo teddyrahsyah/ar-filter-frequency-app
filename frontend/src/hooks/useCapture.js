@@ -5,19 +5,15 @@ const useCapture = () => {
     imageLink.style.width = '7rem'
 
     const capture = () => {
-        html2canvas(document.querySelector('.output-wave')).then(function(canvas) {
-            // canvas.toBlob(blob => {
-            //     const url = URL.createObjectURL(blob);
-            //     imageLink.onload = () => URL.revokeObjectURL(url);
-            //     imageLink.innerHTML = 'download'
-            //     imageLink.href = url
-                
-            //     localStorage.setItem('image', imageLink.href)
-            // })
+        html2canvas(document.querySelector('.output-wave'), {
+            onclone : (clonedElem) => {
+                clonedElem.querySelector('.output-container').style.display = 'block'
+            }
+        }).then(function(canvas) {
             const base64image = canvas.toDataURL("image/png");
-            sessionStorage.setItem('image', base64image)
+            localStorage.setItem('image', base64image)
 
-            imageLink.src = sessionStorage.getItem('image')
+            imageLink.src = localStorage.getItem('image')
             document.querySelector('.output-container').appendChild(imageLink);
         });
     }
