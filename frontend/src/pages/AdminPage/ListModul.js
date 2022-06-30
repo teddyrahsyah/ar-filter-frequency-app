@@ -22,7 +22,7 @@ const AdminPanelListMateri = () => {
                 <div className="add-module-form">
                     <form>
                         <input type="text" className="input-text add-module-input" onChange={handleChangeModule} name='moduleTitle' placeholder="Nama Modul" />
-                        <button className="btn add-module-btn" onClick={addModule}>Tambah Modul</button>
+                        <button className="btn-edited add-module-btn" onClick={addModule}>Tambah Modul</button>
                     </form>
                 </div>
                 <div>

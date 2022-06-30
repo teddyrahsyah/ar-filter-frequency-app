@@ -27,20 +27,24 @@ import useFormula from '../../hooks/useFormula';
 const ARPages = () => {
     const {activateAR} = useContext(ARContext)
     const {showObject} = useContext(PreviewObject)
-    const {draw,  handleRadio} = useContext(OutputWaveContext)
-    const { capture } = useCapture()
+    const {handleRadio} = useContext(OutputWaveContext)
+    const { captureOutput, capturefrequency } = useCapture()
     const {LPFRCFormula} = useFormula()
     let frequency = 10000
+    const [frequencyValue, setFrequencyValue] = useState(frequency)
 
     const drawAndCapture = () => {
-        draw(frequency)
-        setTimeout(() => { capture() }, [500] )
-        console.log(frequency)
+        LPFRCFormula(frequency)
+        setTimeout(() => { 
+            captureOutput()
+            capturefrequency()
+        }, [500] )
     }
 
     const handleSumbit = e => {
         e.preventDefault()
         drawAndCapture()
+        setFrequencyValue(frequency)
     }
 
     const handlefreq = (e) => frequency = e.target.value
@@ -56,7 +60,7 @@ const ARPages = () => {
     }
 
     const Modal = () => (
-        <Popup trigger={<button className="frequency-btn btn"><img src={frequencyIcon} alt="Frequency" /></button>} modal>
+        <Popup trigger={<button className="frequency-btn ar-session-btn btn-edited"><img src={frequencyIcon} alt="Frequency" /></button>} modal>
             <form className="box-modal" onSubmit={handleSumbit}>
                 <div className="input-menu">
                     <label htmlFor="indikator">Indikator: </label>
@@ -68,7 +72,7 @@ const ARPages = () => {
                 </div>
                 <section className='input-frequency'>
                     <input 
-                        type="text" 
+                        type="number" 
                         className='input-freq-form input-text'
                         placeholder='Frekuensi (Hz)'
                         onChange={handlefreq}
@@ -82,13 +86,6 @@ const ARPages = () => {
     return (
         <div>
             <div className="ar-container">
-                <nav className="ar-navbar">
-                    <div className="back-btn">
-                        <img src={backIcon} alt="kembali" />
-                    </div>
-                    <p>Filter Frequency AR Simulator</p>
-                    <div></div>
-                </nav>
                 <div className="ar-content">
                     <h1>high pass filter</h1>
                     <div className="show-object">
@@ -100,11 +97,12 @@ const ARPages = () => {
                         </div>
                         <div className="canvas-container"></div>
                     </div>
-                    <button onClick={activateAR} className='ar-btn btn'>Start AR</button>
+                    <button onClick={activateAR} className='ar-btn btn-edited'>Start AR</button>
                 </div>
             </div>
             <div className="output-container">
                 <div className="output-wave"><canvas id="canvas"></canvas></div>
+                <div className="frequency-counter">{frequencyValue} Hz</div>
             </div>
 
             {/* inside AR session */}
@@ -113,30 +111,30 @@ const ARPages = () => {
                 <div className="navigation">
 
                     <div className="top-nav">
-                        <button className="run-btn btn">
+                        <button className="run-btn btn-edited ar-session-btn">
                             <img src={runIcon} alt="" />
                         </button>
                         <Modal />
-                        <button className='open-btn btn'>
+                        <button className='open-btn btn-edited ar-session-btn'>
                             <img src={osiloskopIcon} alt="Run" />
                         </button>
                         
                     </div>
                     <div className="bottom-nav">
-                        <button className='rotate-btn rotate-left btn'>
+                        <button className='rotate-btn rotate-left btn-edited ar-session-btn'>
                             <img src={rotateLeftIcon} alt="rotate left" />
                         </button>
-                        <button className='place-btn btn'>
+                        <button className='place-btn btn-edited ar-session-btn'>
                             <img src={placeAR} alt="place" />
                         </button>
-                        <button className='rotate-btn rotate-right btn'>
+                        <button className='rotate-btn rotate-right btn-edited ar-session-btn'>
                             <img src={rotateRightIcon} alt="rotate right" />
                         </button>
                     </div>
                 </div>
 
                 {/* close btn */}
-                <button className='close-btn btn'>
+                <button className='close-btn btn-edited ar-session-btn'>
                     <img src={closeIcon} alt="close" />
                 </button>
 
@@ -150,7 +148,7 @@ const ARPages = () => {
                 
                 {/* image for menu */}
                 <div className="model-nav-btn">
-                    <button className="open-btn btn" onClick={openMenu}>
+                    <button className="open-btn btn-edited ar-session-btn" onClick={openMenu}>
                         <img src={rightIcon} alt="" />
                     </button>
                 </div>

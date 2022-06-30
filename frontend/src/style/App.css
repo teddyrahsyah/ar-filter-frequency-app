@@ -6,6 +6,8 @@
 @import url('./ModulPage.css');
 
 /* import font */
+@import url('https://fonts.googleapis.com/css2?family=Wallpoet&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root{
@@ -48,17 +50,17 @@ body {
   opacity: .8;
 }
 
-.btn{
+.btn-edited{
   background-color: var(--accent-light);
   font-family: 'Inter', sans-serif;
   color: var(--text-dark);
   padding: 0.8rem 1.2rem;
-  border: 0.1rem solid rgba(0, 0, 0, 0.5);
+  border: none;
   outline: none;
   border-radius: 0.3rem;
 }
 
-.btn:hover{ cursor: pointer;}
+.btn-edited:hover{ cursor: pointer;}
 
 /* HOME.JS */
 .home{

@@ -52,7 +52,7 @@ const AddTheoryForm = () => {
                     placeholder="Isi Artikel"
                     onChange={handleChangeTheory}
                 ></textarea>
-                <button className="add-form-btn btn" onClick={() => addTheory(id, module.moduleNumber, module.moduleTitle)}>Tambah</button>
+                <button className="add-form-btn btn-edited" onClick={() => addTheory(id, module.moduleNumber, module.moduleTitle)}>Tambah</button>
             </form>
         </div>
     );

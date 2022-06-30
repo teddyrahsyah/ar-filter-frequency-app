@@ -4,19 +4,15 @@ import useCapture from '../../hooks/useCapture';
 
 const OutputWave = () => {
     
-    const {waveGenerator} = useContext(OutputWaveContext)
-    const { capture } = useCapture()
+    // const {waveGenerator} = useContext(OutputWaveContext)
 
-    useEffect(() => {
-        waveGenerator()
-    })
-
-    setTimeout(() => {
-        capture()
-    },[5000])
+    // useEffect(() => {
+    //     waveGenerator()
+    // })
     return ( 
         <div className='output-container'>
             <div className="output-wave"></div>
+            <div className="frequency-counter"></div>
         </div>
     );
 }

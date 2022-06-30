@@ -19,11 +19,11 @@ const AdminNavbar = () => {
                     <Link to='/adminHomepage'><img src={logoAplikasi} alt="Filter Frekuensi AR Simulator" /></Link>
                 </div>
                 <div className="menu-list">
-                    <Link to='/listArtikel' className="nav-link">List Artikel</Link>
-                    <Link to='/listModul' className="nav-link">List Modul</Link>
+                    <Link to='/listArtikel' className="nav-link-edited">List Artikel</Link>
+                    <Link to='/listModul' className="nav-link-edited">List Modul</Link>
                 </div>
             </div>
-            <button onClick={handleLogout} className="logout-btn btn">Logout</button>
+            <button onClick={handleLogout} className="logout-btn btn-edited">Logout</button>
         </nav>  
     );
 }

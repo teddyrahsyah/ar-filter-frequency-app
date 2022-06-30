@@ -44,7 +44,7 @@ const AddLabForm = () => {
                     <label htmlFor="modelAR">Model AR:</label>
                     <input type="file" name='modelAR' required className="input-model" accept=".gltf"></input>
                 </section>
-                <button className="add-form-btn btn">Tambah</button>
+                <button className="add-form-btn btn-edited">Tambah</button>
             </form>
         </div>
     );

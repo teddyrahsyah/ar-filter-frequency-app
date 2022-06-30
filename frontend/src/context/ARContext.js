@@ -3,8 +3,6 @@ import * as THREE from 'three'
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 import { OrbitControls } from "../controller/OrbitControls";
 
-import useCapture from "../hooks/useCapture";
-
 import osiloskop from '../asset/osiloskop_v5.gltf'
 import frequencyGenerator from '../asset/frekuensi_generator_v4.gltf'
 import filter from '../asset/LPF_RC.gltf'
@@ -12,12 +10,12 @@ import filter from '../asset/LPF_RC.gltf'
 export const ARContext = createContext();
 
 export const ARContextProvider = ({ children }) => {
-    
-    const { capture } = useCapture()
+
     const { XRWebGLLayer } = window;
     let session, renderer, camera;
     let reticle, currentModel;
-    let box, group;
+    let outputContainer, group, frequencyCounterContainer;
+    let imageMaterialOutput, imageMaterialFrequency;
 
 
     const activateAR = async () => {
@@ -73,33 +71,49 @@ export const ARContextProvider = ({ children }) => {
             reticle.visible = false;
             scene.add(reticle)
         })
-        
-        const texture  = []
-        let imageMaterial;
+
         const imageTextureLoader = new THREE.TextureLoader();
-        const addImage = () => {
-            // const imageTexture = 
-            // const loadedImage = 
-            
-            // texture.unshift(loadedImage)
-            // console.log(texture)
-            imageMaterial = new THREE.MeshBasicMaterial({
-                map: imageTextureLoader.load(localStorage.getItem('image')),
+        const addOutputImage = () => {
+            imageMaterialOutput = new THREE.MeshBasicMaterial({
+                map: imageTextureLoader.load(localStorage.getItem('imageOutput')),
                 side: THREE.FrontSide
             })
-            return imageMaterial
+            return imageMaterialOutput
+        }
+        
+        const addfrequencyImage = () => {
+            imageMaterialFrequency = new THREE.MeshBasicMaterial({
+                map: imageTextureLoader.load(localStorage.getItem('imageFrequency')),
+                side: THREE.FrontSide
+            })
+            return imageMaterialFrequency
         }
 
         // loading AR Object
-        const loadModel = (model) => {
-            loader.load(model, (gltf) => {
+        const loadOsiloskopModel = () => {
+            loader.load(osiloskop, (gltf) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
                 group = new THREE.Group();
-                box = new THREE.Mesh(new THREE.PlaneGeometry(0.15,0.13), addImage());
-                box.visible = false
-                group.add(box);
+                outputContainer = new THREE.Mesh(new THREE.PlaneGeometry(0.15,0.13), addOutputImage());
+                outputContainer.visible = false
+                console.log(outputContainer)
+                group.add(outputContainer);
                 group.add( currentModel );                
+                scene.add(group)
+            })
+        }
+        
+        const loadFreqGenModel = () => {
+            loader.load(frequencyGenerator, (gltf) => {
+                currentModel = gltf.scene;
+                currentModel.visible = false;
+                group = new THREE.Group();
+                frequencyCounterContainer = new THREE.Mesh(new THREE.PlaneGeometry(0.09,0.06), addfrequencyImage());
+                frequencyCounterContainer.visible = false
+                console.log(frequencyCounterContainer)
+                group.add(frequencyCounterContainer);
+                group.add( currentModel );
                 scene.add(group)
             })
         }
@@ -125,13 +139,13 @@ export const ARContextProvider = ({ children }) => {
         document.querySelectorAll('.ar-object').forEach(arObject => {
             arObject.addEventListener('click', (e) => {
                 if(e.target.parentNode.id === 'frequencyGenerator') {
-                    loadFilterModel(frequencyGenerator)
+                    loadFreqGenModel()
                     clickedToggleARObject(e.target.parentNode)
                 } else if(e.target.parentNode.id === 'filter') {
                     loadFilterModel(filter)
                     clickedToggleARObject(e.target.parentNode)
                 } else if(e.target.parentNode.id === 'osiloskop') {
-                    loadModel(osiloskop)
+                    loadOsiloskopModel()
                     clickedToggleARObject(e.target.parentNode)
                 }
             })
@@ -145,15 +159,20 @@ export const ARContextProvider = ({ children }) => {
                 currentModel.castShadow = true
                 currentModel.position.setFromMatrixPosition(reticle.matrix);
                 if(currentModel.children[0].name === 'osiloskop'){
-                    box.position.set(reticle.position.x - 0.08, reticle.position.y + 0.12, reticle.position.z + 0.08);
+                    outputContainer.position.set(reticle.position.x - 0.08, reticle.position.y + 0.12, reticle.position.z + 0.08);
+                }
+                if(currentModel.children[0].name === "frequency_generator"){
+                    frequencyCounterContainer.position.set(reticle.position.x - 0.09, reticle.position.y + 0.2, reticle.position.z + 0.25);
                 }
             }
         })
 
         // run btn
         document.querySelector('.run-btn').addEventListener('click', () => {
-            box.visible = true
-            imageMaterial.map = imageTextureLoader.load(localStorage.getItem('image'))
+            outputContainer.visible = true
+            frequencyCounterContainer.visible = true
+            imageMaterialOutput.map = imageTextureLoader.load(localStorage.getItem('imageOutput'))
+            imageMaterialFrequency.map = imageTextureLoader.load(localStorage.getItem('imageFrequency'))
         })
 
         // rotate object

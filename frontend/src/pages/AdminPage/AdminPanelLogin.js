@@ -31,7 +31,7 @@ const AdminPanelLogin = () => {
                 <form onSubmit={handleSubmit}>
                     <input type="text" className='input-text nama' placeholder='Email' name="email" />
                     <input type="password" className='input-text password' placeholder='Password' name="password" />
-                    <button className='login-btn btn'>Login</button>
+                    <button className='login-btn btn-edited'>Login</button>
                 </form>
             </div>
         </div>
