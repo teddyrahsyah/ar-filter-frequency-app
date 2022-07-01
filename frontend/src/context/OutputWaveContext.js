@@ -5,19 +5,7 @@ export const OutputWaveContext = createContext();
 
 export const OutputWaveContextProvider = ({ children }) => {
 
-    const handleRadio = (e) => {
-        // let inputPlaceholder = document.querySelector('.input-freq-form').placeholder
-        console.log(e.target.value)
-        if(e.target.value == 'frekuensi') {
-            document.querySelector('.input-freq-form').placeholder = 'Frekuensi (Hz)'
-        }
-        else if(e.target.value == 'kapasitor') {
-            document.querySelector('.input-freq-form').placeholder = 'Kapasitor (F)'
-        }
-        else if(e.target.value == 'resistor') {
-            document.querySelector('.input-freq-form').placeholder = 'Resistor (Ohm)'
-        }
-    }
+    
 
     const draw = (frequency) => {
         console.log(frequency)
@@ -130,7 +118,7 @@ export const OutputWaveContextProvider = ({ children }) => {
     }
     /////////////////////////////////////////////////////
     return (
-        <OutputWaveContext.Provider value={{draw, handleRadio}}>
+        <OutputWaveContext.Provider value={{draw}}>
             {children}
         </OutputWaveContext.Provider>
     )

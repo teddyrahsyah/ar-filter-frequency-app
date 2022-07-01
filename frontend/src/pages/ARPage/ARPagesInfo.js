@@ -4,84 +4,81 @@ import Popup from 'reactjs-popup';
 import { useContext, useEffect, useState } from 'react';
 import { ARContext } from '../../context/ARContext';
 import { PreviewObject } from '../../context/PreviewObject';
+import useCapture from '../../hooks/useCapture';
+import useFormula from '../../hooks/useFormula';
 
 // import icon
-import backIcon from '../../asset/icons/back.svg'
 import closeIcon from '../../asset/icons/close.svg'
 import rightIcon from '../../asset/icons/right.svg'
 import placeAR from '../../asset/icons/place.svg'
 import rotateLeftIcon from '../../asset/icons/rotate_right.svg'
 import rotateRightIcon from '../../asset/icons/rotate_left.svg'
 import runIcon from '../../asset/icons/run.svg'
-import frequencyIcon from '../../asset/icons/wave.svg'
 import osiloskopIcon from '../../asset/icons/osiloskop.svg'
+import frequencyIcon from '../../asset/icons/wave.svg'
 
 // import image
 import frequencyGeneratorImg from '../../asset/frequency_generator.png'
 import LPFRCImg from '../../asset/LPF_RC.png'
 import osiloskopImage from '../../asset/osiloskop.jpg'
-import { OutputWaveContext } from '../../context/OutputWaveContext';
-import useCapture from '../../hooks/useCapture';
-import useFormula from '../../hooks/useFormula';
 
 const ARPages = () => {
     const {activateAR} = useContext(ARContext)
     const {showObject} = useContext(PreviewObject)
-    const {handleRadio} = useContext(OutputWaveContext)
     const { captureOutput, capturefrequency } = useCapture()
     const {LPFRCFormula} = useFormula()
-    let frequency = 10000
-    const [frequencyValue, setFrequencyValue] = useState(frequency)
+    
+    const [indikatorValue, setIndikatorValue] = useState({
+        frequencyValue:10000,
+        resistorValue: 1000,
+        kapasitorValue: 0.00000001,
+        induktorValue: 0.47
+    })
+
+    const handleRadio = (e) => {
+        if(e.target.value === 'frekuensi') {
+            document.querySelector('.input-freq').style.display = 'block'
+            document.querySelector('.input-resistor').style.display = 'none'
+            document.querySelector('.input-kapasitor').style.display = 'none'
+        }
+        else if(e.target.value === 'kapasitor') {
+            document.querySelector('.input-freq').style.display = 'none'
+            document.querySelector('.input-resistor').style.display = 'none'
+            document.querySelector('.input-kapasitor').style.display = 'block'
+        }
+        else if(e.target.value === 'resistor') {
+            document.querySelector('.input-freq').style.display = 'none'
+            document.querySelector('.input-resistor').style.display = 'block'
+            document.querySelector('.input-kapasitor').style.display = 'none'
+        }
+    }
 
     const drawAndCapture = () => {
-        LPFRCFormula(frequency)
+        LPFRCFormula (parseFloat(indikatorValue.frequencyValue), parseFloat(indikatorValue.resistorValue), parseFloat(indikatorValue.kapasitorValue))
         setTimeout(() => { 
             captureOutput()
             capturefrequency()
         }, [500] )
     }
-
-    const handleSumbit = e => {
-        e.preventDefault()
-        drawAndCapture()
-        setFrequencyValue(frequency)
-    }
-
-    const handlefreq = (e) => frequency = e.target.value
-
     useEffect(() => {
         drawAndCapture()
         showObject()
     }, [])
 
+    const handleSumbit = e => {
+        e.preventDefault()
+        drawAndCapture()
+        setIndikatorValue({
+            frequencyValue: indikatorValue.frequencyValue,
+            resistorValue: indikatorValue.resistorValue,
+            kapasitorValue: indikatorValue.kapasitorValue
+        })
+    }
+
     const openMenu = () => {
         document.querySelector('.model-nav').classList.toggle('nav-opened-menu')
         document.querySelector('.model-nav-btn').classList.toggle('nav-opened-btn')
     }
-
-    const Modal = () => (
-        <Popup trigger={<button className="frequency-btn ar-session-btn btn-edited"><img src={frequencyIcon} alt="Frequency" /></button>} modal>
-            <form className="box-modal" onSubmit={handleSumbit}>
-                <div className="input-menu">
-                    <label htmlFor="indikator">Indikator: </label>
-                    <select name="indikator" id="indikator" onChange={handleRadio}>
-                        <option value="frekuensi">frekuensi</option>
-                        <option value="kapasitor">kapasitor</option>
-                        <option value="resistor">Resistor</option>
-                    </select>
-                </div>
-                <section className='input-frequency'>
-                    <input 
-                        type="number" 
-                        className='input-freq-form input-text'
-                        placeholder='Frekuensi (Hz)'
-                        onChange={handlefreq}
-                    />
-                    <button className='change-freq-btn'>Ubah</button>
-                </section>
-            </form>
-        </Popup>
-    );
 
     return (
         <div>
@@ -91,9 +88,9 @@ const ARPages = () => {
                     <div className="show-object">
                         <h3>Object yang akan digunakan pada lab kali ini</h3>
                         <div className="object-image-list">
-                            <img src={frequencyGeneratorImg} alt="Frekuensi generator" />
-                            <img src={LPFRCImg} alt="Rangkaian HPF" />
-                            <img src={osiloskopImage} alt="Osilator" />
+                            <img id='frequencyGeneratorModel' className='object-list' src={frequencyGeneratorImg} alt="Frekuensi generator" />
+                            <img id='LPFRCModel' className='object-list' src={LPFRCImg} alt="Rangkaian HPF" />
+                            <img id='osiloskop' className='object-list' src={osiloskopImage} alt="Osilator" />
                         </div>
                         <div className="canvas-container"></div>
                     </div>
@@ -102,7 +99,7 @@ const ARPages = () => {
             </div>
             <div className="output-container">
                 <div className="output-wave"><canvas id="canvas"></canvas></div>
-                <div className="frequency-counter">{frequencyValue} Hz</div>
+                <div className="frequency-counter">{indikatorValue.frequencyValue} Hz</div>
             </div>
 
             {/* inside AR session */}
@@ -114,7 +111,45 @@ const ARPages = () => {
                         <button className="run-btn btn-edited ar-session-btn">
                             <img src={runIcon} alt="" />
                         </button>
-                        <Modal />
+                        <Popup trigger={<button className="frequency-btn ar-session-btn btn-edited"><img src={frequencyIcon} alt="Frequency" /></button>} modal>
+                            <form className="box-modal" onSubmit={handleSumbit}>
+                                <div className="input-menu">
+                                    <label htmlFor="indikator">Indikator: </label>
+                                    <select name="indikator" id="indikator" onChange={handleRadio}>
+                                        <option value="frekuensi">frekuensi</option>
+                                        <option value="kapasitor">kapasitor</option>
+                                        <option value="resistor">Resistor</option>
+                                    </select>
+                                </div>
+                                <section className='input-frequency'>
+                                    <input 
+                                        type="number" 
+                                        step="any"
+                                        style={{"display": "block"}}
+                                        className='input-freq-form input-text input-freq'
+                                        placeholder='Frekuensi (Hz)'
+                                        onChange={(e) => indikatorValue.frequencyValue = e.target.value}
+                                    />
+                                    <input 
+                                        type="number"
+                                        step="any"
+                                        style={{"display": "none"}}
+                                        className='input-freq-form input-text input-kapasitor'
+                                        placeholder='Kapasitor (F)'
+                                        onChange={(e) => indikatorValue.kapasitorValue = e.target.value}
+                                    />
+                                    <input 
+                                        type="number" 
+                                        step="any"
+                                        style={{"display": "none"}}
+                                        className='input-freq-form input-text input-resistor'
+                                        placeholder='Resistor (Ohm)'
+                                        onChange={(e) => indikatorValue.resistorValue = e.target.value}
+                                    />
+                                    <button className='change-freq-btn'>Ubah</button>
+                                </section>
+                            </form>
+                        </Popup>
                         <button className='open-btn btn-edited ar-session-btn'>
                             <img src={osiloskopIcon} alt="Run" />
                         </button>

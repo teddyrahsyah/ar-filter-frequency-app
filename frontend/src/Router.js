@@ -12,7 +12,6 @@ import AddTheoryForm from './pages/AdminPage/AddTheoryForm';
 import AddLabForm from './pages/AdminPage/AddLabForm';
 
 // AR PAGES
-import OutputWave from './pages/ARPage/OutputWave';
 import ARPagesInfo from './pages/ARPage/ARPagesInfo';
 
 const Router = () => {
@@ -32,7 +31,6 @@ const Router = () => {
 
                 {/* AR PAge */}
                 <Route path='/ARApp' element={<ARPagesInfo />} />
-                <Route path='/outputWave' element={<OutputWave />} />
             </Routes>
         </BrowserRouter>
     );  

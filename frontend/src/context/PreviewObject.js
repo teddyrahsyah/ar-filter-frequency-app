@@ -29,15 +29,30 @@ export const PreviewObjectProvider = ( { children } ) => {
         previewScene.add(backLight)
     
         document.querySelector('.canvas-container').appendChild(previewRenderer.domElement)
-        
-        // load 3d model
-         const loader = new GLTFLoader();
-         let object;
-        loader.load(frequencyGeneratorModel , gltf => {
-            object = gltf.scene;
-            previewScene.add(object)
+
+        let object;
+        const loadModel = (model) => {
+            // load 3d model
+            const loader = new GLTFLoader();
+            loader.load(model , gltf => {
+                object = gltf.scene;
+                previewScene.add(object)
+            })
+        }
+        loadModel(frequencyGeneratorModel)
+
+        document.querySelectorAll('.object-list').forEach((objek) => {
+            objek.addEventListener('click', (e) => {
+                if(object !== null) previewScene.remove(object)
+
+                if(e.target.id === 'frequencyGeneratorModel') loadModel(frequencyGeneratorModel)
+                else if(e.target.id === 'osiloskop') loadModel(osiloskop)
+                else if(e.target.id === 'LPFRCModel') loadModel(LPFRCModel)
+                
+            })
+            
         })
-        
+       
         previewCamera.position.z = 7;
         // previewCamera.aspect(1)
         previewRenderer.setClearAlpha(0.1)
