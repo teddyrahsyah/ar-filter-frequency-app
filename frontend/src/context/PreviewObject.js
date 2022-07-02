@@ -19,7 +19,6 @@ export const PreviewObjectProvider = ( { children } ) => {
         const controls = new OrbitControls(previewCamera, previewRenderer.domElement);
         previewRenderer.setSize(window.innerWidth -40, window.innerWidth -40)
         previewRenderer.setPixelRatio(1)
-        console.log(devicePixelRatio)
         
         const previewLight = new THREE.DirectionalLight(0xffffff, 1);
         previewLight.position.set(1, 1, 1);
@@ -40,14 +39,13 @@ export const PreviewObjectProvider = ( { children } ) => {
             })
         }
         loadModel(frequencyGeneratorModel)
-
         document.querySelectorAll('.object-list').forEach((objek) => {
             objek.addEventListener('click', (e) => {
                 if(object !== null) previewScene.remove(object)
 
                 if(e.target.id === 'frequencyGeneratorModel') loadModel(frequencyGeneratorModel)
                 else if(e.target.id === 'osiloskop') loadModel(osiloskop)
-                else if(e.target.id === 'LPFRCModel') loadModel(LPFRCModel)
+                else if(e.target.id === 'LPFRCModel') loadModel('https://ar-frequency-filter-simulator.s3.ap-southeast-3.amazonaws.com/LPF_RC.gltf')
                 
             })
             

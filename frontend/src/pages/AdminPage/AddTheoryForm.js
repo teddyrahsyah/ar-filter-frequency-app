@@ -1,19 +1,21 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "../../components/AdminNavbar";
 import { ModuleContext } from "../../context/ModuleContext";
 import { useParams } from "react-router"
+import { Editor } from '@tinymce/tinymce-react';
 
 const AddTheoryForm = () => {
     const {id} = useParams()
-    const {handleChangeTheory, addTheory, getDetailModule, module, handleImage} = useContext(ModuleContext)
+    const {handleChangeTheory, addTheory, getDetailModule, module, handleImage, handleDescription, checkTheoryNumber} = useContext(ModuleContext)
     const navigate = useNavigate();
+    const editorRef = useRef(null);
 
     const goBack = () => navigate(-1)
 
     useEffect(() => {
         getDetailModule(id)
-        console.log(module)
+        checkTheoryNumber()
     },[])
 
     const handleSubmitTheory = (e) => {
@@ -28,7 +30,7 @@ const AddTheoryForm = () => {
             <form onSubmit={handleSubmitTheory}>
                 <input 
                     type="text" 
-                    name='title' 
+                    id='title' 
                     required 
                     placeholder="Judul Artikel" 
                     className="input-judul input-text" 
@@ -45,14 +47,21 @@ const AddTheoryForm = () => {
                         onChange={handleImage}
                     ></input>
                 </section>
-                <textarea 
-                    name="description" 
-                    required 
-                    className="input-text input-isi" 
-                    placeholder="Isi Artikel"
-                    onChange={handleChangeTheory}
-                ></textarea>
-                <button className="add-form-btn btn-edited" onClick={() => addTheory(id, module.moduleNumber, module.moduleTitle)}>Tambah</button>
+                <Editor
+                    textareaName="description"
+                    onEditorChange={(newValue, editor) => handleDescription(newValue)}
+                    apiKey="8dotdc22kact10o1q74xf3s2eurvoappeug7wgxa90gwt1sq"
+                    onInit={(evt, editor) => editorRef.current = editor}
+                    initialValue="Write here..."
+                    init={{
+                    menubar: false,
+                    toolbar: 'undo redo | ' +
+                    'bold italic underline | alignleft aligncenter ' +
+                    'alignright alignjustify | outdent indent | ' + 'blockquote formatselect |', 
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                    }}
+                />
+                <button style={{"marginTop": '1rem'}} className="add-form-btn btn-edited" onClick={() => addTheory(id, module.moduleNumber, module.moduleTitle)}>Tambah</button>
             </form>
         </div>
     );

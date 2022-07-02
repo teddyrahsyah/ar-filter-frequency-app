@@ -17,15 +17,12 @@ const ModulePage = () => {
         labList, 
         deleteTheory, 
         deleteLab, 
-        checkTheoryNumber, 
         getDetailTheory,
     } = useContext(ModuleContext)
 
     useEffect(() => {
         getDetailModule(id)
-        checkTheoryNumber()
-        console.log(theoryList)
-    }, [])
+    }, [theoryList])
 
     return (
         <div>
@@ -38,7 +35,7 @@ const ModulePage = () => {
                         <Link to={`/addTheoryForm/${id}`} className="btn-edited add-btn">Tambah Materi</Link>
                     </div>
                     {theoryList.map(theory => (
-                        <div className="list" key={theory.theoryNumber}>
+                        <div className="list" key={theory.title}>
                             <p className="judul-materi">
                                 {`${theory.moduleNumber}.${theory.theoryNumber}: ${theory.title}`}
                             </p>
@@ -56,10 +53,10 @@ const ModulePage = () => {
                 <div className="lab-list">
                     <div className="title-btn">
                         <h3>Lab</h3>
-                        <Link to='/addLabForm' className="btn-edited add-btn">Tambah Lab</Link>
+                        <Link to={`/addLabForm/${id}`} className="btn-edited add-btn">Tambah Lab</Link>
                     </div>
                     {labList.map(lab => (
-                        <div className="list" key={lab.labNumber}>
+                        <div className="list" key={lab.title}>
                             <p className="judul-materi">
                                 {lab.title}
                             </p>
@@ -67,9 +64,8 @@ const ModulePage = () => {
                                 <Link to='/addForm' className="edit-btn">
                                     <img src={editIcon} className='cta-btn' alt="edit"  />
                                 </Link>
-                                {console.log(lab.labNumber)}
                                 <button className="delete-btn" value={lab.labNumber}>
-                                    <img src={deleteIcon} className='cta-btn' alt="delete" onClick={(e) => deleteLab(e.target.parentElement.value)} />
+                                    <img src={deleteIcon} className='cta-btn' alt="delete" onClick={() => deleteLab(lab.labId)} />
                                 </button>
                             </div>
                         </div>

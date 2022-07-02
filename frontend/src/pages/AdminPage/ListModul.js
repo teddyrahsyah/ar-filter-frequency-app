@@ -10,9 +10,8 @@ const AdminPanelListMateri = () => {
 
     useEffect(() => {
         getModule()
-        console.log(moduleList)
         checkModuleNumber()
-    }, [])
+    },[addModule])
 
     return ( 
         <div className="admin-panel-container">

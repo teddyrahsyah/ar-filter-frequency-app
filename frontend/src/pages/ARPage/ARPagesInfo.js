@@ -14,19 +14,21 @@ import placeAR from '../../asset/icons/place.svg'
 import rotateLeftIcon from '../../asset/icons/rotate_right.svg'
 import rotateRightIcon from '../../asset/icons/rotate_left.svg'
 import runIcon from '../../asset/icons/run.svg'
-import osiloskopIcon from '../../asset/icons/osiloskop.svg'
 import frequencyIcon from '../../asset/icons/wave.svg'
 
 // import image
 import frequencyGeneratorImg from '../../asset/frequency_generator.png'
 import LPFRCImg from '../../asset/LPF_RC.png'
 import osiloskopImage from '../../asset/osiloskop.jpg'
+import { useParams } from 'react-router-dom';
+import useFetchAR from '../../hooks/useFetchAR';
 
 const ARPages = () => {
+    const {modulId, title} = useParams()
     const {activateAR} = useContext(ARContext)
     const {showObject} = useContext(PreviewObject)
     const { captureOutput, capturefrequency } = useCapture()
-    const {LPFRCFormula} = useFormula()
+    // if (labList.length !== 0)console.log(labList)
     
     const [indikatorValue, setIndikatorValue] = useState({
         frequencyValue:10000,
@@ -34,27 +36,29 @@ const ARPages = () => {
         kapasitorValue: 0.00000001,
         induktorValue: 0.47
     })
+    
+    const {labList, checkLab} = useFetchAR(modulId, title, indikatorValue)
 
     const handleRadio = (e) => {
         if(e.target.value === 'frekuensi') {
             document.querySelector('.input-freq').style.display = 'block'
-            document.querySelector('.input-resistor').style.display = 'none'
             document.querySelector('.input-kapasitor').style.display = 'none'
+            document.querySelector('.input-resistor').style.display = 'none'
         }
         else if(e.target.value === 'kapasitor') {
+            document.querySelector('.input-kapasitor').style.display = 'block'
             document.querySelector('.input-freq').style.display = 'none'
             document.querySelector('.input-resistor').style.display = 'none'
-            document.querySelector('.input-kapasitor').style.display = 'block'
         }
         else if(e.target.value === 'resistor') {
-            document.querySelector('.input-freq').style.display = 'none'
             document.querySelector('.input-resistor').style.display = 'block'
+            document.querySelector('.input-freq').style.display = 'none'
             document.querySelector('.input-kapasitor').style.display = 'none'
         }
     }
 
     const drawAndCapture = () => {
-        LPFRCFormula (parseFloat(indikatorValue.frequencyValue), parseFloat(indikatorValue.resistorValue), parseFloat(indikatorValue.kapasitorValue))
+        checkLab()
         setTimeout(() => { 
             captureOutput()
             capturefrequency()
@@ -62,8 +66,8 @@ const ARPages = () => {
     }
     useEffect(() => {
         drawAndCapture()
-        showObject()
-    }, [])
+        if(labList.length !== 0) showObject()        
+    })
 
     const handleSumbit = e => {
         e.preventDefault()
@@ -83,19 +87,26 @@ const ARPages = () => {
     return (
         <div>
             <div className="ar-container">
+            {
+                labList.length !== 0 ?
                 <div className="ar-content">
-                    <h1>high pass filter</h1>
+                    <h1>{labList[0].title}</h1>
+                    <section className="lab-description">
+                        {labList[0].description}
+                    </section>
                     <div className="show-object">
                         <h3>Object yang akan digunakan pada lab kali ini</h3>
-                        <div className="object-image-list">
-                            <img id='frequencyGeneratorModel' className='object-list' src={frequencyGeneratorImg} alt="Frekuensi generator" />
-                            <img id='LPFRCModel' className='object-list' src={LPFRCImg} alt="Rangkaian HPF" />
-                            <img id='osiloskop' className='object-list' src={osiloskopImage} alt="Osilator" />
-                        </div>
-                        <div className="canvas-container"></div>
+                            <div className="object-image-list">
+                                <img id='frequencyGeneratorModel' className='object-list' src={frequencyGeneratorImg} alt="Frekuensi generator" />
+                                <img id='LPFRCModel' className='object-list' src={labList[0].thumbnailAR} alt="Rangkaian HPF" />
+                                <img id='osiloskop' className='object-list' src={osiloskopImage} alt="Osilator" />
+                            </div> 
+                        <div className="canvas-container"><div></div></div>
                     </div>
-                    <button onClick={activateAR} className='ar-btn btn-edited'>Start AR</button>
+                    <button onClick={() => activateAR(labList[0].modelAR)} className='ar-btn btn-edited'>Start AR</button>
                 </div>
+                : <div>Loading...</div>
+            }
             </div>
             <div className="output-container">
                 <div className="output-wave"><canvas id="canvas"></canvas></div>
@@ -108,10 +119,10 @@ const ARPages = () => {
                 <div className="navigation">
 
                     <div className="top-nav">
-                        <button className="run-btn btn-edited ar-session-btn">
+                        <button style={{"marginRight": "0.5rem"}} className="run-btn btn-edited ar-session-btn">
                             <img src={runIcon} alt="" />
                         </button>
-                        <Popup trigger={<button className="frequency-btn ar-session-btn btn-edited"><img src={frequencyIcon} alt="Frequency" /></button>} modal>
+                        <Popup trigger={<button className="frequency-btn ar-session-btn btn-edited"><p>Hz</p></button>} modal>
                             <form className="box-modal" onSubmit={handleSumbit}>
                                 <div className="input-menu">
                                     <label htmlFor="indikator">Indikator: </label>
@@ -149,11 +160,7 @@ const ARPages = () => {
                                     <button className='change-freq-btn'>Ubah</button>
                                 </section>
                             </form>
-                        </Popup>
-                        <button className='open-btn btn-edited ar-session-btn'>
-                            <img src={osiloskopIcon} alt="Run" />
-                        </button>
-                        
+                        </Popup>                        
                     </div>
                     <div className="bottom-nav">
                         <button className='rotate-btn rotate-left btn-edited ar-session-btn'>
@@ -187,20 +194,23 @@ const ARPages = () => {
                         <img src={rightIcon} alt="" />
                     </button>
                 </div>
-                <ul className="model-nav">
-                    <li className='ar-object' id='frequencyGenerator'>
-                        <img src={frequencyGeneratorImg} alt="frequency generator" />
-                        <p>Frekuensi Generator</p>
-                    </li>
-                    <li className='ar-object' id='filter'>
-                        <img src={LPFRCImg} alt="filter" />
-                        <p>Rangkaian Filter</p>
-                    </li>
-                    <li className='ar-object' id='osiloskop'>
-                        <img src={osiloskopImage} alt="osiloskop" />
-                        <p>LCD Monitor</p>
-                    </li>
-                </ul>
+                {
+                    labList.length !==0 ?
+                    <ul className="model-nav">
+                        <li className='ar-object' id='frequencyGenerator'>
+                            <img src={frequencyGeneratorImg} alt="frequency generator" />
+                            <p>Frekuensi Generator</p>
+                        </li>
+                        <li className='ar-object' id='filter'>
+                            <img src={LPFRCImg} alt="filter" />
+                            <p>Rangkaian Filter</p>
+                        </li>
+                        <li className='ar-object' id='osiloskop'>
+                            <img src={osiloskopImage} alt="osiloskop" />
+                            <p>LCD Monitor</p>
+                        </li>
+                    </ul> : <div>Loading...</div>
+                }
             </div>
         </div>
     );

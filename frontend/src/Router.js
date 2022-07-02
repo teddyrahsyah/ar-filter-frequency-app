@@ -24,13 +24,13 @@ const Router = () => {
                 <Route path='/adminHomepage' element={<AdminHomePage />} />
                 <Route path='/addForm' element={<AddArticleForm />} />
                 <Route path='/addTheoryForm/:id' element={<AddTheoryForm />} />
-                <Route path='/addLabForm' element={<AddLabForm />} />
+                <Route path='/addLabForm/:id' element={<AddLabForm />} />
                 <Route path='/listArtikel' element={<ListArticle />} />
                 <Route path='/listModul' element={<ListModul />} />
                 <Route path='/modul/:id' element={<ModulePage />} />
 
                 {/* AR PAge */}
-                <Route path='/ARApp' element={<ARPagesInfo />} />
+                <Route path='/ARApp/:modulId/:title' element={<ARPagesInfo />} />
             </Routes>
         </BrowserRouter>
     );  
