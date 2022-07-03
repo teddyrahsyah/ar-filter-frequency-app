@@ -10,12 +10,19 @@ import { useParams } from "react-router"
 const ModulePage = () => {
     let { id } = useParams()
 
-    const {getDetailModule, module, theoryList, labList, deleteTheory, deleteLab} = useContext(ModuleContext)
+    const {
+        getDetailModule, 
+        module, 
+        theoryList, 
+        labList, 
+        deleteTheory, 
+        deleteLab, 
+        getDetailTheory,
+    } = useContext(ModuleContext)
 
     useEffect(() => {
-        // console.log(id)
         getDetailModule(id)
-    })
+    }, [theoryList])
 
     return (
         <div>
@@ -25,20 +32,19 @@ const ModulePage = () => {
                 <div className="theory-list">
                     <div className="title-btn">
                         <h3>Theory</h3>
-                        <Link to={`/addTheoryForm/${id}`} className="btn add-btn">Tambah Materi</Link>
+                        <Link to={`/addTheoryForm/${id}`} className="btn-edited add-btn">Tambah Materi</Link>
                     </div>
                     {theoryList.map(theory => (
-                        <div className="list" key={theory.theoryNumber}>
+                        <div className="list" key={theory.title}>
                             <p className="judul-materi">
-                                {theory.title}
+                                {`${theory.moduleNumber}.${theory.theoryNumber}: ${theory.title}`}
                             </p>
                             <div className="call-to-action">
-                                <Link to='/addForm' className="edit-btn">
-                                    <img src={editIcon} className='cta-btn' alt="edit"  />
-                                </Link>
-                                {console.log(theory.theoryNumber)}
+                                <button onClick={getDetailTheory} className="edit-btn" value={theory.theoryNumber}>
+                                    <img src={editIcon} className='cta-btn' alt="edit"/>
+                                </button>
                                 <button className="delete-btn" value={theory.theoryNumber}>
-                                    <img src={deleteIcon} className='cta-btn' alt="delete" onClick={(e) => deleteTheory(e.target.parentElement.value)} />
+                                    <img src={deleteIcon} className='cta-btn' alt="delete" onClick={() => deleteTheory(theory.moduleId, theory.theoryId)} />
                                 </button>
                             </div>
                         </div>
@@ -47,10 +53,10 @@ const ModulePage = () => {
                 <div className="lab-list">
                     <div className="title-btn">
                         <h3>Lab</h3>
-                        <Link to='/addLabForm' className="btn add-btn">Tambah Lab</Link>
+                        <Link to={`/addLabForm/${id}`} className="btn-edited add-btn">Tambah Lab</Link>
                     </div>
                     {labList.map(lab => (
-                        <div className="list" key={lab.labNumber}>
+                        <div className="list" key={lab.title}>
                             <p className="judul-materi">
                                 {lab.title}
                             </p>
@@ -58,9 +64,8 @@ const ModulePage = () => {
                                 <Link to='/addForm' className="edit-btn">
                                     <img src={editIcon} className='cta-btn' alt="edit"  />
                                 </Link>
-                                {console.log(lab.labNumber)}
                                 <button className="delete-btn" value={lab.labNumber}>
-                                    <img src={deleteIcon} className='cta-btn' alt="delete" onClick={(e) => deleteLab(e.target.parentElement.value)} />
+                                    <img src={deleteIcon} className='cta-btn' alt="delete" onClick={() => deleteLab(lab.labId)} />
                                 </button>
                             </div>
                         </div>

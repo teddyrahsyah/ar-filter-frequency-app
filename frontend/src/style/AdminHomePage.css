@@ -7,7 +7,7 @@
     min-height: 70vh;
 }
 
-.card{
+.card-edited{
     display: inline-block;
     background-color: var(--accent-light);
     padding: 5rem 3rem;

@@ -3,7 +3,8 @@ import { createContext } from 'react';
 import { OrbitControls } from "../controller/OrbitControls";
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 
-import frequencyGeneratorModel from '../asset/frekuensi_generator.gltf'
+import frequencyGeneratorModel from '../asset/frekuensi_generator_v4.gltf'
+import osiloskop from '../asset/osiloskop_v5.gltf'
 import LPFRCModel from '../asset/LPF_RC.gltf'
 
 export const PreviewObject = createContext()
@@ -18,7 +19,6 @@ export const PreviewObjectProvider = ( { children } ) => {
         const controls = new OrbitControls(previewCamera, previewRenderer.domElement);
         previewRenderer.setSize(window.innerWidth -40, window.innerWidth -40)
         previewRenderer.setPixelRatio(1)
-        console.log(devicePixelRatio)
         
         const previewLight = new THREE.DirectionalLight(0xffffff, 1);
         previewLight.position.set(1, 1, 1);
@@ -28,19 +28,29 @@ export const PreviewObjectProvider = ( { children } ) => {
         previewScene.add(backLight)
     
         document.querySelector('.canvas-container').appendChild(previewRenderer.domElement)
-        
-        // load 3d model
-         const loader = new GLTFLoader();
-         let object;
-        // loader.load(frequencyGeneratorModel , gltf => {
-        //     object = gltf.scene;
-        //     previewScene.add(object)
-        // })
-        const geometry = new THREE.BoxGeometry( .1, .1, .1 );
-        const material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-        const cube = new THREE.Mesh( geometry, material );
-        previewScene.add( geometry );
-        
+
+        let object;
+        const loadModel = (model) => {
+            // load 3d model
+            const loader = new GLTFLoader();
+            loader.load(model , gltf => {
+                object = gltf.scene;
+                previewScene.add(object)
+            })
+        }
+        loadModel(frequencyGeneratorModel)
+        document.querySelectorAll('.object-list').forEach((objek) => {
+            objek.addEventListener('click', (e) => {
+                if(object !== null) previewScene.remove(object)
+
+                if(e.target.id === 'frequencyGeneratorModel') loadModel(frequencyGeneratorModel)
+                else if(e.target.id === 'osiloskop') loadModel(osiloskop)
+                else if(e.target.id === 'LPFRCModel') loadModel('https://ar-frequency-filter-simulator.s3.ap-southeast-3.amazonaws.com/LPF_RC.gltf')
+                
+            })
+            
+        })
+       
         previewCamera.position.z = 7;
         // previewCamera.aspect(1)
         previewRenderer.setClearAlpha(0.1)

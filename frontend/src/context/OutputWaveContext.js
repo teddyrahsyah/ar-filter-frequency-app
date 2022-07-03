@@ -4,19 +4,14 @@ import { createContext } from "react";
 export const OutputWaveContext = createContext();
 
 export const OutputWaveContextProvider = ({ children }) => {
-    const [ frequency, setFrequency] = useState(0)
-    let newFrequency = frequency
 
-    const handleInput = (e) => {
-        newFrequency = e.target.value
-        console.log(document.querySelector('.output-wave'))
-    }
+    
 
-    const draw = () => {
+    const draw = (frequency, vpp, fase) => {
         console.log(frequency)
         // get values directly from form
         let Vp=1
-        let fo=newFrequency
+        let fo= frequency
         let phase=0
         let Vmax=2
         let Tmax=0.001
@@ -100,7 +95,7 @@ export const OutputWaveContextProvider = ({ children }) => {
             
             // draw ine to next point
             if (i==0) ctx.moveTo( xp, yp );
-            else      ctx.lineTo( xp, yp );
+            else ctx.lineTo( xp, yp );
         }
         
         ctx.stroke();
@@ -123,7 +118,7 @@ export const OutputWaveContextProvider = ({ children }) => {
     }
     /////////////////////////////////////////////////////
     return (
-        <OutputWaveContext.Provider value={{draw, handleInput}}>
+        <OutputWaveContext.Provider value={{draw}}>
             {children}
         </OutputWaveContext.Provider>
     )

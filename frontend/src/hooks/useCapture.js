@@ -1,24 +1,30 @@
 import html2canvas from "html2canvas";
 
 const useCapture = () => {
-    const imageLink = document.createElement('img');
-    imageLink.style.width = '7rem'
 
-    const capture = () => {
+    const captureOutput = () => {
         html2canvas(document.querySelector('.output-wave'), {
             onclone : (clonedElem) => {
                 clonedElem.querySelector('.output-container').style.display = 'block'
             }
         }).then(function(canvas) {
             const base64image = canvas.toDataURL("image/png");
-            localStorage.setItem('image', base64image)
-
-            imageLink.src = localStorage.getItem('image')
-            document.querySelector('.output-container').appendChild(imageLink);
+            localStorage.setItem('imageOutput', base64image)
         });
     }
 
-    return {capture, imageLink};
+    const capturefrequency = () => {
+        html2canvas(document.querySelector('.frequency-counter'), {
+            onclone : (clonedElem) => {
+                clonedElem.querySelector('.output-container').style.display = 'block'
+            }
+        }).then(function(canvas) {
+            const base64image = canvas.toDataURL("image/jpeg");
+            localStorage.setItem('imageFrequency', base64image)
+        });
+    }
+
+    return {captureOutput, capturefrequency};
 }
  
 export default useCapture;

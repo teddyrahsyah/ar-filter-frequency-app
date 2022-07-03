@@ -63,7 +63,10 @@
     outline: none;
     border-radius: 0.3rem;
     padding: 0.4rem;
-    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.25);
 }
 
-.cta-btn{ width: 1.3rem;}
+.call-to-action{ display: flex;}
+
+.cta-btn{ 
+    width: 1.3rem;
+}

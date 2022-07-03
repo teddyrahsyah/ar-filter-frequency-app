@@ -1,12 +1,13 @@
 import '../../style/App.css';
 import Popup from 'reactjs-popup';
 
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ARContext } from '../../context/ARContext';
 import { PreviewObject } from '../../context/PreviewObject';
+import useCapture from '../../hooks/useCapture';
+import useFormula from '../../hooks/useFormula';
 
 // import icon
-import backIcon from '../../asset/icons/back.svg'
 import closeIcon from '../../asset/icons/close.svg'
 import rightIcon from '../../asset/icons/right.svg'
 import placeAR from '../../asset/icons/place.svg'
@@ -14,32 +15,68 @@ import rotateLeftIcon from '../../asset/icons/rotate_right.svg'
 import rotateRightIcon from '../../asset/icons/rotate_left.svg'
 import runIcon from '../../asset/icons/run.svg'
 import frequencyIcon from '../../asset/icons/wave.svg'
-import osiloskopIcon from '../../asset/icons/osiloskop.svg'
 
 // import image
-import keyboardImg from '../../asset/keyboard.png'
-import frequencyGeneratorImg from '../../asset/frekuensi_generator.png'
+import frequencyGeneratorImg from '../../asset/frequency_generator.png'
 import LPFRCImg from '../../asset/LPF_RC.png'
-import LCDImg from '../../asset/Monitor.jpg'
-import { OutputWaveContext } from '../../context/OutputWaveContext';
-import useCapture from '../../hooks/useCapture';
+import osiloskopImage from '../../asset/osiloskop.jpg'
+import { useParams } from 'react-router-dom';
+import useFetchAR from '../../hooks/useFetchAR';
 
 const ARPages = () => {
+    const {modulId, title} = useParams()
     const {activateAR} = useContext(ARContext)
     const {showObject} = useContext(PreviewObject)
-    const {draw, handleInput} = useContext(OutputWaveContext)
-    const { capture } = useCapture()
-
-    useEffect(() => {
-        showObject();
+    const { captureOutput, capturefrequency } = useCapture()
+    // if (labList.length !== 0)console.log(labList)
+    
+    const [indikatorValue, setIndikatorValue] = useState({
+        frequencyValue:10000,
+        resistorValue: 1000,
+        kapasitorValue: 0.00000001,
+        induktorValue: 0.47
     })
     
+    const {labList, checkLab} = useFetchAR(modulId, title, indikatorValue)
+
+    const handleRadio = (e) => {
+        if(e.target.value === 'frekuensi') {
+            document.querySelector('.input-freq').style.display = 'block'
+            document.querySelector('.input-kapasitor').style.display = 'none'
+            document.querySelector('.input-resistor').style.display = 'none'
+        }
+        else if(e.target.value === 'kapasitor') {
+            document.querySelector('.input-kapasitor').style.display = 'block'
+            document.querySelector('.input-freq').style.display = 'none'
+            document.querySelector('.input-resistor').style.display = 'none'
+        }
+        else if(e.target.value === 'resistor') {
+            document.querySelector('.input-resistor').style.display = 'block'
+            document.querySelector('.input-freq').style.display = 'none'
+            document.querySelector('.input-kapasitor').style.display = 'none'
+        }
+    }
 
     const drawAndCapture = () => {
-        draw()
-        setTimeout(() => {
-            capture()
-        },[500])
+        checkLab()
+        setTimeout(() => { 
+            captureOutput()
+            capturefrequency()
+        }, [500] )
+    }
+    useEffect(() => {
+        drawAndCapture()
+        if(labList.length !== 0) showObject()        
+    })
+
+    const handleSumbit = e => {
+        e.preventDefault()
+        drawAndCapture()
+        setIndikatorValue({
+            frequencyValue: indikatorValue.frequencyValue,
+            resistorValue: indikatorValue.resistorValue,
+            kapasitorValue: indikatorValue.kapasitorValue
+        })
     }
 
     const openMenu = () => {
@@ -47,51 +84,33 @@ const ARPages = () => {
         document.querySelector('.model-nav-btn').classList.toggle('nav-opened-btn')
     }
 
-    const Modal = () => (
-        <Popup trigger={<button className="frequency-btn btn"><img src={frequencyIcon} alt="Frequency" /></button>} modal>
-            <form className="box-modal">
-                <div className="input-menu">
-                    <label htmlFor="indikator">Indikator: </label>
-                    <select name="indikator" id="indikator">
-                        <option value="resistor">Resistor</option>
-                        <option value="kapasitor">kapasitor</option>
-                        <option value="frekuensi">frekuensi</option>
-                    </select>
-                </div>
-                <section className='input-frequency'>
-                    <input type="text" className='input-freq-form input-text'placeholder='Frekuensi (Hz)' onChange={handleInput} />
-                    <span className='change-freq-btn' onClick={drawAndCapture}>Ubah</span>
-                </section>
-            </form>
-        </Popup>
-    );
-
     return (
         <div>
             <div className="ar-container">
-                <nav className="ar-navbar">
-                    <div className="back-btn">
-                        <img src={backIcon} alt="kembali" />
-                    </div>
-                    <p>Filter Frequency AR Simulator</p>
-                    <div></div>
-                </nav>
+            {
+                labList.length !== 0 ?
                 <div className="ar-content">
-                    <h1>high pass filter</h1>
+                    <h1>{labList[0].title}</h1>
+                    <section className="lab-description">
+                        {labList[0].description}
+                    </section>
                     <div className="show-object">
                         <h3>Object yang akan digunakan pada lab kali ini</h3>
-                        <div className="object-image-list">
-                            <img src={frequencyGeneratorImg} alt="Frekuensi generator" />
-                            <img src={LPFRCImg} alt="Rangkaian HPF" />
-                            <img src={keyboardImg} alt="Osilator" />
-                        </div>
-                        <div className="canvas-container"></div>
+                            <div className="object-image-list">
+                                <img id='frequencyGeneratorModel' className='object-list' src={frequencyGeneratorImg} alt="Frekuensi generator" />
+                                <img id='LPFRCModel' className='object-list' src={labList[0].thumbnailAR} alt="Rangkaian HPF" />
+                                <img id='osiloskop' className='object-list' src={osiloskopImage} alt="Osilator" />
+                            </div> 
+                        <div className="canvas-container"><div></div></div>
                     </div>
-                    <button onClick={activateAR} className='ar-btn btn'>Start AR</button>
+                    <button onClick={() => activateAR(labList[0].modelAR)} className='ar-btn btn-edited'>Start AR</button>
                 </div>
+                : <div>Loading...</div>
+            }
             </div>
             <div className="output-container">
                 <div className="output-wave"><canvas id="canvas"></canvas></div>
+                <div className="frequency-counter">{indikatorValue.frequencyValue} Hz</div>
             </div>
 
             {/* inside AR session */}
@@ -100,30 +119,64 @@ const ARPages = () => {
                 <div className="navigation">
 
                     <div className="top-nav">
-                        <button className="run-btn btn">
+                        <button style={{"marginRight": "0.5rem"}} className="run-btn btn-edited ar-session-btn">
                             <img src={runIcon} alt="" />
                         </button>
-                        <Modal />
-                        <button className='open-btn btn'>
-                            <img src={osiloskopIcon} alt="Run" />
-                        </button>
-                        
+                        <Popup trigger={<button className="frequency-btn ar-session-btn btn-edited"><p>Hz</p></button>} modal>
+                            <form className="box-modal" onSubmit={handleSumbit}>
+                                <div className="input-menu">
+                                    <label htmlFor="indikator">Indikator: </label>
+                                    <select name="indikator" id="indikator" onChange={handleRadio}>
+                                        <option value="frekuensi">frekuensi</option>
+                                        <option value="kapasitor">kapasitor</option>
+                                        <option value="resistor">Resistor</option>
+                                    </select>
+                                </div>
+                                <section className='input-frequency'>
+                                    <input 
+                                        type="number" 
+                                        step="any"
+                                        style={{"display": "block"}}
+                                        className='input-freq-form input-text input-freq'
+                                        placeholder='Frekuensi (Hz)'
+                                        onChange={(e) => indikatorValue.frequencyValue = e.target.value}
+                                    />
+                                    <input 
+                                        type="number"
+                                        step="any"
+                                        style={{"display": "none"}}
+                                        className='input-freq-form input-text input-kapasitor'
+                                        placeholder='Kapasitor (F)'
+                                        onChange={(e) => indikatorValue.kapasitorValue = e.target.value}
+                                    />
+                                    <input 
+                                        type="number" 
+                                        step="any"
+                                        style={{"display": "none"}}
+                                        className='input-freq-form input-text input-resistor'
+                                        placeholder='Resistor (Ohm)'
+                                        onChange={(e) => indikatorValue.resistorValue = e.target.value}
+                                    />
+                                    <button className='change-freq-btn'>Ubah</button>
+                                </section>
+                            </form>
+                        </Popup>                        
                     </div>
                     <div className="bottom-nav">
-                        <button className='rotate-btn rotate-left btn'>
+                        <button className='rotate-btn rotate-left btn-edited ar-session-btn'>
                             <img src={rotateLeftIcon} alt="rotate left" />
                         </button>
-                        <button className='place-btn btn'>
+                        <button className='place-btn btn-edited ar-session-btn'>
                             <img src={placeAR} alt="place" />
                         </button>
-                        <button className='rotate-btn rotate-right btn'>
+                        <button className='rotate-btn rotate-right btn-edited ar-session-btn'>
                             <img src={rotateRightIcon} alt="rotate right" />
                         </button>
                     </div>
                 </div>
 
                 {/* close btn */}
-                <button className='close-btn btn'>
+                <button className='close-btn btn-edited ar-session-btn'>
                     <img src={closeIcon} alt="close" />
                 </button>
 
@@ -137,24 +190,27 @@ const ARPages = () => {
                 
                 {/* image for menu */}
                 <div className="model-nav-btn">
-                    <button className="open-btn btn" onClick={openMenu}>
+                    <button className="open-btn btn-edited ar-session-btn" onClick={openMenu}>
                         <img src={rightIcon} alt="" />
                     </button>
                 </div>
-                <ul className="model-nav">
-                    <li className='ar-object' id='Keyboard'>
-                        <img src={frequencyGeneratorImg} alt="keyboard" />
-                        <p>Frekuensi Generator</p>
-                    </li>
-                    <li className='ar-object' id='Mouse'>
-                        <img src={LPFRCImg} alt="mouse" />
-                        <p>Rangkaian Filter</p>
-                    </li>
-                    <li className='ar-object' id='Monitor'>
-                        <img src={LCDImg} alt="LCD Monitor" />
-                        <p>LCD Monitor</p>
-                    </li>
-                </ul>
+                {
+                    labList.length !==0 ?
+                    <ul className="model-nav">
+                        <li className='ar-object' id='frequencyGenerator'>
+                            <img src={frequencyGeneratorImg} alt="frequency generator" />
+                            <p>Frekuensi Generator</p>
+                        </li>
+                        <li className='ar-object' id='filter'>
+                            <img src={LPFRCImg} alt="filter" />
+                            <p>Rangkaian Filter</p>
+                        </li>
+                        <li className='ar-object' id='osiloskop'>
+                            <img src={osiloskopImage} alt="osiloskop" />
+                            <p>LCD Monitor</p>
+                        </li>
+                    </ul> : <div>Loading...</div>
+                }
             </div>
         </div>
     );

@@ -1,20 +1,27 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "../../components/AdminNavbar";
 import { ModuleContext } from "../../context/ModuleContext";
+import { useParams } from "react-router"
+import { Editor } from '@tinymce/tinymce-react';
 
 const AddLabForm = () => {
-
-    const {handleChangeLab, addLab} = useContext(ModuleContext)
+    const {id} = useParams()
+    const {handleChangeLab, addLab, handleImage, handleModel, getDetailModule, module, handleDescription} = useContext(ModuleContext)
     const navigate = useNavigate();
+    const editorRef = useRef(null);
 
     const goBack = () => navigate(-1)
 
     const handleSubmitLab = (e) => {
         e.preventDefault()
-        addLab()
+        addLab(id, module.moduleNumber, module.moduleTitle)
         goBack()
     }
+
+    useEffect(() => {
+        getDetailModule(id)
+    },[])
 
     return (
         <div className="admin-form-container">
@@ -30,21 +37,42 @@ const AddLabForm = () => {
                     onChange={handleChangeLab}
                 />
                 <section className="add-image">
-                    <label htmlFor="modelAR">Thumbnail AR:</label>
-                    <input type="file" name='thumbnailAR' required className="input-image" accept="image/*"></input>
+                    <label htmlFor="thumbnail">Thumbnail AR:</label>
+                    <input 
+                        type="file" 
+                        name='thumbnail' 
+                        required 
+                        className="input-image" 
+                        accept="image/*"
+                        onChange={handleImage}
+                    />
                 </section>
-                <textarea 
-                    name="description"
-                    required 
-                    className="input-text input-isi" 
-                    placeholder="Isi Artikel"
-                    onChange={handleChangeLab}
-                ></textarea>
                 <section className="add-model">
-                    <label htmlFor="modelAR">Model AR:</label>
-                    <input type="file" name='modelAR' required className="input-model" accept=".gltf"></input>
+                    <label htmlFor="model">Model AR:</label>
+                    <input 
+                        type="file" 
+                        name='model' 
+                        required 
+                        className="input-model" 
+                        accept=".gltf"
+                        onChange={handleModel}
+                    />
                 </section>
-                <button className="add-form-btn btn">Tambah</button>
+                <Editor
+                    textareaName="description"
+                    onEditorChange={(newValue, editor) => handleDescription(newValue)}
+                    apiKey="8dotdc22kact10o1q74xf3s2eurvoappeug7wgxa90gwt1sq"
+                    onInit={(evt, editor) => editorRef.current = editor}
+                    initialValue="Write here..."
+                    init={{
+                    menubar: false,
+                    toolbar: 'undo redo | ' +
+                    'bold italic underline | alignleft aligncenter ' +
+                    'alignright alignjustify | outdent indent | ' + 'blockquote formatselect |', 
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                    }}
+                />
+                <button className="add-form-btn btn-edited">Tambah</button>
             </form>
         </div>
     );

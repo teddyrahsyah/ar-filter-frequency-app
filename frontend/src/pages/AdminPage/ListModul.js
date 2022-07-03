@@ -6,11 +6,12 @@ import { ModuleContext } from "../../context/ModuleContext";
 
 const AdminPanelListMateri = () => {
 
-    const {handleChangeModule, addModule, moduleList, getModule} = useContext(ModuleContext)
+    const {handleChangeModule, addModule, moduleList, getModule, checkModuleNumber} = useContext(ModuleContext)
 
     useEffect(() => {
         getModule()
-    })
+        checkModuleNumber()
+    },[addModule])
 
     return ( 
         <div className="admin-panel-container">
@@ -20,7 +21,7 @@ const AdminPanelListMateri = () => {
                 <div className="add-module-form">
                     <form>
                         <input type="text" className="input-text add-module-input" onChange={handleChangeModule} name='moduleTitle' placeholder="Nama Modul" />
-                        <button className="btn add-module-btn" onClick={addModule}>Tambah Modul</button>
+                        <button className="btn-edited add-module-btn" onClick={addModule}>Tambah Modul</button>
                     </form>
                 </div>
                 <div>

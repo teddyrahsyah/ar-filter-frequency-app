@@ -12,7 +12,7 @@ const AdminPanelListArticle = () => {
             <AdminNavbar />
             <div className="list-container">
                 <h1 className="list-title">List Artikel</h1>
-                <Link to='/addForm'><button className="btn add-module-btn">Tambah Article</button></Link>
+                <Link to='/addForm'><button className="btn-edited add-module-btn">Tambah Article</button></Link>
                 {articleList.map((article) => (
                     <div className="list" key={article.articleNumber}>
                         <p className="judul-materi">
