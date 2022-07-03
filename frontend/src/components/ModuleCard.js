@@ -11,7 +11,7 @@ const ModuleCard = ({ number, title, id }) => {
         navigate(`/modul/${id}`)
     }
 
-    const {deleteModule} = useContext(ModuleContext)
+    const {deleteModule, editModule} = useContext(ModuleContext)
     
     return (
         <div  className='list hover-list'>
@@ -19,7 +19,7 @@ const ModuleCard = ({ number, title, id }) => {
                 {`Modul ${number} : ${title}`}
             </p>
             <div className="call-to-action" id={id}>
-                <button to='/addForm' className="edit-btn">
+                <button onClick={e => editModule(e.target.parentElement.parentElement.id)} className="edit-btn">
                     <img src={editIcon} className='cta-btn' alt="edit"  />
                 </button>
                 <button className="delete-btn" onClick={e => deleteModule(e.target.parentElement.parentElement.id)}>

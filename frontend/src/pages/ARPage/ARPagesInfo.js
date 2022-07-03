@@ -18,16 +18,17 @@ import frequencyIcon from '../../asset/icons/wave.svg'
 
 // import image
 import frequencyGeneratorImg from '../../asset/frequency_generator.png'
-import LPFRCImg from '../../asset/LPF_RC.png'
 import osiloskopImage from '../../asset/osiloskop.jpg'
 import { useParams } from 'react-router-dom';
 import useFetchAR from '../../hooks/useFetchAR';
+import { ModuleContext } from '../../context/ModuleContext';
 
 const ARPages = () => {
-    const {modulId, title} = useParams()
+    const {modulId} = useParams()
     const {activateAR} = useContext(ARContext)
     const {showObject} = useContext(PreviewObject)
     const { captureOutput, capturefrequency } = useCapture()
+    const {labList} = useContext(ModuleContext)
     // if (labList.length !== 0)console.log(labList)
     
     const [indikatorValue, setIndikatorValue] = useState({
@@ -36,8 +37,14 @@ const ARPages = () => {
         kapasitorValue: 0.00000001,
         induktorValue: 0.47
     })
+    let labTitle;
+    if(labList.length !== 0){
+        labList.map((lab) => {
+            labTitle = lab.title
+        })
+    }
+    const {checkLab} = useFetchAR(modulId, labTitle, indikatorValue)
     
-    const {labList, checkLab} = useFetchAR(modulId, title, indikatorValue)
 
     const handleRadio = (e) => {
         if(e.target.value === 'frekuensi') {
@@ -66,7 +73,7 @@ const ARPages = () => {
     }
     useEffect(() => {
         drawAndCapture()
-        if(labList.length !== 0) showObject()        
+        if(labList.length !== 0) labList.map(lab =>showObject(lab.modelAR)) 
     })
 
     const handleSumbit = e => {
@@ -89,22 +96,24 @@ const ARPages = () => {
             <div className="ar-container">
             {
                 labList.length !== 0 ?
-                <div className="ar-content">
-                    <h1>{labList[0].title}</h1>
-                    <section className="lab-description">
-                        {labList[0].description}
-                    </section>
-                    <div className="show-object">
-                        <h3>Object yang akan digunakan pada lab kali ini</h3>
-                            <div className="object-image-list">
-                                <img id='frequencyGeneratorModel' className='object-list' src={frequencyGeneratorImg} alt="Frekuensi generator" />
-                                <img id='LPFRCModel' className='object-list' src={labList[0].thumbnailAR} alt="Rangkaian HPF" />
-                                <img id='osiloskop' className='object-list' src={osiloskopImage} alt="Osilator" />
-                            </div> 
-                        <div className="canvas-container"><div></div></div>
+                labList.map(lab => (
+                    <div className="ar-content">
+                        <h1>{lab.title}</h1>
+                        <section className="lab-description">
+                            {lab.description}
+                        </section>
+                        <div className="show-object">
+                            <h3>Object yang akan digunakan pada lab kali ini</h3>
+                                <div className="object-image-list">
+                                    <img id='frequencyGeneratorModel' className='object-list' src={frequencyGeneratorImg} alt="Frekuensi generator" />
+                                    <img id='LPFRCModel' className='object-list' src={lab.thumbnailAR} alt="Rangkaian HPF" />
+                                    <img id='osiloskop' className='object-list' src={osiloskopImage} alt="Osilator" />
+                                </div> 
+                            <div className="canvas-container"><div></div></div>
+                        </div>
+                        <button onClick={() => activateAR(lab.modelAR)} className='ar-btn btn-edited'>Start AR</button>
                     </div>
-                    <button onClick={() => activateAR(labList[0].modelAR)} className='ar-btn btn-edited'>Start AR</button>
-                </div>
+                ))
                 : <div>Loading...</div>
             }
             </div>
@@ -202,7 +211,7 @@ const ARPages = () => {
                             <p>Frekuensi Generator</p>
                         </li>
                         <li className='ar-object' id='filter'>
-                            <img src={LPFRCImg} alt="filter" />
+                            <img src={labList[0].thumbnailAR} alt="filter" />
                             <p>Rangkaian Filter</p>
                         </li>
                         <li className='ar-object' id='osiloskop'>

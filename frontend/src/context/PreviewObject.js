@@ -11,7 +11,7 @@ export const PreviewObject = createContext()
 
 export const PreviewObjectProvider = ( { children } ) => {
 
-    const showObject = () => {
+    const showObject = (modelAR) => {
         const previewScene = new THREE.Scene();
         const previewCamera = new THREE.PerspectiveCamera(5, window.innerWidth/window.innerWidth, 0.1, 100);
         
@@ -42,10 +42,11 @@ export const PreviewObjectProvider = ( { children } ) => {
         document.querySelectorAll('.object-list').forEach((objek) => {
             objek.addEventListener('click', (e) => {
                 if(object !== null) previewScene.remove(object)
+                console.log(object)
 
                 if(e.target.id === 'frequencyGeneratorModel') loadModel(frequencyGeneratorModel)
                 else if(e.target.id === 'osiloskop') loadModel(osiloskop)
-                else if(e.target.id === 'LPFRCModel') loadModel('https://ar-frequency-filter-simulator.s3.ap-southeast-3.amazonaws.com/LPF_RC.gltf')
+                else if(e.target.id === 'LPFRCModel') loadModel(modelAR)
                 
             })
             

@@ -6,12 +6,19 @@ import { ModuleContext } from "../../context/ModuleContext";
 
 const AdminPanelListMateri = () => {
 
-    const {handleChangeModule, addModule, moduleList, getModule, checkModuleNumber} = useContext(ModuleContext)
+    const {handleChangeModule, addModule, moduleList, getModule, checkModuleNumber, module, updateModule} = useContext(ModuleContext)
 
     useEffect(() => {
         getModule()
         checkModuleNumber()
     },[addModule])
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        console.log(module.modulId)
+        if(module.modulId !== undefined) updateModule(module.modulId)
+        else if(module.modulId === undefined) addModule()
+    }
 
     return ( 
         <div className="admin-panel-container">
@@ -20,8 +27,8 @@ const AdminPanelListMateri = () => {
                 <h1 className="list-title">List Modul</h1>
                 <div className="add-module-form">
                     <form>
-                        <input type="text" className="input-text add-module-input" onChange={handleChangeModule} name='moduleTitle' placeholder="Nama Modul" />
-                        <button className="btn-edited add-module-btn" onClick={addModule}>Tambah Modul</button>
+                        <input type="text" className="input-text add-module-input" value={module.moduleTitle} onChange={handleChangeModule} name='moduleTitle' placeholder="Nama Modul" />
+                        <button className="btn-edited add-module-btn" onClick={handleSubmit}>Tambah Modul</button>
                     </form>
                 </div>
                 <div>

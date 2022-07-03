@@ -71,7 +71,8 @@ export const ModuleContextProvider = ({ children }) => {
     }
 
     const getDetailModule = (modulId) => {
-        axios.get(`http://localhost:8000/api/module/${modulId}`, {headers: {"Authorization" : "Bearer "+ token, 'Access-Control-Allow-Origin': '*'}})
+        axios.get(`http://localhost:8000/api/module/${modulId}`, 
+        {headers: {"Authorization" : "Bearer "+ token, 'Access-Control-Allow-Origin': '*'}})
         .then(res => {
             const dataModul = res.data.results
             setModule(dataModul)
@@ -105,14 +106,35 @@ export const ModuleContextProvider = ({ children }) => {
         })
     }
 
-    const addModule = (e) => {
-        e.preventDefault()
+    const addModule = () => {
         axios.post('http://localhost:8000/api/module/create', {
             moduleNumber: module.moduleNumber,
             title: module.moduleTitle,
         }, {headers: {"Authorization" : `Bearer ${token}`}})
         .catch(err => console.log(err))
         setModuleNum(moduleNum + 1)
+        setModule({moduleTitle: ''})
+    }
+
+    const editModule = async (modulId) => {
+        const result = await axios.get(`http://localhost:8000/api/module/${modulId}`, 
+        {headers: {"Authorization" : "Bearer "+ token, 'Access-Control-Allow-Origin': '*'}})
+        const data = result.data.results
+        console.log(data)
+        setModule({
+            moduleTitle: data.moduleTitle,
+            moduleNum: data.moduleNumber,
+            modulId: data.id
+        })
+    }
+
+    const updateModule = async(moduleId) => {
+        axios.put(`http://localhost:8000/api/module/create/${moduleId}`, {
+            moduleNumber: module.moduleNumber,
+            title: module.moduleTitle,
+        }, {headers: {"Authorization" : `Bearer ${token}`}})
+        .catch(err => console.log(err))
+        setModule({moduleTitle: ''})
     }
 
     const deleteModule = (moduleId) => {
@@ -154,10 +176,10 @@ export const ModuleContextProvider = ({ children }) => {
 
     const deleteTheory = (moduleId, theoryId) => {
         // api/module/:id/:theoryId/delete-theory
+        console.log(token)
         axios.patch(`http://localhost:8000/api/module/${moduleId}/${theoryId}/delete-theory`, {
-            headers: {"Authorization": `Bearer ${token}`}
+            headers: {"authorization": `Bearer ${token}`}
         }).catch(err => console.log(err))
-        // console.log(`http://localhost:8000/api/module/${moduleId}/${theoryId}/delete-theory`)
     }
 
     // Lab CRUD
@@ -174,7 +196,7 @@ export const ModuleContextProvider = ({ children }) => {
         data.append("thumbnail", image, image.name)
         data.append("model", labModel, labModel.name)
         axios.patch(`http://localhost:8000/api/module/${moduleId}/create-lab`, data,
-        {headers: {"Authorization" : `Bearer ${token}`, 'Content-Type': 'multipart/form-data'}})
+        {headers: {"Authorization" : `Bearer ${token}`, 'Access-Control-Allow-Origin': '*'}})
         .catch(err => console.log(err))
         setLabNum(labNum + 1)
     }
@@ -203,6 +225,8 @@ export const ModuleContextProvider = ({ children }) => {
                 handleChangeModule,
                 deleteModule,
                 getDetailModule,
+                editModule,
+                updateModule,
                 theoryList,
                 theory,
                 addTheory,
