@@ -362,7 +362,7 @@ export const findOne = async (req, res) => {
     });
 };
 
-export const update = async (req, res) => {
+export const updateModule = async (req, res) => {
   // Validate the request
   const { error } = createModuleValidation(req.body);
   if (error)
@@ -375,7 +375,10 @@ export const update = async (req, res) => {
 
   const id = req.params.id;
 
-  Module.findByIdAndUpdate(id, req.body)
+  Module.findByIdAndUpdate(id, {
+    moduleNumber: req.body.moduleNumber,
+    title: req.body.title
+  })
     .then((result) => {
       if (!result)
         return res.status(404).json({
@@ -399,3 +402,4 @@ export const update = async (req, res) => {
       });
     });
 };
+

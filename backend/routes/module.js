@@ -6,7 +6,7 @@ import { verifyUser } from "../middleware/verifyToken.js";
 
 import {
   create,
-  update,
+  updateModule,
   findOne,
   findAll,
   createTheory,
@@ -23,7 +23,7 @@ router.patch("/:id/create-theory", [verifyUser, uploadImage], createTheory);
 router.patch("/:id/create-lab", [verifyUser, uploadImage], createLab);
 router.patch("/:id/:theoryId/delete-theory", verifyUser, deleteTheory);
 router.patch("/:id/:labId/delete-lab", verifyUser, deleteLab);
-router.put("/:id/update", [verifyUser, uploadImage], update);
+router.patch("/:id/update", [verifyUser], updateModule);
 router.delete("/:id", verifyUser, deleteModule);
 
 
