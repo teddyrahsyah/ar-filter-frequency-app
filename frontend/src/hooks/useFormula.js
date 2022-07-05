@@ -4,8 +4,9 @@ import { OutputWaveContext } from "../context/OutputWaveContext"
 
 const useFormula = () => {
     const {draw} = useContext(OutputWaveContext)
+    let fc=0;
     const LPFRCFormula = (freq, resistor, capacitor ) => {
-        const fc = 1/(2*Math.PI*resistor*capacitor)
+        fc = 1/(2*Math.PI*resistor*capacitor)
         if(fc > Number(freq)){
             draw(freq)
         } else if(fc < Number(freq)){
@@ -18,7 +19,16 @@ const useFormula = () => {
     }
     
     const LPFRLFormula = (freq, resistor, induktor ) => {
-        const fc = 1/(2*Math.PI*resistor*induktor)
+        fc = resistor/(2*Math.PI*induktor)
+        if(fc > Number(freq)){
+            draw(freq)
+        } else if(fc < Number(freq)){
+            draw(0)
+        }
+    }
+
+    const LPFPasifFormula = (freq, resistor, capacitor, inductor) => {
+        fc = 1/(2*Math.PI*Math.sqrt(inductor*capacitor))
         if(fc > Number(freq)){
             draw(freq)
         } else if(fc < Number(freq)){
@@ -27,16 +37,17 @@ const useFormula = () => {
     }
 
     const HPFRCFormula = (freq, resistor, capacitor ) => {
-        const fc = 1/(2*Math.PI*resistor*capacitor)
+        fc = 1/(2*Math.PI*resistor*capacitor)
         if(fc < Number(freq)){
             draw(freq)
         } else if(fc > Number(freq)){
             draw(0)
         }
+        if(document.querySelector('.keterangan')) document.querySelector('.keterangan').innerHTML = `fc: ${fc.toFixed(2)} Hz`
     }
 
     const HPFRLFormula = (freq, resistor, induktor ) => {
-        const fc = 1/(2*Math.PI*resistor*induktor)
+        fc = 1/(2*Math.PI*resistor*induktor)
         if(fc < Number(freq)){
             draw(freq)
         } else if(fc > Number(freq)){
@@ -48,7 +59,8 @@ const useFormula = () => {
         LPFRCFormula,
         LPFRLFormula,
         HPFRCFormula,
-        HPFRLFormula
+        HPFRLFormula,
+        LPFPasifFormula
     };
 }
  

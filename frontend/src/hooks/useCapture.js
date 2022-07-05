@@ -9,7 +9,7 @@ const useCapture = () => {
             }
         }).then(function(canvas) {
             const base64image = canvas.toDataURL("image/png");
-            localStorage.setItem('imageOutput', base64image)
+            sessionStorage.setItem('imageOutput', base64image)
         });
     }
 
@@ -20,7 +20,7 @@ const useCapture = () => {
             }
         }).then(function(canvas) {
             const base64image = canvas.toDataURL("image/jpeg");
-            localStorage.setItem('imageFrequency', base64image)
+            sessionStorage.setItem('imageFrequency', base64image)
         });
     }
 

@@ -5,7 +5,7 @@ import { GLTFLoader } from '../Loaders/GLTFLoader'
 
 import frequencyGeneratorModel from '../asset/frekuensi_generator_v4.gltf'
 import osiloskop from '../asset/osiloskop_v5.gltf'
-import LPFRCModel from '../asset/LPF_RC.gltf'
+import LPFRCModel from '../asset/LPF_RC_cables.gltf'
 
 export const PreviewObject = createContext()
 
@@ -18,7 +18,7 @@ export const PreviewObjectProvider = ( { children } ) => {
         const previewRenderer = new THREE.WebGLRenderer();
         const controls = new OrbitControls(previewCamera, previewRenderer.domElement);
         previewRenderer.setSize(window.innerWidth -40, window.innerWidth -40)
-        previewRenderer.setPixelRatio(1)
+        previewRenderer.setPixelRatio(2)
         
         const previewLight = new THREE.DirectionalLight(0xffffff, 1);
         previewLight.position.set(1, 1, 1);
@@ -38,7 +38,7 @@ export const PreviewObjectProvider = ( { children } ) => {
                 previewScene.add(object)
             })
         }
-        loadModel(frequencyGeneratorModel)
+        loadModel(LPFRCModel)
         document.querySelectorAll('.object-list').forEach((objek) => {
             objek.addEventListener('click', (e) => {
                 if(object !== null) previewScene.remove(object)

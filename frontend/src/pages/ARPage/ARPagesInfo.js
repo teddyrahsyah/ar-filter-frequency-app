@@ -29,7 +29,7 @@ const ARPages = () => {
     const {showObject} = useContext(PreviewObject)
     const { captureOutput, capturefrequency } = useCapture()
     const {labList} = useContext(ModuleContext)
-    // if (labList.length !== 0)console.log(labList)
+    let labTitle;
     
     const [indikatorValue, setIndikatorValue] = useState({
         frequencyValue:10000,
@@ -37,12 +37,7 @@ const ARPages = () => {
         kapasitorValue: 0.00000001,
         induktorValue: 0.47
     })
-    let labTitle;
-    if(labList.length !== 0){
-        labList.map((lab) => {
-            labTitle = lab.title
-        })
-    }
+    if(labList.length !== 0) labList.map((lab) => { labTitle = lab.title})
     const {checkLab} = useFetchAR(modulId, labTitle, indikatorValue)
     
 
@@ -84,11 +79,6 @@ const ARPages = () => {
             resistorValue: indikatorValue.resistorValue,
             kapasitorValue: indikatorValue.kapasitorValue
         })
-    }
-
-    const openMenu = () => {
-        document.querySelector('.model-nav').classList.toggle('nav-opened-menu')
-        document.querySelector('.model-nav-btn').classList.toggle('nav-opened-btn')
     }
 
     return (
@@ -137,8 +127,15 @@ const ARPages = () => {
                                     <label htmlFor="indikator">Indikator: </label>
                                     <select name="indikator" id="indikator" onChange={handleRadio}>
                                         <option value="frekuensi">frekuensi</option>
-                                        <option value="kapasitor">kapasitor</option>
                                         <option value="resistor">Resistor</option>
+                                        {
+                                            labList.length !== 0 ?
+                                            labList.map(lab => (
+                                                lab.title.toUpperCase().includes('RL') ? 
+                                                <option value="induktor">Induktor</option> : 
+                                                <option value="kapasitor">Kapasitor</option>
+                                            )) : <></>
+                                        }
                                     </select>
                                 </div>
                                 <section className='input-frequency'>
@@ -168,6 +165,7 @@ const ARPages = () => {
                                     />
                                     <button className='change-freq-btn'>Ubah</button>
                                 </section>
+                                <section className="keterangan"></section>
                             </form>
                         </Popup>                        
                     </div>
@@ -196,30 +194,6 @@ const ARPages = () => {
                         <p>Pilih Objek yang mau diletakkan terlebih dahulu!</p>
                     </div>
                 </div>
-                
-                {/* image for menu */}
-                <div className="model-nav-btn">
-                    <button className="open-btn btn-edited ar-session-btn" onClick={openMenu}>
-                        <img src={rightIcon} alt="" />
-                    </button>
-                </div>
-                {
-                    labList.length !==0 ?
-                    <ul className="model-nav">
-                        <li className='ar-object' id='frequencyGenerator'>
-                            <img src={frequencyGeneratorImg} alt="frequency generator" />
-                            <p>Frekuensi Generator</p>
-                        </li>
-                        <li className='ar-object' id='filter'>
-                            <img src={labList[0].thumbnailAR} alt="filter" />
-                            <p>Rangkaian Filter</p>
-                        </li>
-                        <li className='ar-object' id='osiloskop'>
-                            <img src={osiloskopImage} alt="osiloskop" />
-                            <p>LCD Monitor</p>
-                        </li>
-                    </ul> : <div>Loading...</div>
-                }
             </div>
         </div>
     );

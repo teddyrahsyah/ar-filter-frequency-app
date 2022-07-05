@@ -65,6 +65,8 @@
 
 .ar-session-btn{ border: 0.1rem solid rgba(0, 0, 0, 0.5) !important;}
 
+.ar-session-btn:active{ transform: translateY(0.5rem);}
+
 .widgets{
     display: none;
 }
@@ -226,6 +228,12 @@
     background-color: var(--secondary-light);
     padding: 0.7rem 1rem;
     border-radius: 0.3rem;
+}
+
+.keterangan{
+    margin-top: 0.9rem;
+    text-align: center;
+    color: var(--text-dark);
 }
 
 .error-no-model{
