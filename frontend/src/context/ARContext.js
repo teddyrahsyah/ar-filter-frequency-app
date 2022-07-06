@@ -5,7 +5,7 @@ import { OrbitControls } from "../controller/OrbitControls";
 
 import osiloskop from '../asset/osiloskop_v5.gltf'
 import frequencyGenerator from '../asset/frekuensi_generator_v4.gltf'
-import filter from '../asset/LPF_RC.gltf'
+import LPFRCModel from '../asset/LPF RC_w_cables_v2.gltf'
 
 export const ARContext = createContext();
 
@@ -67,7 +67,7 @@ export const ARContextProvider = ({ children }) => {
         const imageTextureLoader = new THREE.TextureLoader();
         const addImage = () => {
             imageMaterialOutput = new THREE.MeshBasicMaterial({
-                map: imageTextureLoader.load(localStorage.getItem('imageOutput')),
+                map: imageTextureLoader.load(sessionStorage.getItem('imageOutput')),
                 side: THREE.DoubleSide
             })
 
@@ -75,10 +75,10 @@ export const ARContextProvider = ({ children }) => {
         }
         const addImageFreq = () => {
             imageMaterialFrequency = new THREE.MeshBasicMaterial({
-                map: imageTextureLoader.load(localStorage.getItem('imageFrequency')),
-                side: THREE.FrontSide
+                map: imageTextureLoader.load(sessionStorage.getItem('imageFrequency')),
+                side: THREE.DoubleSide
             })
-
+            
             return imageMaterialFrequency
         }
 
@@ -89,73 +89,28 @@ export const ARContextProvider = ({ children }) => {
             reticle.visible = false;
             scene.add(reticle)
         })
+
         // loading AR Object
-        const loadOsiloskopModel = () => {
-            loader.load(osiloskop, (gltf) => {
+        const loadModel = () => {
+            loader.load(LPFRCModel, (gltf) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
-                group = new THREE.Group();
-                outputContainer = new THREE.Mesh(new THREE.PlaneGeometry(0.15,0.13), addImage());
-                outputContainer.visible = false
-                // currentModel.attach(outputContainer)
-                console.log(currentModel)
-                group.add(outputContainer);
-                group.add( currentModel );                
-                scene.add(group)
+                currentModel.children.map(plane => {
+                    if( plane.name === 'Plane_frequency') {
+                        plane.material = addImageFreq()
+                        console.log(plane.material)
+                    }
+                    else if( plane.name === 'Plane_output') plane.material = addImage()
+                })          
+                console.log(currentModel)   
+                scene.add(currentModel)
             })
         }
-        
-        const loadFreqGenModel = () => {
-            loader.load(frequencyGenerator, (gltf) => {
-                currentModel = gltf.scene;
-                currentModel.visible = false;
-                group = new THREE.Group();
-                frequencyCounterContainer = new THREE.Mesh(new THREE.PlaneGeometry(0.09,0.06), addImageFreq());
-                frequencyCounterContainer.visible = false
-                console.log(frequencyCounterContainer)
-                group.add(frequencyCounterContainer);
-                group.add( currentModel );
-                scene.add(group)
-            })
-        }
-        
-        const loadFilterModel = (model) => {
-            loader.load(model, (gltf) => {
-                currentModel = gltf.scene;
-                currentModel.visible = false;
-                group = new THREE.Group();
-                group.add( currentModel );
-                scene.add(group)
-            })
-        }
-
-        // toggle for the clicked object
-        const clickedToggleARObject = (element) => {
-            document.querySelectorAll('.ar-object').forEach(object => {
-                object.classList.remove('clicked')
-            })
-            element.classList.add('clicked')
-        }
-
-        document.querySelectorAll('.ar-object').forEach(arObject => {
-            arObject.addEventListener('click', (e) => {
-                if(e.target.parentNode.id === 'frequencyGenerator') {
-                    loadFreqGenModel()
-                    clickedToggleARObject(e.target.parentNode)
-                } else if(e.target.parentNode.id === 'filter') {
-                    loadFilterModel(filterModel)
-                    clickedToggleARObject(e.target.parentNode)
-                } else if(e.target.parentNode.id === 'osiloskop') {
-                    loadOsiloskopModel()
-                    clickedToggleARObject(e.target.parentNode)
-                }
-            })
-        })
+        loadModel();
 
         // rotate object
         const rotateObject = degree => {
-            // if(currentModel && reticle.visible) group.children.forEach(child => child.rotateOnWorldAxis(new THREE.Vector3(0,1,0), degree))
-            if(currentModel && reticle.visible) group.setRotationFromAxisAngle(new THREE.Vector3(0,1,0), degree)
+            if(currentModel && reticle.visible) currentModel.rotateOnWorldAxis(new THREE.Vector3(0,1,0), degree)
         }
 
         const onXRFrame = (time, frame) => {
@@ -194,14 +149,6 @@ export const ARContextProvider = ({ children }) => {
                 currentModel.visible = true;
                 currentModel.castShadow = true
                 currentModel.position.setFromMatrixPosition(reticle.matrix);
-                if(currentModel.children[0].name === 'osiloskop'){
-                    outputContainer.position.set(reticle.position.x - 0.08, reticle.position.y + 0.12, reticle.position.z + 0.08);
-                    // outputContainer.position.set(reticle.position.x- 0.3, reticle.position.y+ 0.42, reticle.position.z+0.6);
-                    // outputContainer.position.set(reticle.position.x, reticle.position.y, reticle.position.z);
-                }
-                if(currentModel.children[0].name === "frequency_generator"){
-                    frequencyCounterContainer.position.set(reticle.position.x - 0.09, reticle.position.y + 0.2, reticle.position.z + 0.25);
-                }
             }
         })
  
@@ -212,25 +159,19 @@ export const ARContextProvider = ({ children }) => {
         
         // run btn
         document.querySelector('.run-btn').addEventListener('click', () => {
-            outputContainer.visible = true
-            frequencyCounterContainer.visible = true
-            imageMaterialFrequency.map = imageTextureLoader.load(localStorage.getItem('imageFrequency'))
-            imageMaterialOutput.map = imageTextureLoader.load(localStorage.getItem('imageOutput'))
+            console.log(currentModel)
+            currentModel.children.map(plane => {
+                if( plane.name === 'Plane_frequency') plane.material = addImageFreq()
+                else if( plane.name === 'Plane_output') plane.material = addImage()
+            })
+            
         })
 
         document.querySelector('.close-btn').addEventListener('click', () => {
             session.end();
             document.querySelector('.ar-container').classList.remove('ar')
             document.querySelector('.widgets').classList.remove('ar')
-            localStorage.clear()
-
-            // clearing menu choice
-            document.querySelectorAll('.ar-object').forEach(object => {
-                object.classList.remove('clicked')
-            })
-
             currentModel = null
-            
             renderer.setSize(window.innerWidth, window.innerHeight)
         })
     }

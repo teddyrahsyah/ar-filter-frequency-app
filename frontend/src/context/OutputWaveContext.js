@@ -7,8 +7,7 @@ export const OutputWaveContextProvider = ({ children }) => {
 
     
 
-    const draw = (frequency, vpp, fase) => {
-        console.log(frequency)
+    const draw = (frequency) => {
         // get values directly from form
         let Vp=1
         let fo= frequency
