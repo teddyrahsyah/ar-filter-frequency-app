@@ -98,9 +98,12 @@ export const ARContextProvider = ({ children }) => {
                 currentModel.children.map(plane => {
                     if( plane.name === 'Plane_frequency') {
                         plane.material = addImageFreq()
-                        console.log(plane.material)
+                        plane.material.visible = false
                     }
-                    else if( plane.name === 'Plane_output') plane.material = addImage()
+                    else if( plane.name === 'Plane_output') {
+                        plane.material = addImage()
+                        plane.material.visible = false
+                    }
                 })          
                 console.log(currentModel)   
                 scene.add(currentModel)
@@ -161,8 +164,14 @@ export const ARContextProvider = ({ children }) => {
         document.querySelector('.run-btn').addEventListener('click', () => {
             console.log(currentModel)
             currentModel.children.map(plane => {
-                if( plane.name === 'Plane_frequency') plane.material = addImageFreq()
-                else if( plane.name === 'Plane_output') plane.material = addImage()
+                if( plane.name === 'Plane_frequency') {
+                    plane.material = addImageFreq()
+                    plane.material.visible = true
+                }
+                else if( plane.name === 'Plane_output') {
+                    plane.material = addImage()
+                    plane.material.visible = true
+                }
             })
             
         })

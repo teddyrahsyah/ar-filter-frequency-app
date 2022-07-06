@@ -36,12 +36,16 @@ const useFormula = () => {
         }
     }
 
-    const HPFRCFormula = (freq, resistor, capacitor ) => {
+    const HPFRCFormula = (freq, resistor, capacitor, vpp, phase, tmax ) => {
         fc = 1/(2*Math.PI*resistor*capacitor)
         if(fc < Number(freq)){
-            draw(freq)
+            draw(freq, vpp, phase, tmax)
+            console.log(`phase: ${phase}`)
+            console.log(`vpp: ${vpp}`)
         } else if(fc > Number(freq)){
-            draw(0)
+            draw(0, vpp, phase, tmax)
+            console.log(`phase: ${phase}`)
+            console.log(`vpp: ${vpp}`)
         }
         if(document.querySelector('.keterangan')) document.querySelector('.keterangan').innerHTML = `fc: ${fc.toFixed(2)} Hz`
     }

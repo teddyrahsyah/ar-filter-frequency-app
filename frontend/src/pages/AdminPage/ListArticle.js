@@ -4,9 +4,15 @@ import AdminNavbar from "../../components/AdminNavbar";
 import { ArticleContext } from "../../context/ArticleContext";
 import editIcon from '../../asset/icons/edit.svg'
 import deleteIcon from '../../asset/icons/delete.svg'
+import { useEffect } from "react";
 
 const AdminPanelListArticle = () => {
-    const {articleList, deleteArticle} = useContext(ArticleContext)
+    const {articleList, deleteArticle, getArticle} = useContext(ArticleContext)
+
+    useEffect(() => {
+        getArticle()
+    })
+
     return ( 
         <div className="admin-panel-container">
             <AdminNavbar />

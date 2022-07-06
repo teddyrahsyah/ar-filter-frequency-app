@@ -4,7 +4,7 @@ import useFormula from '../hooks/useFormula';
 import { ModuleContext } from '../context/ModuleContext';
 import { useEffect } from 'react';
 
-const useFetchAR = (modulId, title, indikatorValue) => {
+const useFetchAR = (modulId, title, indikatorValue, osiloskopValue) => {
 
     const {LPFRCFormula, HPFRCFormula, fc} = useFormula()
     const {getDetailModule} = useContext(ModuleContext)
@@ -17,8 +17,12 @@ const useFetchAR = (modulId, title, indikatorValue) => {
                 HPFRCFormula(
                     parseFloat(indikatorValue.frequencyValue), 
                     parseFloat(indikatorValue.resistorValue), 
-                    parseFloat(indikatorValue.kapasitorValue)
+                    parseFloat(indikatorValue.kapasitorValue),
+                    parseFloat(osiloskopValue.vppValue),
+                    parseFloat(osiloskopValue.phaseValue),
+                    parseFloat(osiloskopValue.tMaxValue),
                 )
+                console.log('vpp: ' + osiloskopValue.vppValue)
             } else if(title.includes("LPF RL")) {
                 LPFRCFormula(
                     parseFloat(indikatorValue.frequencyValue), 
