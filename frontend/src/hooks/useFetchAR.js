@@ -12,6 +12,24 @@ const useFetchAR = (modulId, title, indikatorValue, osiloskopValue) => {
     useEffect(() => {getDetailModule(modulId)}, [])
 
     const checkLab = () => {
+<<<<<<< HEAD
+        console.log(title)
+        if(title !== undefined) {
+          if (title.includes("HPF RC")) {
+            LPFRCFormula(
+              parseFloat(indikatorValue.frequencyValue),
+              parseFloat(indikatorValue.resistorValue),
+              parseFloat(indikatorValue.kapasitorValue)
+            )
+          } else if (title.includes("LPF RL")) {
+            LPFRCFormula(
+              parseFloat(indikatorValue.frequencyValue),
+              parseFloat(indikatorValue.resistorValue),
+              parseFloat(indikatorValue.kapasitorValue)
+            )
+          }
+        }
+=======
         if(title !== undefined){
             if(title.includes("HPF RC")) {
                 HPFRCFormula(
@@ -32,9 +50,10 @@ const useFetchAR = (modulId, title, indikatorValue, osiloskopValue) => {
             }
         }
         
+>>>>>>> fab2607718073f203742c8f794ff4efe7a1a0a6b
     }
 
     return{checkLab, fc};
 }
- 
+
 export default useFetchAR;

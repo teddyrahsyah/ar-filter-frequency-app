@@ -110,7 +110,17 @@ export const findOne = async (req, res) => {
 export const update = async (req, res) => {
   const id = req.params.id;
 
-  Article.findByIdAndUpdate(id)
+  // Upload Thumbnail Image
+  const file = req.file;
+  const uploadResult = await uploadFile(file);
+  await unlinkFile(file.path);
+
+  Article.findByIdAndUpdate(id, {
+    title: req.body.title,
+    category: req.body.category,
+    description: req.body.description,
+    image: uploadResult.Location,
+  })
     .then((result) => {
       if (!result)
         return res.status(404).json({
