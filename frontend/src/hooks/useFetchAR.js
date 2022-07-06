@@ -14,23 +14,24 @@ const useFetchAR = (modulId, title, indikatorValue) => {
 
     const checkLab = () => {
         console.log(title)
-        // if(title.includes("HPF RC")) {
-        //     LPFRCFormula(
-        //         parseFloat(indikatorValue.frequencyValue), 
-        //         parseFloat(indikatorValue.resistorValue), 
-        //         parseFloat(indikatorValue.kapasitorValue)
-        //     )
-        // } else if(title.includes("LPF RL")) {
-        //     LPFRCFormula(
-        //         parseFloat(indikatorValue.frequencyValue), 
-        //         parseFloat(indikatorValue.resistorValue), 
-        //         parseFloat(indikatorValue.kapasitorValue)
-        //     )
-        // }
-        
+        if(title !== undefined) {
+          if (title.includes("HPF RC")) {
+            LPFRCFormula(
+              parseFloat(indikatorValue.frequencyValue),
+              parseFloat(indikatorValue.resistorValue),
+              parseFloat(indikatorValue.kapasitorValue)
+            )
+          } else if (title.includes("LPF RL")) {
+            LPFRCFormula(
+              parseFloat(indikatorValue.frequencyValue),
+              parseFloat(indikatorValue.resistorValue),
+              parseFloat(indikatorValue.kapasitorValue)
+            )
+          }
+        }
     }
 
     return{checkLab};
 }
- 
+
 export default useFetchAR;
