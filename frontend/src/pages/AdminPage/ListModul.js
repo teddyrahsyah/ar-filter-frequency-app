@@ -6,7 +6,15 @@ import { ModuleContext } from "../../context/ModuleContext";
 
 const AdminPanelListMateri = () => {
 
-    const {handleChangeModule, addModule, moduleList, getModule, checkModuleNumber, module, updateModule} = useContext(ModuleContext)
+    const {
+        handleChangeModule, 
+        addModule, 
+        moduleList, 
+        getModule, 
+        checkModuleNumber, 
+        module, 
+        updateModule
+    } = useContext(ModuleContext)
 
     useEffect(() => {
         getModule()
@@ -15,7 +23,6 @@ const AdminPanelListMateri = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(module.modulId)
         if(module.modulId !== undefined) updateModule(module.modulId)
         else if(module.modulId === undefined) addModule()
     }

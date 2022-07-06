@@ -4,7 +4,11 @@ import Popup from 'reactjs-popup';
 import { useContext, useEffect, useState } from 'react';
 import { ARContext } from '../../context/ARContext';
 import { PreviewObject } from '../../context/PreviewObject';
+import { ModuleContext } from '../../context/ModuleContext';
+import { useParams } from 'react-router-dom';
 import useCapture from '../../hooks/useCapture';
+import useFetchAR from '../../hooks/useFetchAR';
+import parse from 'html-react-parser';
 
 // import icon
 import closeIcon from '../../asset/icons/close.svg'
@@ -17,17 +21,14 @@ import osiloskopIcon from '../../asset/icons/osiloskop.svg'
 // import image
 import frequencyGeneratorImg from '../../asset/frequency_generator.png'
 import osiloskopImage from '../../asset/osiloskop.jpg'
-import { useParams } from 'react-router-dom';
-import useFetchAR from '../../hooks/useFetchAR';
-import { ModuleContext } from '../../context/ModuleContext';
 
 const ARPages = () => {
-    const {modulId} = useParams()
+    let labTitle;
+    const {modulId, labId} = useParams()
     const {activateAR} = useContext(ARContext)
     const {showObject} = useContext(PreviewObject)
     const { captureOutput, capturefrequency } = useCapture()
     const {labList} = useContext(ModuleContext)
-    let labTitle;
     
     const [indikatorValue, setIndikatorValue] = useState({
         frequencyValue:10000,
@@ -41,7 +42,7 @@ const ARPages = () => {
         tMaxValue: 0.001
     })
     
-    if(labList.length !== 0) labList.map((lab) => { labTitle = lab.title})
+    if(labList.length !== 0) labList.map((lab) => { if(lab.labId === labId) labTitle = lab.title;})
     const {checkLab} = useFetchAR(modulId, labTitle, indikatorValue, osiloskopValue)
     
 
@@ -50,16 +51,25 @@ const ARPages = () => {
             document.querySelector('.input-freq').style.display = 'block'
             document.querySelector('.input-kapasitor').style.display = 'none'
             document.querySelector('.input-resistor').style.display = 'none'
+            document.querySelector('.input-induktor').style.display = 'none'
         }
         else if(e.target.value === 'kapasitor') {
             document.querySelector('.input-kapasitor').style.display = 'block'
             document.querySelector('.input-freq').style.display = 'none'
             document.querySelector('.input-resistor').style.display = 'none'
+            document.querySelector('.input-induktor').style.display = 'none'
         }
         else if(e.target.value === 'resistor') {
             document.querySelector('.input-resistor').style.display = 'block'
             document.querySelector('.input-freq').style.display = 'none'
             document.querySelector('.input-kapasitor').style.display = 'none'
+            document.querySelector('.input-induktor').style.display = 'none'
+        }
+        else if(e.target.value === 'induktor') {
+            document.querySelector('.input-resistor').style.display = 'none'
+            document.querySelector('.input-freq').style.display = 'none'
+            document.querySelector('.input-kapasitor').style.display = 'none'
+            document.querySelector('.input-induktor').style.display = 'block'
         }
         else if(e.target.value === 'vpp') {
             document.querySelector('.input-vpp').style.display = 'block'
@@ -80,7 +90,9 @@ const ARPages = () => {
 
     useEffect(() => {
         drawAndCapture()
-        if(labList.length !== 0) labList.map(lab =>showObject(lab.modelAR)) 
+        if(labList.length !== 0) labList.map(lab => {
+            if(lab.labId === labId) showObject(lab.modelAR)
+        }) 
     })
 
     const drawAndCapture = () => {
@@ -97,13 +109,15 @@ const ARPages = () => {
         setIndikatorValue({
             frequencyValue: indikatorValue.frequencyValue,
             resistorValue: indikatorValue.resistorValue,
-            kapasitorValue: indikatorValue.kapasitorValue
+            kapasitorValue: indikatorValue.kapasitorValue,
+            induktorValue: indikatorValue.induktorValue
         })
         setOsiloskopValue({
             vppValue: osiloskopValue.vppValue,
             phaseValue: osiloskopValue.phaseValue,
             tMaxValue: osiloskopValue.tMaxValue,
         })
+        document.querySelector('.keterangan').innerHTML= `Parameter berhasil diubah!`
     }
 
     return (
@@ -111,24 +125,20 @@ const ARPages = () => {
             <div className="ar-container">
             {
                 labList.length !== 0 ?
-                labList.map(lab => (
+                labList.map(lab => lab.labId === labId ? (
                     <div className="ar-content">
                         <h1>{lab.title}</h1>
                         <section className="lab-description">
-                            {lab.description}
+                            {parse(lab.description)}
                         </section>
                         <div className="show-object">
-                            <h3>Object yang akan digunakan pada lab kali ini</h3>
-                                <div className="object-image-list">
-                                    <img id='frequencyGeneratorModel' className='object-list' src={frequencyGeneratorImg} alt="Frekuensi generator" />
-                                    <img id='LPFRCModel' className='object-list' src={lab.thumbnailAR} alt="Rangkaian HPF" />
-                                    <img id='osiloskop' className='object-list' src={osiloskopImage} alt="Osilator" />
-                                </div> 
-                            <div className="canvas-container"><div></div></div>
+                            <h2>susunan rangkaian pada lab ini</h2>
+                            <div className="canvas-container"></div>
                         </div>
                         <button onClick={() => activateAR(lab.modelAR)} className='ar-btn btn-edited'>Start AR</button>
+                        <div id="stabilization"></div>
                     </div>
-                ))
+                ) : <></>)
                 : <div>Loading...</div>
             }
             </div>
@@ -155,11 +165,11 @@ const ARPages = () => {
                                         <option value="resistor">Resistor</option>
                                         {
                                             labList.length !== 0 ?
-                                            labList.map(lab => (
+                                            labList.map(lab => lab.labId === labId ? (
                                                 lab.title.toUpperCase().includes('RL') ? 
                                                 <option value="induktor">Induktor</option> : 
                                                 <option value="kapasitor">Kapasitor</option>
-                                            )) : <></>
+                                            ) : <></>) : <></>
                                         }
                                     </select>
                                 </div>
@@ -177,8 +187,16 @@ const ARPages = () => {
                                         step="any"
                                         style={{"display": "none"}}
                                         className='input-freq-form input-text input-kapasitor'
-                                        placeholder='Kapasitor (F)'
+                                        placeholder={'Kapasitor (F)'}
                                         onChange={(e) => indikatorValue.kapasitorValue = e.target.value}
+                                    />
+                                    <input 
+                                        type="number"
+                                        step="any"
+                                        style={{"display": "none"}}
+                                        className='input-freq-form input-text input-induktor'
+                                        placeholder={'Induktor (H)'}
+                                        onChange={(e) => indikatorValue.induktorValue = e.target.value}
                                     />
                                     <input 
                                         type="number" 
@@ -230,7 +248,6 @@ const ARPages = () => {
                                     />
                                     <button className='change-freq-btn'>Ubah</button>
                                 </section>
-                                <section className="keterangan"></section>
                             </form>
                         </Popup>                       
                     </div>
@@ -251,14 +268,6 @@ const ARPages = () => {
                 <button className='close-btn btn-edited ar-session-btn'>
                     <img src={closeIcon} alt="close" />
                 </button>
-
-                {/* box model for error and input frequency */}
-                <div className="box-modal-container">                    
-                    <div className="box-modal error-no-model">
-                        <h3>Error!!</h3>
-                        <p>Pilih Objek yang mau diletakkan terlebih dahulu!</p>
-                    </div>
-                </div>
             </div>
         </div>
     );

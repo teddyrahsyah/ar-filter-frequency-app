@@ -38,7 +38,7 @@ export const PreviewObjectProvider = ( { children } ) => {
                 previewScene.add(object)
             })
         }
-        loadModel(LPFRCModel)
+        loadModel(modelAR)
         document.querySelectorAll('.object-list').forEach((objek) => {
             objek.addEventListener('click', (e) => {
                 if(object !== null) previewScene.remove(object)

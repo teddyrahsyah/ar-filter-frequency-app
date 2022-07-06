@@ -35,29 +35,8 @@ export const ModuleContextProvider = ({ children }) => {
         title: '',
         description: '',
     })
-
-    // Checking moduleNumber
-    const checkModuleNumber = () => {
-        moduleList.map(modul => {
-            if(moduleNum === modul.moduleNumber) setModuleNum(modul.moduleNumber +1)
-        })
-    }
-    const checkTheoryNumber = () => {
-        theoryList.map(theory => {
-            if(theoryNum === theory.theoryNumber) setModuleNum(theory.theoryNumber +1)
-            console.log(theoryNum,theory.theoryNumber)
-        })
-    }
     
-    // Module CRUD
-    const handleChangeModule = (e) => {
-        setModule({
-            ...module, 
-            moduleNumber: moduleNum,
-            [e.target.name]: e.target.value
-        })
-    }
-
+    // ---------- Module CRUD ----------
     const getModule = async () => {
         const result = await axios.get('http://localhost:8000/api/module')
         const data = result.data.results
@@ -105,6 +84,20 @@ export const ModuleContextProvider = ({ children }) => {
             }))
         })
     }
+    
+    const checkModuleNumber = () => {
+        moduleList.map(modul => {
+            if(moduleNum === modul.moduleNumber) setModuleNum(modul.moduleNumber +1)
+        })
+    }
+    
+    const handleChangeModule = (e) => {
+        setModule({
+            ...module, 
+            moduleNumber: moduleNum,
+            [e.target.name]: e.target.value
+        })
+    }
 
     const addModule = () => {
         axios.post('http://localhost:8000/api/module/create', {
@@ -143,8 +136,12 @@ export const ModuleContextProvider = ({ children }) => {
         .catch(err => console.log(err))
     }
 
-    // Theory CRUD
-    
+    // ---------- Theory CRUD ----------
+    const checkTheoryNumber = () => {
+        if(module.theory.length === 0) setTheoryNum(1) 
+        else if(module.theory.length > 0) module.theory.map(theory => setTheoryNum(theory.theoryNumber + 1))
+    }
+
     const handleChangeTheory = (e) => {
         setTheory({
             ...theory,
@@ -156,8 +153,6 @@ export const ModuleContextProvider = ({ children }) => {
         const str = desc.replace(/^\<p\>/,"").replace(/\<\/p\>$/,"");
         setTheoryDescription(str)
     }
-    
-    const handleImage = (e) => setImage(e.target.files[0])
 
     const addTheory = (moduleId, modulNumber, modulTitle) => {
         // http://localhost:8000/api/module/:moduleId/create-theory
@@ -171,7 +166,6 @@ export const ModuleContextProvider = ({ children }) => {
         axios.patch(`http://localhost:8000/api/module/${moduleId}/create-theory`, data,
         {headers: {"Authorization" : `Bearer ${token}`}})
         .catch(err => console.log(err))
-        setTheoryNum(theoryNum + 1)
     }
 
     const deleteTheory = (moduleId, theoryId) => {
@@ -182,7 +176,21 @@ export const ModuleContextProvider = ({ children }) => {
         }).catch(err => console.log(err))
     }
 
-    // Lab CRUD
+    const handleImage = (e) => setImage(e.target.files[0])
+    
+    // ---------- Lab CRUD ----------
+    const checkLabNumber = () => {
+        if(module.lab.length === 0) setLabNum(1)
+        else if(module.lab.length > 0) module.lab.map(lab => setLabNum(lab.labNumber + 1))
+   }
+
+    const handleChangeLab = (e) => {
+        setLab({
+            ...lab, 
+            labNumber: labNum,
+            [e.target.name]: e.target.value
+        })
+    }
     const handleModel = (e) => setlabModel(e.target.files[0])
 
     const addLab = (moduleId, modulNumber, modulTitle) => {
@@ -201,14 +209,6 @@ export const ModuleContextProvider = ({ children }) => {
         setLabNum(labNum + 1)
     }
     
-    const handleChangeLab = (e) => {
-        setLab({
-            ...lab, 
-            labNumber: labNum,
-            [e.target.name]: e.target.value
-        })
-    }
-
     const deleteLab = (moduleId, labId) => {
         axios.patch(`http://localhost:8000/api/module/${moduleId}/${labId}/delete-theory`, {
             headers: {"Authorization": `Bearer ${token}`}
@@ -241,7 +241,8 @@ export const ModuleContextProvider = ({ children }) => {
                 handleModel,
                 handleImage,
                 checkModuleNumber,
-                checkTheoryNumber
+                checkTheoryNumber,
+                checkLabNumber
             }}>
             {children}
         </ModuleContext.Provider>

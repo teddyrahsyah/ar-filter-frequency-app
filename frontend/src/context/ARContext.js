@@ -3,8 +3,6 @@ import * as THREE from 'three'
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 import { OrbitControls } from "../controller/OrbitControls";
 
-import osiloskop from '../asset/osiloskop_v5.gltf'
-import frequencyGenerator from '../asset/frekuensi_generator_v4.gltf'
 import LPFRCModel from '../asset/LPF RC_w_cables_v2.gltf'
 
 export const ARContext = createContext();
@@ -92,7 +90,7 @@ export const ARContextProvider = ({ children }) => {
 
         // loading AR Object
         const loadModel = () => {
-            loader.load(LPFRCModel, (gltf) => {
+            loader.load(filterModel, (gltf) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
                 currentModel.children.map(plane => {
@@ -102,6 +100,7 @@ export const ARContextProvider = ({ children }) => {
                     }
                     else if( plane.name === 'Plane_output') {
                         plane.material = addImage()
+                        console.log(plane.material)
                         plane.material.visible = false
                     }
                 })          
@@ -171,6 +170,7 @@ export const ARContextProvider = ({ children }) => {
                 else if( plane.name === 'Plane_output') {
                     plane.material = addImage()
                     plane.material.visible = true
+                    console.log(plane.material)
                 }
             })
             

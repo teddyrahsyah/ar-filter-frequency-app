@@ -6,30 +6,15 @@ import { useEffect } from 'react';
 
 const useFetchAR = (modulId, title, indikatorValue, osiloskopValue) => {
 
-    const {LPFRCFormula, HPFRCFormula, fc} = useFormula()
+    const {LPFRCFormula, HPFRCFormula, fc, LPFRLFormula} = useFormula()
     const {getDetailModule} = useContext(ModuleContext)
 
     useEffect(() => {getDetailModule(modulId)}, [])
 
     const checkLab = () => {
-        if(title !== undefined) {
-          if (title.includes("HPF RC")) {
-            LPFRCFormula(
-              parseFloat(indikatorValue.frequencyValue),
-              parseFloat(indikatorValue.resistorValue),
-              parseFloat(indikatorValue.kapasitorValue)
-            )
-          } else if (title.includes("LPF RL")) {
-            LPFRCFormula(
-              parseFloat(indikatorValue.frequencyValue),
-              parseFloat(indikatorValue.resistorValue),
-              parseFloat(indikatorValue.kapasitorValue)
-            )
-          }
-        }
         if(title !== undefined){
-            if(title.includes("HPF RC")) {
-                HPFRCFormula(
+            if(title.includes("LPF RC")) {
+                LPFRCFormula(
                     parseFloat(indikatorValue.frequencyValue), 
                     parseFloat(indikatorValue.resistorValue), 
                     parseFloat(indikatorValue.kapasitorValue),
@@ -37,9 +22,14 @@ const useFetchAR = (modulId, title, indikatorValue, osiloskopValue) => {
                     parseFloat(osiloskopValue.phaseValue),
                     parseFloat(osiloskopValue.tMaxValue),
                 )
-                console.log('vpp: ' + osiloskopValue.vppValue)
             } else if(title.includes("LPF RL")) {
-                LPFRCFormula(
+                LPFRLFormula(
+                    parseFloat(indikatorValue.frequencyValue), 
+                    parseFloat(indikatorValue.resistorValue), 
+                    parseFloat(indikatorValue.induktorValue)
+                )
+            } else if(title.includes("HPF RC")) {
+                HPFRCFormula(
                     parseFloat(indikatorValue.frequencyValue), 
                     parseFloat(indikatorValue.resistorValue), 
                     parseFloat(indikatorValue.kapasitorValue)
