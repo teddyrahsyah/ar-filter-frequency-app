@@ -32,9 +32,8 @@ export const createModuleValidation = (data) => {
 export const createArticleValidation = (data) => {
 	const schema = Joi.object({
 		title: Joi.string().required(),
+    category: Joi.string().required(),
 		description: Joi.string().required(),
-		imageData: Joi.string().dataUri(),
-		tags: Joi.array().items(Joi.string()),
 	});
 
 	return schema.validate(data);
