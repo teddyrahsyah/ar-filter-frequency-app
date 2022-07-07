@@ -7,10 +7,18 @@ import { Editor } from '@tinymce/tinymce-react';
 
 const AddLabForm = () => {
     const {id} = useParams()
-    const {handleChangeLab, addLab, handleImage, handleModel, getDetailModule, module, handleDescription} = useContext(ModuleContext)
+    const {
+        handleChangeLab, 
+        addLab, 
+        handleImage, 
+        handleModel, 
+        getDetailModule,
+        module, 
+        handleDescription
+    } = useContext(ModuleContext)
+
     const navigate = useNavigate();
     const editorRef = useRef(null);
-
     const goBack = () => navigate(-1)
 
     const handleSubmitLab = (e) => {
@@ -64,11 +72,12 @@ const AddLabForm = () => {
                     apiKey="8dotdc22kact10o1q74xf3s2eurvoappeug7wgxa90gwt1sq"
                     onInit={(evt, editor) => editorRef.current = editor}
                     initialValue="Write here..."
+                    plugins={['lists', 'nonbreaking', 'preview']}
                     init={{
                     menubar: false,
                     toolbar: 'undo redo | ' +
                     'bold italic underline | alignleft aligncenter ' +
-                    'alignright alignjustify | outdent indent | ' + 'blockquote formatselect |', 
+                    'alignright alignjustify | bullist numlist outdent indent | ' + 'blockquote formatselect | nonbreaking preview |', 
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                     }}
                 />

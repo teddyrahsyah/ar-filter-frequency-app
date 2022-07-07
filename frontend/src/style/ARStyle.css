@@ -27,17 +27,26 @@
 .ar-content h1{ 
     text-transform: capitalize;
     text-align: center;
-    font-weight: 500;
+    font-weight: 600;
+    text-decoration: underline;
     margin: 1rem 0;
 }
 
-.lab-description{ margin-bottom: 0.6rem;}
+.lab-description{ 
+    margin-bottom: 0.6rem;
+    text-align: justify;
+    line-height: 1.3rem;
+}
 
-.show-object h3{
-    font-weight: 500;
+.lab-description ul{ margin-left: 1.5rem;}
+
+.show-object h2{
+    font-weight: 600;
     text-align: center;
-    width: 22ch;
-    margin: auto;
+    padding-top: 1rem;
+    margin-top: 2rem;
+    text-transform: capitalize;
+    border-top: 0.12rem solid rgba(0, 0, 0, 0.25);
 }
 
 .object-image-list{
@@ -261,6 +270,21 @@
     height: 100vh;
 }
 
+#stabilization {
+    background-image: url('../asset/stabilization.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0);
+    z-index: 100;
+    display: none;
+}
+
+.stabilized { display: none; }
 
 @media only screen and (min-width: 821px) {
     .ar-container {

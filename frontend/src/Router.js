@@ -30,7 +30,7 @@ const Router = () => {
                 <Route path='/modul/:id' element={<ModulePage />} />
 
                 {/* AR PAge */}
-                <Route path='/ARApp/:modulId' element={<ARPagesInfo />} />
+                <Route path='/ARApp/:modulId/:labId' element={<ARPagesInfo />} />
             </Routes>
         </BrowserRouter>
     );  

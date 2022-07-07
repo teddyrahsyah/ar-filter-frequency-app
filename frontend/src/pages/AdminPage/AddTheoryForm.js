@@ -7,15 +7,25 @@ import { Editor } from '@tinymce/tinymce-react';
 
 const AddTheoryForm = () => {
     const {id} = useParams()
-    const {handleChangeTheory, addTheory, getDetailModule, module, handleImage, handleDescription, checkTheoryNumber} = useContext(ModuleContext)
+    const {
+        handleChangeTheory, 
+        addTheory, 
+        getDetailModule, 
+        module, 
+        handleImage, 
+        handleDescription, 
+        checkTheoryNumber, 
+        checkLabNumber
+    } = useContext(ModuleContext)
+
     const navigate = useNavigate();
     const editorRef = useRef(null);
-
     const goBack = () => navigate(-1)
 
     useEffect(() => {
         getDetailModule(id)
         checkTheoryNumber()
+        checkLabNumber()
     },[])
 
     const handleSubmitTheory = (e) => {

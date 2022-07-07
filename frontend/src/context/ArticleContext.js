@@ -1,8 +1,12 @@
+import axios from "axios";
 import { createContext, useState } from "react";
+import Cookies from "js-cookie"
 
 export const ArticleContext = createContext()
 
 export const ArticleContextProvider = ({ children }) => {
+
+    const token = Cookies.get('token')
 
     // Article State
     const [ articleNum, setArticleNum ] = useState(1)
@@ -11,10 +15,22 @@ export const ArticleContextProvider = ({ children }) => {
         theoryNumber: articleNum,
         title: '',
         description: '',
-        image: ''
+        category: '',
     })
+    const [image, setImage] = useState(null)
 
     // Theory CRUD
+    const getArticle = async () => {
+        const result = await axios.get('http://localhost:8000/api/article')
+        const data = result.data.results
+        setArticleList(data.map(article => {
+            return {
+                articleNumber: article.articleNumber,
+                articleTitle: article.title,
+                articleCategory: article.category
+            }
+        }))
+    }
     const addArticle = () => {
         setArticleList([...articleList, article])
         setArticleNum(articleNum + 1)
@@ -34,6 +50,7 @@ export const ArticleContextProvider = ({ children }) => {
 
     return (
         <ArticleContext.Provider value={{
+            getArticle,
             articleList,
             addArticle,
             handleChangeArticle,
