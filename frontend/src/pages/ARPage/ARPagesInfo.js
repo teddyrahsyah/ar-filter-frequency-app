@@ -18,16 +18,12 @@ import rotateRightIcon from '../../asset/icons/rotate_left.svg'
 import runIcon from '../../asset/icons/run.svg'
 import osiloskopIcon from '../../asset/icons/osiloskop.svg'
 
-// import image
-import frequencyGeneratorImg from '../../asset/frequency_generator.png'
-import osiloskopImage from '../../asset/osiloskop.jpg'
-
 const ARPages = () => {
     let labTitle;
     const {modulId, labId} = useParams()
     const {activateAR} = useContext(ARContext)
     const {showObject} = useContext(PreviewObject)
-    const { captureOutput, capturefrequency } = useCapture()
+    const { captureOutput, capturefrequency, captureResponse } = useCapture()
     const {labList} = useContext(ModuleContext)
     
     const [indikatorValue, setIndikatorValue] = useState({
@@ -92,7 +88,7 @@ const ARPages = () => {
         drawAndCapture()
         if(labList.length !== 0) labList.map(lab => {
             if(lab.labId === labId) showObject(lab.modelAR)
-        }) 
+        })
     })
 
     const drawAndCapture = () => {
@@ -100,6 +96,7 @@ const ARPages = () => {
         setTimeout(() => { 
             captureOutput()
             capturefrequency()
+            captureResponse()
         }, [500] )
     }
 
@@ -144,6 +141,7 @@ const ARPages = () => {
             </div>
             <div className="output-container">
                 <div className="output-wave"><canvas id="canvas"></canvas></div>
+                <div className="output-response"><canvas id="canvasResponse"></canvas></div>
                 <div className="frequency-counter">{indikatorValue.frequencyValue} Hz</div>
             </div>
 
@@ -221,7 +219,7 @@ const ARPages = () => {
                                         <option value="tmax">T Max</option>
                                     </select>
                                 </div>
-                                <section className='input-frequency'>
+                                <section className='input-vpp'>
                                     <input 
                                         type="number" 
                                         step="any"

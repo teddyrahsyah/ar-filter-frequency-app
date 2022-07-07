@@ -12,6 +12,17 @@ const useCapture = () => {
             sessionStorage.setItem('imageOutput', base64image)
         });
     }
+    
+    const captureResponse = () => {
+        html2canvas(document.querySelector('.output-response'), {
+            onclone : (clonedElem) => {
+                clonedElem.querySelector('.output-container').style.display = 'block'
+            }
+        }).then(function(canvas) {
+            const base64image = canvas.toDataURL("image/jpg");
+            sessionStorage.setItem('imageResponse', base64image)
+        });
+    }
 
     const capturefrequency = () => {
         html2canvas(document.querySelector('.frequency-counter'), {
@@ -24,7 +35,7 @@ const useCapture = () => {
         });
     }
 
-    return {captureOutput, capturefrequency};
+    return {captureOutput, capturefrequency, captureResponse};
 }
  
 export default useCapture;

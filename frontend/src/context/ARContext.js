@@ -79,6 +79,14 @@ export const ARContextProvider = ({ children }) => {
             
             return imageMaterialFrequency
         }
+        const addImageResponse = () => {
+            imageMaterialFrequency = new THREE.MeshBasicMaterial({
+                map: imageTextureLoader.load(sessionStorage.getItem('imageResponse')),
+                side: THREE.DoubleSide
+            })
+            
+            return imageMaterialFrequency
+        }
 
         // load 3d model
         const loader = new GLTFLoader();
@@ -168,7 +176,7 @@ export const ARContextProvider = ({ children }) => {
                     plane.material.visible = true
                 }
                 else if( plane.name === 'Plane_output') {
-                    plane.material = addImage()
+                    plane.material = addImageResponse()
                     plane.material.visible = true
                     console.log(plane.material)
                 }

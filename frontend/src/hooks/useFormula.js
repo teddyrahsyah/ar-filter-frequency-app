@@ -1,14 +1,22 @@
 import { useContext } from "react"
 import { OutputWaveContext } from "../context/OutputWaveContext"
+import { OutputResponseContext } from '../context/OutputResponseContext';
 
 
 const useFormula = () => {
     const {draw} = useContext(OutputWaveContext)
+    const {responseLPF} = useContext(OutputResponseContext)
     let fc=0;
     const LPFRCFormula = (freq, resistor, capacitor, vpp, phase, tmax ) => {
         fc = 1/(2*Math.PI*resistor*capacitor)
-        if(fc > Number(freq)) draw(freq, vpp, phase, tmax)
-        else if(fc < Number(freq)) draw(0, vpp, phase, tmax)
+        responseLPF(fc)
+        if(fc > Number(freq)) {
+            draw(freq, vpp, phase, tmax)
+
+        }
+        else if(fc < Number(freq)) {
+            draw(fc, vpp, phase, tmax)
+        }
         if(document.querySelector('.keterangan')) {
             document.querySelector('.keterangan').innerHTML = `Berhasil diubah! <br> fc: ${fc.toFixed(2)} Hz <br> R: ${resistor}Ω <br> kapasitor: ${capacitor} F`
         }
