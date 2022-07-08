@@ -72,12 +72,12 @@ const AddLabForm = () => {
                     apiKey="8dotdc22kact10o1q74xf3s2eurvoappeug7wgxa90gwt1sq"
                     onInit={(evt, editor) => editorRef.current = editor}
                     initialValue="Write here..."
-                    plugins={['lists', 'nonbreaking', 'preview']}
+                    plugins={['lists', 'nonbreaking', 'preview', 'image']}
                     init={{
                     menubar: false,
                     toolbar: 'undo redo | ' +
                     'bold italic underline | alignleft aligncenter ' +
-                    'alignright alignjustify | bullist numlist outdent indent | ' + 'blockquote formatselect | nonbreaking preview |', 
+                    'alignright alignjustify | bullist numlist outdent indent | ' + 'blockquote image |', 
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                     }}
                 />

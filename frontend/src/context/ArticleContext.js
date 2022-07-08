@@ -14,9 +14,9 @@ export const ArticleContextProvider = ({ children }) => {
     const [ article, setArticle ] = useState({
         theoryNumber: articleNum,
         title: '',
-        description: '',
         category: '',
     })
+    const [articleDescription, setArticleDescription] = useState('')
     const [image, setImage] = useState(null)
 
     // Theory CRUD
@@ -44,6 +44,11 @@ export const ArticleContextProvider = ({ children }) => {
         })
     }
 
+    const handleDescription = (desc) => {
+        const str = desc.replace(/^\<p\>/,"").replace(/\<\/p\>$/,"");
+        setArticleDescription(str)
+    }
+
     const deleteArticle = (num) => {
         setArticleList(articleList.filter(article => article.articleNumber !== Number(num)));
     }
@@ -54,6 +59,7 @@ export const ArticleContextProvider = ({ children }) => {
             articleList,
             addArticle,
             handleChangeArticle,
+            handleDescription,
             deleteArticle
         }}>
            {children} 

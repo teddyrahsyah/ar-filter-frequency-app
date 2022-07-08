@@ -19,7 +19,7 @@ const useCapture = () => {
                 clonedElem.querySelector('.output-container').style.display = 'block'
             }
         }).then(function(canvas) {
-            const base64image = canvas.toDataURL("image/jpg");
+            const base64image = canvas.toDataURL("image/gif");
             sessionStorage.setItem('imageResponse', base64image)
         });
     }

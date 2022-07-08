@@ -3,8 +3,6 @@ import * as THREE from 'three'
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 import { OrbitControls } from "../controller/OrbitControls";
 
-import LPFRCModel from '../asset/LPF RC_w_cables_v2.gltf'
-
 export const ARContext = createContext();
 
 export const ARContextProvider = ({ children }) => {
@@ -12,8 +10,7 @@ export const ARContextProvider = ({ children }) => {
     const { XRWebGLLayer } = window;
     let session, renderer, camera;
     let reticle, currentModel;
-    let outputContainer, group, frequencyCounterContainer;
-    let imageMaterialOutput, imageMaterialFrequency;
+    let imageMaterialOutput, imageMaterialFrequency, imageMaterialResponse;
 
 
     const activateAR = async (filterModel) => {
@@ -80,12 +77,12 @@ export const ARContextProvider = ({ children }) => {
             return imageMaterialFrequency
         }
         const addImageResponse = () => {
-            imageMaterialFrequency = new THREE.MeshBasicMaterial({
+            imageMaterialResponse = new THREE.MeshBasicMaterial({
                 map: imageTextureLoader.load(sessionStorage.getItem('imageResponse')),
                 side: THREE.DoubleSide
             })
             
-            return imageMaterialFrequency
+            return imageMaterialResponse
         }
 
         // load 3d model
@@ -102,17 +99,19 @@ export const ARContextProvider = ({ children }) => {
                 currentModel = gltf.scene;
                 currentModel.visible = false;
                 currentModel.children.map(plane => {
-                    if( plane.name === 'Plane_frequency') {
+                    if( plane.name === 'Plane_frequency001') {
                         plane.material = addImageFreq()
                         plane.material.visible = false
                     }
-                    else if( plane.name === 'Plane_output') {
+                    else if( plane.name === 'Plane_output001') {
                         plane.material = addImage()
-                        console.log(plane.material)
                         plane.material.visible = false
                     }
-                })          
-                console.log(currentModel)   
+                    else if( plane.name === "Plane_response001") {
+                        plane.material = addImageResponse()
+                        plane.material.visible = false
+                    }
+                })
                 scene.add(currentModel)
             })
         }
@@ -169,16 +168,16 @@ export const ARContextProvider = ({ children }) => {
         
         // run btn
         document.querySelector('.run-btn').addEventListener('click', () => {
-            console.log(currentModel)
             currentModel.children.map(plane => {
-                if( plane.name === 'Plane_frequency') {
+                if( plane.name === 'Plane_frequency001') {
                     plane.material = addImageFreq()
                     plane.material.visible = true
-                }
-                else if( plane.name === 'Plane_output') {
+                } else if( plane.name === 'Plane_output001') {
+                    plane.material = addImage()
+                    plane.material.visible = true
+                } else if( plane.name === "Plane_response001") {
                     plane.material = addImageResponse()
                     plane.material.visible = true
-                    console.log(plane.material)
                 }
             })
             

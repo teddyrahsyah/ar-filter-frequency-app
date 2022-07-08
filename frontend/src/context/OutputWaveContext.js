@@ -69,7 +69,7 @@ export const OutputWaveContextProvider = ({ children }) => {
         */
         
         // plot function
-        GraphArray(ctx,axes,x,y,"rgb(0,0,256)",1); 
+        GraphArray(ctx,axes,x,y,"rgb(0,0,256)",2); 
     
     }
     

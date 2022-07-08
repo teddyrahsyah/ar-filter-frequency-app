@@ -109,6 +109,7 @@ export const ModuleContextProvider = ({ children }) => {
         setModule({moduleTitle: ''})
     }
 
+    // get module value so it can be updated
     const editModule = async (modulId) => {
         const result = await axios.get(`http://localhost:8000/api/module/${modulId}`, 
         {headers: {"Authorization" : "Bearer "+ token, 'Access-Control-Allow-Origin': '*'}})
@@ -121,6 +122,7 @@ export const ModuleContextProvider = ({ children }) => {
         })
     }
 
+    // updating module
     const updateModule = async(moduleId) => {
         axios.put(`http://localhost:8000/api/module/create/${moduleId}`, {
             moduleNumber: module.moduleNumber,
@@ -149,6 +151,7 @@ export const ModuleContextProvider = ({ children }) => {
         })
     }
 
+    // handling description for theory and lab
     const handleDescription = (desc) => {
         const str = desc.replace(/^\<p\>/,"").replace(/\<\/p\>$/,"");
         setTheoryDescription(str)

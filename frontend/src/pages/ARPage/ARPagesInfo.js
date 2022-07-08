@@ -161,6 +161,7 @@ const ARPages = () => {
                                     <select name="indikator" id="indikator" onChange={handleRadio}>
                                         <option value="frekuensi">frekuensi</option>
                                         <option value="resistor">Resistor</option>
+                                        {console.log(labList)}
                                         {
                                             labList.length !== 0 ?
                                             labList.map(lab => lab.labId === labId ? (

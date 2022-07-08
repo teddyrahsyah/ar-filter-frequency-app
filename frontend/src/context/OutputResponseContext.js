@@ -10,33 +10,66 @@ export const OutputResponseProvider = ({children}) => {
         const canvasContext=canvas.getContext("2d");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        canvasContext.beginPath();
-        canvasContext.moveTo(0, canvas.height/3)
-        canvasContext.lineWidth = 4
-        if(canvas.width < freq){
-            for(let i = 0; i <= Math.floor(canvas.width -100); i++){
-                canvasContext.lineTo(i, canvas.height/3)
-                if(i === Math.floor(canvas.width -100)){
-                    canvasContext.lineTo(i,canvas.height -20)
-                    canvasContext.font = "20px Georgia";
-                    canvasContext.fillText(freq, i - 10, canvas.height);
-                }
-            }
-        } else if(canvas.width> freq) {
-            for(let i = 0; i <= freq; i++){
-                canvasContext.lineTo(i, canvas.height/3)
-                // console.log(i)
-                if(i === freq){
-                    canvasContext.lineTo(i,canvas.height -20)
-                    canvasContext.font = "20px Georgia";
-                    canvasContext.fillText(freq, i - 10, canvas.height);
-                }
+        for(let i = 0; i <= Math.floor(canvas.width /2); i++){
+            canvasContext.beginPath();
+            canvasContext.lineWidth = 3
+            canvasContext.moveTo(0, canvas.height/3);
+            canvasContext.lineTo(i, canvas.height/3);
+            canvasContext.stroke();
+            if(i === Math.floor(canvas.width/2)){
+                // transition band
+                canvasContext.beginPath();
+                canvasContext.moveTo(i, canvas.height/3);
+                canvasContext.lineTo(i+50, canvas.height - 20);
+                canvasContext.stroke();
+                // cutoff
+                canvasContext.beginPath();
+                canvasContext.moveTo(i, canvas.height/3);
+                canvasContext.lineTo(i, canvas.height - 20);
+                canvasContext.setLineDash([5, 3])
+                canvasContext.font = "20px Arial";
+                const frequency = `${freq.toFixed(2)} Hz`
+                canvasContext.fillText(frequency, i - 50, canvas.height);
+                canvasContext.stroke();
             }
         }
-        canvasContext.stroke()
+    }
+    
+    const responseHPF = (fc, fmax) => {
+        const canvas = document.querySelector('#canvasResponse');
+    
+        const canvasContext=canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        for(let i = 0; i <= Math.floor(canvas.width /2); i++){
+            canvasContext.beginPath();
+            canvasContext.lineWidth = 3
+            canvasContext.moveTo(canvas.width / 2, canvas.height/3);
+            canvasContext.lineTo(canvas.width, canvas.height/3);
+            canvasContext.stroke();
+            if(i === Math.floor(canvas.width/2)){
+                // transition band
+                canvasContext.beginPath();
+                canvasContext.moveTo(i, canvas.height/3);
+                canvasContext.lineTo(i-50, canvas.height - 20);
+                canvasContext.stroke();
+                canvasContext.font = "20px Arial";
+                const frequency = `${fmax.toFixed(1)} Hz`
+                canvasContext.fillText(frequency, i - 150, canvas.height);
+                // cutoff
+                canvasContext.beginPath();
+                canvasContext.moveTo(i, canvas.height/3);
+                canvasContext.lineTo(i, canvas.height - 20);
+                canvasContext.setLineDash([5, 3])
+                canvasContext.font = "20px Arial";
+                const frequencyCutoff = `${fc.toFixed(1)} Hz`
+                canvasContext.fillText(frequencyCutoff, i - 50, canvas.height);
+                canvasContext.stroke();
+            }
+        }
     }
     return (
-        <OutputResponseContext.Provider value={{responseLPF}}>
+        <OutputResponseContext.Provider value={{responseLPF, responseHPF}}>
             {children}
         </OutputResponseContext.Provider>
     )
