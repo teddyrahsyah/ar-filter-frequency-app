@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useContext } from 'react';
 import useFormula from '../hooks/useFormula';
 import { ModuleContext } from '../context/ModuleContext';
@@ -6,7 +5,15 @@ import { useEffect } from 'react';
 
 const useFetchAR = (modulId, title, indikatorValue) => {
 
-    const {LPFRCFormula, HPFRCFormula, fc, LPFRLFormula, HPFRLFormula, BPFFormula, BSFFormula} = useFormula()
+    const {fc, 
+        LPFRCFormula, 
+        HPFRCFormula, 
+        LPFRLFormula, 
+        HPFRLFormula, 
+        BPFFormula, 
+        BSFFormula,
+        ButterworthFormula
+    } = useFormula()
     const {getDetailModule} = useContext(ModuleContext)
 
     useEffect(() => {getDetailModule(modulId)}, [])
@@ -50,6 +57,14 @@ const useFetchAR = (modulId, title, indikatorValue) => {
                     parseFloat(indikatorValue.frequencyValue), 
                     parseFloat(indikatorValue.resistorValue), 
                     parseFloat(indikatorValue.kapasitorValue)
+                )
+            } else if(title.toUpperCase().includes("TESTS")) {
+                ButterworthFormula(
+                    parseFloat(indikatorValue.fcButterWorth), 
+                    parseFloat(1), 
+                    parseFloat(2),
+                    parseFloat(indikatorValue.rButterworth),
+                    parseFloat(indikatorValue.frequencyValue)
                 )
             }
         }

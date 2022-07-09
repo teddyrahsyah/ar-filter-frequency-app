@@ -140,6 +140,32 @@ const useFormula = () => {
             document.querySelector('.keterangan').innerHTML = `Berhasil diubah! <br> fc: ${fc.toFixed(2)} Hz <br> R: ${resistor}Ω <br> Kapasitor: ${capacitor} F`
         }
     }
+
+    const ButterworthFormula = (fc, cn, ln, r, fin) => {
+        const capacitor = (cn / (2*Math.PI*fc*r))*1000000000
+        const inductor = (r*ln)/(2*Math.PI*fc)
+
+        if(fc > Number(fin)) draw(fin)
+        else if(fc + 100 > Number(fin)) draw(Number(fin) +100)
+        else if(fc < Number(fin)) draw(0)
+        console.log('fin ' + fin)
+        console.log('r ' + r)
+        console.log('ln ' + ln)
+        console.log('cn ' + cn)
+        console.log('fc ' + fc)
+        console.log('capacitor ' + capacitor)
+
+        if(document.querySelector('.keterangan')) {
+            document.querySelector('.keterangan').innerHTML = `
+            Berhasil diubah! <br> 
+            fc: ${fc.toFixed(2)} Hz <br> 
+            RS: ${r.toFixed(2)} Ω <br>
+            RL: ${r.toFixed(2)} Ω <br>
+            C1 : ${capacitor.toFixed(2)} nF <br>
+            C2: ${capacitor.toFixed(2)} F <br>
+            L1: ${inductor.toFixed(2)} H`
+        }
+    }
     
 
     return {
@@ -148,7 +174,8 @@ const useFormula = () => {
         HPFRCFormula,
         HPFRLFormula,
         BPFFormula,
-        BSFFormula
+        BSFFormula,
+        ButterworthFormula
     };
 }
  
