@@ -4,9 +4,9 @@ import useFormula from '../hooks/useFormula';
 import { ModuleContext } from '../context/ModuleContext';
 import { useEffect } from 'react';
 
-const useFetchAR = (modulId, title, indikatorValue, osiloskopValue) => {
+const useFetchAR = (modulId, title, indikatorValue) => {
 
-    const {LPFRCFormula, HPFRCFormula, fc, LPFRLFormula, HPFRLFormula} = useFormula()
+    const {LPFRCFormula, HPFRCFormula, fc, LPFRLFormula, HPFRLFormula, BPFFormula, BSFFormula} = useFormula()
     const {getDetailModule} = useContext(ModuleContext)
 
     useEffect(() => {getDetailModule(modulId)}, [])
@@ -17,37 +17,39 @@ const useFetchAR = (modulId, title, indikatorValue, osiloskopValue) => {
                 LPFRCFormula(
                     parseFloat(indikatorValue.frequencyValue), 
                     parseFloat(indikatorValue.resistorValue), 
-                    parseFloat(indikatorValue.kapasitorValue),
-                    parseFloat(osiloskopValue.vppValue),
-                    parseFloat(osiloskopValue.phaseValue),
-                    parseFloat(osiloskopValue.tMaxValue),
+                    parseFloat(indikatorValue.kapasitorValue)
                 )
             } else if(title.includes("LPF RL")) {
                 LPFRLFormula(
                     parseFloat(indikatorValue.frequencyValue), 
                     parseFloat(indikatorValue.resistorValue), 
-                    parseFloat(indikatorValue.induktorValue),
-                    parseFloat(osiloskopValue.vppValue),
-                    parseFloat(osiloskopValue.phaseValue),
-                    parseFloat(osiloskopValue.tMaxValue),
+                    parseFloat(indikatorValue.induktorValue)
                 )
             } else if(title.includes("HPF RC")) {
                 HPFRCFormula(
                     parseFloat(indikatorValue.frequencyValue), 
                     parseFloat(indikatorValue.resistorValue), 
-                    parseFloat(indikatorValue.kapasitorValue),
-                    parseFloat(osiloskopValue.vppValue),
-                    parseFloat(osiloskopValue.phaseValue),
-                    parseFloat(osiloskopValue.tMaxValue),
+                    parseFloat(indikatorValue.kapasitorValue)
                 )
             } else if(title.includes("HPF RL")) {
                 HPFRLFormula(
                     parseFloat(indikatorValue.frequencyValue), 
                     parseFloat(indikatorValue.resistorValue), 
-                    parseFloat(indikatorValue.induktorValue),
-                    parseFloat(osiloskopValue.vppValue),
-                    parseFloat(osiloskopValue.phaseValue),
-                    parseFloat(osiloskopValue.tMaxValue),
+                    parseFloat(indikatorValue.induktorValue)
+                )
+            }  else if(title.includes("Band Pass")) {
+                BPFFormula(
+                    parseFloat(indikatorValue.frequencyValue), 
+                    parseFloat(indikatorValue.resistorValue), 
+                    parseFloat(indikatorValue.resistorTwoValue), 
+                    parseFloat(indikatorValue.kapasitorValue), 
+                    parseFloat(indikatorValue.kapasitorTwoValue),
+                )
+            } else if(title.includes("Band Stop")) {
+                BSFFormula(
+                    parseFloat(indikatorValue.frequencyValue), 
+                    parseFloat(indikatorValue.resistorValue), 
+                    parseFloat(indikatorValue.kapasitorValue)
                 )
             }
         }

@@ -16,7 +16,6 @@ import placeAR from '../../asset/icons/place.svg'
 import rotateLeftIcon from '../../asset/icons/rotate_right.svg'
 import rotateRightIcon from '../../asset/icons/rotate_left.svg'
 import runIcon from '../../asset/icons/run.svg'
-import osiloskopIcon from '../../asset/icons/osiloskop.svg'
 
 const ARPages = () => {
     let labTitle;
@@ -29,58 +28,40 @@ const ARPages = () => {
     const [indikatorValue, setIndikatorValue] = useState({
         frequencyValue:10000,
         resistorValue: 1000,
-        kapasitorValue: 0.00000001,
-        induktorValue: 0.47
-    })
-    const [osiloskopValue, setOsiloskopValue] = useState({
-        vppValue:1,
-        phaseValue: 0,
-        tMaxValue: 0.001
+        kapasitorValue: 0.0000006,
+        induktorValue: 0.47,
+        resistorTwoValue: 600,
+        kapasitorTwoValue: 0.0000001,
     })
     
     if(labList.length !== 0) labList.map((lab) => { if(lab.labId === labId) labTitle = lab.title;})
-    const {checkLab} = useFetchAR(modulId, labTitle, indikatorValue, osiloskopValue)
+    const {checkLab} = useFetchAR(modulId, labTitle, indikatorValue)
     
 
     const handleRadio = (e) => {
         if(e.target.value === 'frekuensi') {
             document.querySelector('.input-freq').style.display = 'block'
-            document.querySelector('.input-kapasitor').style.display = 'none'
-            document.querySelector('.input-resistor').style.display = 'none'
+            document.querySelectorAll('.input-kapasitor').forEach(el => el.style.display = 'none')
+            document.querySelectorAll('.input-resistor').forEach(el => el.style.display = 'none')
             document.querySelector('.input-induktor').style.display = 'none'
         }
         else if(e.target.value === 'kapasitor') {
-            document.querySelector('.input-kapasitor').style.display = 'block'
+            document.querySelectorAll('.input-kapasitor').forEach(el => el.style.display = 'block')
             document.querySelector('.input-freq').style.display = 'none'
-            document.querySelector('.input-resistor').style.display = 'none'
+            document.querySelectorAll('.input-resistor').forEach(el => el.style.display = 'none')
             document.querySelector('.input-induktor').style.display = 'none'
         }
         else if(e.target.value === 'resistor') {
-            document.querySelector('.input-resistor').style.display = 'block'
+            document.querySelectorAll('.input-resistor').forEach(el => el.style.display = 'block')
             document.querySelector('.input-freq').style.display = 'none'
-            document.querySelector('.input-kapasitor').style.display = 'none'
+            document.querySelectorAll('.input-kapasitor').forEach(el => el.style.display = 'none')
             document.querySelector('.input-induktor').style.display = 'none'
         }
         else if(e.target.value === 'induktor') {
-            document.querySelector('.input-resistor').style.display = 'none'
+            document.querySelectorAll('.input-resistor').forEach(el => el.style.display = 'none')
             document.querySelector('.input-freq').style.display = 'none'
-            document.querySelector('.input-kapasitor').style.display = 'none'
+            document.querySelectorAll('.input-kapasitor').forEach(el => el.style.display = 'none')
             document.querySelector('.input-induktor').style.display = 'block'
-        }
-        else if(e.target.value === 'vpp') {
-            document.querySelector('.input-vpp').style.display = 'block'
-            document.querySelector('.input-phase').style.display = 'none'
-            document.querySelector('.input-tmax').style.display = 'none'
-        }
-        else if(e.target.value === 'phase') {
-            document.querySelector('.input-phase').style.display = 'block'
-            document.querySelector('.input-vpp').style.display = 'none'
-            document.querySelector('.input-tmax').style.display = 'none'
-        }
-        else if(e.target.value === 'tmax') {
-            document.querySelector('.input-tmax').style.display = 'block'
-            document.querySelector('.input-phase').style.display = 'none'
-            document.querySelector('.input-vpp').style.display = 'none'
         }
     }
 
@@ -107,12 +88,9 @@ const ARPages = () => {
             frequencyValue: indikatorValue.frequencyValue,
             resistorValue: indikatorValue.resistorValue,
             kapasitorValue: indikatorValue.kapasitorValue,
-            induktorValue: indikatorValue.induktorValue
-        })
-        setOsiloskopValue({
-            vppValue: osiloskopValue.vppValue,
-            phaseValue: osiloskopValue.phaseValue,
-            tMaxValue: osiloskopValue.tMaxValue,
+            induktorValue: indikatorValue.induktorValue,
+            resistorTwoValue: indikatorValue.resistorTwoValue,
+            kapasitorTwoValue: indikatorValue.kapasitorTwoValue,
         })
         document.querySelector('.keterangan').innerHTML= `Parameter berhasil diubah!`
     }
@@ -161,7 +139,6 @@ const ARPages = () => {
                                     <select name="indikator" id="indikator" onChange={handleRadio}>
                                         <option value="frekuensi">frekuensi</option>
                                         <option value="resistor">Resistor</option>
-                                        {console.log(labList)}
                                         {
                                             labList.length !== 0 ?
                                             labList.map(lab => lab.labId === labId ? (
@@ -181,14 +158,23 @@ const ARPages = () => {
                                         placeholder='Frekuensi (Hz)'
                                         onChange={(e) => indikatorValue.frequencyValue = e.target.value}
                                     />
-                                    <input 
-                                        type="number"
-                                        step="any"
-                                        style={{"display": "none"}}
-                                        className='input-freq-form input-text input-kapasitor'
-                                        placeholder={'Kapasitor (F)'}
-                                        onChange={(e) => indikatorValue.kapasitorValue = e.target.value}
-                                    />
+                                    {
+                                        labList.length !== 0? 
+                                        labList.map(lab => lab.labId === labId ?
+                                            lab.title.toUpperCase().includes('BAND PASS') ?
+                                            <>  
+                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-kapasitor' placeholder={'Kapasitor 1 (F)'}onChange={(e) => indikatorValue.kapasitorValue = e.target.value}/>
+                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-kapasitor' placeholder={'Kapasitor 2 (F)'} onChange={(e) => indikatorValue.kapasitorValue = e.target.value}/>
+                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-resistor' placeholder='Resistor 1 (Ohm)' onChange={(e) => indikatorValue.resistorValue = e.target.value} />
+                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-resistor' placeholder='Resistor 2 (Ohm)' onChange={(e) => indikatorValue.resistorValue = e.target.value} />
+                                            </> : 
+                                            <>
+                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-kapasitor' placeholder={'Kapasitor (F)'} onChange={(e) => indikatorValue.kapasitorValue = e.target.value} />
+                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-resistor' placeholder='Resistor (Ohm)' onChange={(e) => indikatorValue.resistorValue = e.target.value} />
+                                            </>
+                                            : <></>)
+                                        : <></>
+                                    }
                                     <input 
                                         type="number"
                                         step="any"
@@ -197,58 +183,11 @@ const ARPages = () => {
                                         placeholder={'Induktor (H)'}
                                         onChange={(e) => indikatorValue.induktorValue = e.target.value}
                                     />
-                                    <input 
-                                        type="number" 
-                                        step="any"
-                                        style={{"display": "none"}}
-                                        className='input-freq-form input-text input-resistor'
-                                        placeholder='Resistor (Ohm)'
-                                        onChange={(e) => indikatorValue.resistorValue = e.target.value}
-                                    />
                                     <button className='change-freq-btn'>Ubah</button>
                                 </section>
                                 <section className="keterangan"></section>
                             </form>
-                        </Popup>                       
-                        <Popup trigger={<button style={{"marginLeft": "0.5rem"}} className="run-btn ar-session-btn btn-edited"><img src={osiloskopIcon} alt="" /></button>} modal>
-                            <form className="box-modal" onSubmit={handleSumbit}>
-                                <div className="input-menu">
-                                    <label htmlFor="indikator">Indikator: </label>
-                                    <select name="indikator" id="indikator" onChange={handleRadio}>
-                                        <option value="vpp">VPP</option>
-                                        <option value="phase">Fase</option>
-                                        <option value="tmax">T Max</option>
-                                    </select>
-                                </div>
-                                <section className='input-vpp'>
-                                    <input 
-                                        type="number" 
-                                        step="any"
-                                        style={{"display": "block"}}
-                                        className='input-freq-form input-text input-vpp'
-                                        placeholder='VPP (V)'
-                                        onChange={(e) => osiloskopValue.vppValue = e.target.value}
-                                    />
-                                    <input 
-                                        type="number"
-                                        step="any"
-                                        style={{"display": "none"}}
-                                        className='input-freq-form input-text input-phase'
-                                        placeholder='Fase (deg)'
-                                        onChange={(e) => osiloskopValue.phaseValue = e.target.value}
-                                    />
-                                    <input 
-                                        type="number"
-                                        step="any"
-                                        style={{"display": "none"}}
-                                        className='input-freq-form input-text input-tmax'
-                                        placeholder='T Max (s)'
-                                        onChange={(e) => osiloskopValue.tMaxValue = e.target.value}
-                                    />
-                                    <button className='change-freq-btn'>Ubah</button>
-                                </section>
-                            </form>
-                        </Popup>                       
+                        </Popup>                    
                     </div>
                     <div className="bottom-nav">
                         <button className='rotate-btn rotate-left btn-edited ar-session-btn'>

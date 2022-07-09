@@ -222,12 +222,12 @@
 
 .input-frequency{ 
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .input-freq-form{ 
-    width: 50vw;
-    margin-right: 0.5rem;
+    margin: 1rem;
 }
 
 .change-freq-btn{
