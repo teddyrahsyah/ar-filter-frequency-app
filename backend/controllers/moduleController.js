@@ -1,5 +1,4 @@
 import fs from "fs";
-import path from "path";
 import Module from "../models/ModuleModel.js";
 import { createModuleValidation } from "../helpers/validation.js";
 
@@ -401,5 +400,71 @@ export const updateModule = async (req, res) => {
         },
       });
     });
+};
+
+export const updateTheory = async (req, res) => {
+
+  const theoryId = req.params.theoryId;
+
+  Module.findOne({ "theory._id": theoryId }).then( (result) => {
+    if (!result)
+      return res.status(404).json({
+        status: 404,
+        error: {
+          message: "Data not found!",
+        },
+      });
+
+    let theory = result.theory.id(theoryId);
+
+    theory.title = req.body.title
+    theory.description = req.body.description
+
+    result.save();
+    res.status(201).json({
+      status: 201,
+      message: "Data updated successfuly.",
+    });
+  }).catch((err) => {
+    res.status(409).json({
+      status: 409,
+      error: {
+        message: err.message || "Some error while updating data!",
+      },
+    });
+  });
+};
+
+export const updateLab = async (req, res) => {
+
+  const labId = req.params.labId;
+
+  Module.findOne({ "lab._id": labId }).then((result) => {
+    if (!result)
+      return res.status(404).json({
+        status: 404,
+        error: {
+          message: "Data not found!",
+        },
+      });
+
+    let lab = result.lab.id(labId);
+
+    lab.title = req.body.title
+    lab.description = req.body.description
+
+    result.save();
+    res.status(201).json({
+      status: 201,
+      message: "Data updated successfuly.",
+    });
+  }).catch((err) => {
+    res.status(409).json({
+      status: 409,
+      error: {
+        message: err.message || "Some error while updating data!",
+      },
+    });
+  });
 };
 

@@ -14,6 +14,8 @@ import {
   deleteTheory,
   deleteLab,
   deleteModule,
+  updateTheory,
+  updateLab,
 } from "../controllers/moduleController.js";
 
 router.get("/", findAll);
@@ -24,6 +26,8 @@ router.patch("/:id/create-lab", [verifyUser, uploadImage], createLab);
 router.patch("/:id/:theoryId/delete-theory", verifyUser, deleteTheory);
 router.patch("/:id/:labId/delete-lab", verifyUser, deleteLab);
 router.patch("/:id/update", [verifyUser], updateModule);
+router.patch("/:theoryId/update-theory", [verifyUser], updateTheory);
+router.patch("/:labId/update-lab", [verifyUser], updateLab);
 router.delete("/:id", verifyUser, deleteModule);
 
 
