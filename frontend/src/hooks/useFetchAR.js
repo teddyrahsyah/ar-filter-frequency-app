@@ -12,7 +12,8 @@ const useFetchAR = (modulId, title, indikatorValue) => {
         HPFRLFormula, 
         BPFFormula, 
         BSFFormula,
-        ButterworthFormula
+        ButterworthFormula,
+        ChebychevFormula
     } = useFormula()
     const {getDetailModule} = useContext(ModuleContext)
 
@@ -58,11 +59,15 @@ const useFetchAR = (modulId, title, indikatorValue) => {
                     parseFloat(indikatorValue.resistorValue), 
                     parseFloat(indikatorValue.kapasitorValue)
                 )
-            } else if(title.toUpperCase().includes("TESTS")) {
+            } else if(title.toUpperCase().includes("BUTTERWORTH")) {
                 ButterworthFormula(
-                    parseFloat(indikatorValue.fcButterWorth), 
-                    parseFloat(1), 
-                    parseFloat(2),
+                    parseFloat(indikatorValue.fcButterWorth),
+                    parseFloat(indikatorValue.rButterworth),
+                    parseFloat(indikatorValue.frequencyValue)
+                )
+            } else if(title.toUpperCase().includes("CHEBY")) {
+                ChebychevFormula(
+                    parseFloat(indikatorValue.fcButterWorth),
                     parseFloat(indikatorValue.rButterworth),
                     parseFloat(indikatorValue.frequencyValue)
                 )

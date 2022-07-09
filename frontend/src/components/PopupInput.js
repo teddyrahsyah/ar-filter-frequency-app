@@ -70,7 +70,7 @@ const PopupInput = ({drawAndCapture, indikatorValue, labList, id, setIndikatorVa
                             labList.map(lab => lab.labId === id ? (
                                 lab.title.toUpperCase().includes('RL') ? 
                                 <option value="induktor">Induktor</option> :
-                                lab.title.toUpperCase().includes('TESTS') || lab.title.toUpperCase().includes('CHEBY') ?
+                                lab.title.toUpperCase().includes('BUTTERWORTH') || lab.title.toUpperCase().includes('CHEBY') ?
                                 <option value="fc">Fc</option> : <option value="kapasitor">Kapasitor</option>
                             ) : <></>) : <></>
                         }
@@ -95,7 +95,7 @@ const PopupInput = ({drawAndCapture, indikatorValue, labList, id, setIndikatorVa
                                 <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-resistor' placeholder='Resistor 1 (Ohm)' onChange={(e) => indikatorValue.resistorValue = e.target.value} />
                                 <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-resistor' placeholder='Resistor 2 (Ohm)' onChange={(e) => indikatorValue.resistorValue = e.target.value} />
                             </> : 
-                            lab.title.toUpperCase().includes('TESTS') || lab.title.toUpperCase().includes('CHEBY') ?
+                            lab.title.toUpperCase().includes('BUTTERWORTH') || lab.title.toUpperCase().includes('CHEBY') ?
                             <>
                                 <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-resistor' placeholder='Resistor (Ohm)' onChange={(e) => indikatorValue.rButterworth = e.target.value} />
                             </> 
