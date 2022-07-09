@@ -7,13 +7,13 @@ export const OutputWaveContextProvider = ({ children }) => {
 
     
 
-    const draw = (frequency, vpp, fasa,tMax) => {
+    const draw = (frequency) => {
         // get values directly from form
-        let Vp=vpp
+        let Vp=1
         let fo= frequency
-        let phase=fasa
+        let phase=0
         let Vmax=2
-        let Tmax=tMax
+        let Tmax=0.001
         let N=2000
         fo=Number(fo);
         phase=Number(phase);

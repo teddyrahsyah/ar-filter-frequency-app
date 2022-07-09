@@ -5,82 +5,150 @@ import { OutputResponseContext } from '../context/OutputResponseContext';
 
 const useFormula = () => {
     const {draw} = useContext(OutputWaveContext)
-    const {responseLPF, responseHPF} = useContext(OutputResponseContext)
+    const {responseLPF, responseHPF, responseBPF, responseBSF} = useContext(OutputResponseContext)
     let fc=0;
-    const LPFRCFormula = (freq, resistor, capacitor, vpp, phase, tmax ) => {
+    const LPFRCFormula = (freq, resistor, capacitor ) => {
         fc = 1/(2*Math.PI*resistor*capacitor)
-        responseLPF(fc)
+        responseLPF(fc, fc +100)
         if(fc > Number(freq)) {
-            draw(freq, vpp, phase, tmax)
+            draw(freq)
 
-        }else if(fc + 3 > Number(freq)) {
+        }else if(fc + 100 > Number(freq)) {
             console.log(fc < Number(freq) +3)
-            draw(Number(freq) +3, vpp, phase, tmax)
+            draw(Number(freq) +3)
         } else if(fc < Number(freq)) {
             console.log(fc)
             console.log(Number(freq) + 3)
-            draw(0, vpp, phase, tmax)
+            draw(0)
         }
         if(document.querySelector('.keterangan')) {
             document.querySelector('.keterangan').innerHTML = `Berhasil diubah! <br> fc: ${fc.toFixed(2)} Hz <br> R: ${resistor}Ω <br> kapasitor: ${capacitor} F`
         }
     }
     
-    const LPFRLFormula = (freq, resistor, induktor, vpp, phase, tmax ) => {
+    const LPFRLFormula = (freq, resistor, induktor ) => {
         fc = resistor/(2*Math.PI*induktor)
-        responseLPF(fc)
+        responseLPF(fc, fc + 100)
         if(  fc > Number(freq)) {
-            draw(freq, vpp, phase, tmax)
+            draw(freq)
             console.log(fc)
             console.log(Number(freq))
-        } else if(fc + 3 > Number(freq)) {
+        } else if(fc + 100 > Number(freq)) {
             console.log(fc)
             console.log(fc < Number(freq) +3)
-            draw(Number(freq) +3, vpp, phase, tmax)
+            draw(Number(freq) +3)
         } else if(fc < Number(freq)) {
             console.log(fc)
             console.log(Number(freq) + 3)
-            draw(0, vpp, phase, tmax)
+            draw(0)
         }
         if(document.querySelector('.keterangan')) {
             document.querySelector('.keterangan').innerHTML = `Berhasil diubah! <br> fc: ${fc.toFixed(2)} Hz <br> R: ${resistor}Ω <br> Induktor: ${induktor} H`
         }
     }
-    const HPFRCFormula = (freq, resistor, capacitor, vpp, phase, tmax  ) => {
+    const HPFRCFormula = (freq, resistor, capacitor  ) => {
         fc = 1/(2*Math.PI*resistor*capacitor)
-        responseHPF(fc, fc-3)
+        responseHPF(fc, fc - 100)
         if(fc < Number(freq)) {
-            draw(freq, vpp, phase, tmax)
-        } else if(fc - 3 < Number(freq)){
-            draw(freq, vpp, phase, tmax)
+            draw(freq)
+        } else if(fc - 100 < Number(freq)){
+            draw(freq)
         } else if(fc > Number(freq)) {
-            draw(0, vpp, phase, tmax)
+            draw(0)
         }
         if(document.querySelector('.keterangan')) {
             document.querySelector('.keterangan').innerHTML = `Berhasil diubah! <br> fc: ${fc.toFixed(2)} Hz <br> R: ${resistor}Ω <br> kapasitor: ${capacitor} F`
         }
     }
 
-    const HPFRLFormula = (freq, resistor, induktor, vpp, phase, tmax  ) => {
+    const HPFRLFormula = (freq, resistor, induktor,) => {
         fc = resistor/(2*Math.PI*induktor)
-        responseHPF(fc, fc-3)
+        responseHPF(fc, fc - 100)
         if(fc < Number(freq)) {
-            draw(freq, vpp, phase, tmax)
-        } else if(fc - 3 < Number(freq)){
-            draw(freq, vpp, phase, tmax)
+            draw(freq)
+        } else if(fc - 100 < Number(freq)){
+            draw(freq)
         } else if(fc > Number(freq)) {
-            draw(0, vpp, phase, tmax)
+            draw(0)
         }
         if(document.querySelector('.keterangan')) {
-            document.querySelector('.keterangan').innerHTML = `Berhasil diubah! <br> fc: ${fc.toFixed(2)} Hz <br> R: ${resistor}Ω <br> kapasitor: ${induktor} H`
+            document.querySelector('.keterangan').innerHTML = `Berhasil diubah! <br> fc: ${fc.toFixed(2)} Hz <br> R: ${resistor}Ω <br> induktor: ${induktor} F`
         }
     }
+
+    const BPFFormula = (freq, rOne, rTwo, cOne, CTwo,   ) => {
+        const fcl = 1/(2*Math.PI*rOne*cOne)
+        const fch = 1/(2*Math.PI*rTwo*CTwo)
+        responseBPF(fcl, fch, fcl-100, fch+100)
+        if(fcl < Number(freq) && fch > Number(freq)) {
+            draw(freq)
+            console.log('test')
+        }
+        else if(fcl-100 < Number(freq)  && fch+100> Number(freq)) {
+            draw(freq)
+            console.log(fcl-1 < Number(freq))
+            console.log('fcl ' + fcl)
+            console.log('fch ' + fch)
+            console.log('test 0.1')
+        }
+        else if(fcl > Number(freq) && fch > Number(freq)) {
+            draw(0)
+            console.log('test 1')
+        }
+        else if(fcl < Number(freq) && fch < Number(freq)) {
+            draw(0)
+            console.log('test 2')
+        }
+        else if(fcl > Number(freq)  && fch < Number(freq)) {
+            draw(0)
+            console.log('test 3')
+        }
+
+        if(document.querySelector('.keterangan')) {
+            document.querySelector('.keterangan').innerHTML = `
+                Berhasil diubah! <br> 
+                fc Low: ${fcl.toFixed(2)} Hz<br> 
+                fc High: ${fch.toFixed(2)} Hz<br> 
+                R1: ${rOne} Ω <br> 
+                R2: ${rTwo} Ω <br> 
+                C1: ${cOne} F<br>
+                C2: ${CTwo} F
+            `
+        }
+    }
+
+    const BSFFormula = (freq, resistor, capacitor) => {
+        fc = 1/(2*Math.PI*resistor*capacitor)
+        responseBSF(fc)
+        console.log(freq, fc)
+        if(fc === Number(freq)) {
+            draw(0)
+            console.log('test')
+        } else  if(fc < Number(freq)) {
+            draw(freq)
+            console.log('test -1')
+        }  else if(fc - 100 < Number(freq)) {
+            draw(0)
+            console.log('asdfsas')
+        } else if(fc > Number(freq)) draw(freq)
+        else if(fc + 100 > Number(freq)) {
+            draw(0)
+            console.log('test 2')
+        } 
+        
+        if(document.querySelector('.keterangan')) {
+            document.querySelector('.keterangan').innerHTML = `Berhasil diubah! <br> fc: ${fc.toFixed(2)} Hz <br> R: ${resistor}Ω <br> Kapasitor: ${capacitor} F`
+        }
+    }
+    
 
     return {
         LPFRCFormula,
         LPFRLFormula,
         HPFRCFormula,
         HPFRLFormula,
+        BPFFormula,
+        BSFFormula
     };
 }
  
