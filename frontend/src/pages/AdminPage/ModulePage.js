@@ -64,7 +64,7 @@ const ModulePage = () => {
                                     <img src={editIcon} className='cta-btn' alt="edit"  />
                                 </Link>
                                 <button className="delete-btn" value={lab.labNumber}>
-                                    <img src={deleteIcon} className='cta-btn' alt="delete" onClick={() => deleteLab(lab.labId)} />
+                                    <img src={deleteIcon} className='cta-btn' alt="delete" onClick={() => deleteLab(lab.moduleId, lab.labId)} />
                                 </button>
                             </div>
                         </div>

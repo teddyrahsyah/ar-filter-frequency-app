@@ -257,8 +257,9 @@ export const ModuleContextProvider = ({ children }) => {
     }
     
     const deleteLab = (moduleId, labId) => {
-        axios.patch(`http://localhost:8000/api/module/${moduleId}/${labId}/delete-theory`, {}, {
-            headers: {"Authorization": `Bearer ${token}`}
+        console.log(labId)
+        axios.patch(`http://localhost:8000/api/module/${moduleId}/${labId}/delete-lab`, {}, {
+            headers: {"authorization": `Bearer ${token}`}
         }).catch(err => console.log(err))
     }
 
