@@ -406,7 +406,12 @@ export const updateTheory = async (req, res) => {
 
   const theoryId = req.params.theoryId;
 
-  Module.findOne({ "theory._id": theoryId }).then( (result) => {
+  // Upload Thumbnail Image
+  const file = req.files.image[0];
+  const uploadResult = await uploadFile(file);
+  await unlinkFile(file.path);
+
+  Module.findOne({ "theory._id": theoryId }).then((result) => {
     if (!result)
       return res.status(404).json({
         status: 404,
@@ -419,6 +424,7 @@ export const updateTheory = async (req, res) => {
 
     theory.title = req.body.title
     theory.description = req.body.description
+    theory.image = uploadResult.Location
 
     result.save();
     res.status(201).json({
@@ -439,6 +445,13 @@ export const updateLab = async (req, res) => {
 
   const labId = req.params.labId;
 
+  const model = req.files.model[0];
+  const thumbnail = req.files.thumbnail[0];
+  const uploadModelResult = await uploadFile(model);
+  const uploadThumbnailResult = await uploadFile(thumbnail);
+  await unlinkFile(model.path);
+  await unlinkFile(thumbnail.path);
+
   Module.findOne({ "lab._id": labId }).then((result) => {
     if (!result)
       return res.status(404).json({
@@ -452,6 +465,8 @@ export const updateLab = async (req, res) => {
 
     lab.title = req.body.title
     lab.description = req.body.description
+    lab.modelAR = uploadModelResult.Location
+    lab.thumbnailAR = uploadThumbnailResult.Location
 
     result.save();
     res.status(201).json({
