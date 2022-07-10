@@ -28,7 +28,7 @@ export const create = async (req, res) => {
     });
 
   // Upload Thumbnail Image
-  const file = req.file;
+  const file = req.files.image[0];
   const uploadResult = await uploadFile(file);
   await unlinkFile(file.path);
 
@@ -112,7 +112,7 @@ export const update = async (req, res) => {
   const id = req.params.id;
 
   // Upload Thumbnail Image
-  const file = req.file;
+  const file = req.files.image[0];
   const uploadResult = await uploadFile(file);
   await unlinkFile(file.path);
 
