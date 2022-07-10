@@ -26,7 +26,7 @@ const ARPages = () => {
     const {labList} = useContext(ModuleContext)
     
     const [indikatorValue, setIndikatorValue] = useState({
-        frequencyValue:10000,
+        frequencyValue:500,
         resistorValue: 1000,
         kapasitorValue: 0.0000006,
         induktorValue: 0.47,
@@ -41,9 +41,6 @@ const ARPages = () => {
     // eslint-disable-next-line
     if(labList.length !== 0) labList.map((lab) => { if(lab.labId === labId) labTitle = lab.title;})
     const {checkLab} = useFetchAR(modulId, labTitle, indikatorValue)
-    
-
-    
 
     useEffect(() => {
         drawAndCapture()

@@ -1,27 +1,33 @@
-import { useContext, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import AdminNavbar from "../../components/AdminNavbar";
 import { ArticleContext } from "../../context/ArticleContext";
 import { Editor } from '@tinymce/tinymce-react';
 
 const AddArticleForm = () => {
-    const {handleChangeArticle, addArticle, handleDescription} = useContext(ArticleContext)
+    const {id} = useParams()
+    const {handleChangeArticle, addArticle, handleDescription, handleImage, editArticle, article, updateArticle} = useContext(ArticleContext)
     const navigate = useNavigate();
 
     const goBack = () => navigate(-1)
 
     const handleSubmitArticle = (e) => {
         e.preventDefault()
-        addArticle()
         goBack()
+        if(id === undefined) addArticle()
+        else updateArticle(id)
     }
 
-    const editorRef = useRef(null);
-    const log = () => {
-        if (editorRef.current) {
-        console.log(editorRef.current.getContent());
+    useEffect(() => {
+        console.log(id)
+        if(id !== undefined) {
+            editArticle(id)
+            console.log(article)
         }
-    };
+        
+    },[])
+
+    const editorRef = useRef(null);
 
     
     return (
@@ -36,15 +42,34 @@ const AddArticleForm = () => {
                     name='title' 
                     required 
                     placeholder="Judul Artikel" 
+                    value={article.title}
                     className="input-judul input-text" 
                     onChange={handleChangeArticle}
                 />
                 <section className="add-image">
                     <label htmlFor="modelAR">Image:</label>
-                    <input type="file" name='image' required className="input-image" accept="image/*"></input>
+                    <input 
+                        type="file" 
+                        name='image' 
+                        required 
+                        className="input-image" 
+                        accept="image/*" 
+                        onChange={handleImage}
+                        value={article.image}
+                    />
                 </section>
+                <input 
+                    type="text" 
+                    name='category' 
+                    required 
+                    value={article.category}
+                    placeholder="kategori Artikel" 
+                    className="input-kategori input-text" 
+                    onChange={handleChangeArticle}
+                />
                 <Editor
                     textareaName="description"
+                    value={article.description}
                     onEditorChange={(newValue, editor) => handleDescription(newValue)}
                     apiKey="8dotdc22kact10o1q74xf3s2eurvoappeug7wgxa90gwt1sq"
                     onInit={(evt, editor) => editorRef.current = editor}

@@ -23,7 +23,9 @@ const Router = () => {
                 <Route path='/adminLogin' element={<AdminPanelLogin />} />
                 <Route path='/adminHomepage' element={<AdminHomePage />} />
                 <Route path='/addForm' element={<AddArticleForm />} />
+                <Route exact path='/addForm/edit/:id' element={<AddArticleForm />} />
                 <Route path='/addTheoryForm/:id' element={<AddTheoryForm />} />
+                <Route exact path='/addTheoryForm/edit/:id/:theoryId' element={<AddTheoryForm />} />
                 <Route path='/addLabForm/:id' element={<AddLabForm />} />
                 <Route path='/listArtikel' element={<ListArticle />} />
                 <Route path='/listModul' element={<ListModul />} />

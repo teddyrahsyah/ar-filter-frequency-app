@@ -99,6 +99,16 @@ export const ModuleContextProvider = ({ children }) => {
         })
     }
 
+    const getDetailTheory = (theoryId) => {
+        theoryList.map(theory => {
+            if(theory.theoryId === theoryId) {
+                setTheory({ title: theory.title})
+                setTheoryDescription(theory.description)
+                setImage(theory.image)
+            }
+        })
+    }
+
     const addModule = () => {
         axios.post('http://localhost:8000/api/module/create', {
             moduleNumber: module.moduleNumber,
@@ -114,7 +124,7 @@ export const ModuleContextProvider = ({ children }) => {
         const result = await axios.get(`http://localhost:8000/api/module/${modulId}`, 
         {headers: {"Authorization" : "Bearer "+ token, 'Access-Control-Allow-Origin': '*'}})
         const data = result.data.results
-        console.log(data)
+        
         setModule({
             moduleTitle: data.moduleTitle,
             moduleNum: data.moduleNumber,
@@ -124,16 +134,14 @@ export const ModuleContextProvider = ({ children }) => {
 
     // updating module
     const updateModule = async(moduleId) => {
-        axios.put(`http://localhost:8000/api/module/create/${moduleId}`, {
-            moduleNumber: module.moduleNumber,
+        axios.put(`http://localhost:8000/api/module/${moduleId}/update`, {
             title: module.moduleTitle,
         }, {headers: {"Authorization" : `Bearer ${token}`}})
         .catch(err => console.log(err))
-        setModule({moduleTitle: ''})
     }
 
     const deleteModule = (moduleId) => {
-        axios.delete(`http://localhost:8000/api/module/${moduleId}`, 
+        axios.delete(`http://localhost:8000/api/module/${moduleId}`,
         {headers: {"Authorization" : `Bearer ${token}`}})
         .catch(err => console.log(err))
     }
@@ -147,7 +155,7 @@ export const ModuleContextProvider = ({ children }) => {
     const handleChangeTheory = (e) => {
         setTheory({
             ...theory,
-            [e.target.id]: e.target.value
+            [e.target.name]: e.target.value
         })
     }
 
@@ -169,12 +177,29 @@ export const ModuleContextProvider = ({ children }) => {
         axios.patch(`http://localhost:8000/api/module/${moduleId}/create-theory`, data,
         {headers: {"Authorization" : `Bearer ${token}`}})
         .catch(err => console.log(err))
+
+        setTheory({title: '',})
+        setTheoryDescription('')
+        setImage(null)
     }
+
+    // updateTheory
+    // api/module/theoryId/update-theory
+    const updateTheory = async(theoryId) => {
+        const data = new FormData()
+        data.append("title", theory.title)
+        data.append("description", theoryDescription)
+        data.append("image", image, image.name)
+        axios.patch(`http://localhost:8000/api/module/${theoryId}/update-theory`, data,
+        {headers: {"Authorization" : `Bearer ${token}`}})
+        .catch(err => console.log(err))
+    }
+
 
     const deleteTheory = (moduleId, theoryId) => {
         // api/module/:id/:theoryId/delete-theory
         console.log(token)
-        axios.patch(`http://localhost:8000/api/module/${moduleId}/${theoryId}/delete-theory`, {
+        axios.patch(`http://localhost:8000/api/module/${moduleId}/${theoryId}/delete-theory`, {}, {
             headers: {"authorization": `Bearer ${token}`}
         }).catch(err => console.log(err))
     }
@@ -213,7 +238,7 @@ export const ModuleContextProvider = ({ children }) => {
     }
     
     const deleteLab = (moduleId, labId) => {
-        axios.patch(`http://localhost:8000/api/module/${moduleId}/${labId}/delete-theory`, {
+        axios.patch(`http://localhost:8000/api/module/${moduleId}/${labId}/delete-theory`, {}, {
             headers: {"Authorization": `Bearer ${token}`}
         }).catch(err => console.log(err))
     }
@@ -232,10 +257,14 @@ export const ModuleContextProvider = ({ children }) => {
                 updateModule,
                 theoryList,
                 theory,
+                image,
+                theoryDescription,
                 addTheory,
                 handleChangeTheory,
                 handleDescription,
                 theoryDescription,
+                updateTheory,
+                getDetailTheory,
                 deleteTheory,
                 labList,
                 addLab,

@@ -72,6 +72,12 @@
     padding: 1rem 1.5rem;
 }
 
+.input-kategori{
+    width: 100%;
+    padding: 1rem 1.5rem;
+    margin-bottom: 0.9rem;
+}
+
 .add-image label, .add-model label{ font-size: 1rem;}
 
 .input-image, .input-model{ margin: 1.5rem 0.5rem;}

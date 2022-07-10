@@ -6,7 +6,7 @@ import { useParams } from "react-router"
 import { Editor } from '@tinymce/tinymce-react';
 
 const AddTheoryForm = () => {
-    const {id} = useParams()
+    const {id, theoryId} = useParams()
     const {
         handleChangeTheory, 
         addTheory, 
@@ -15,7 +15,12 @@ const AddTheoryForm = () => {
         handleImage, 
         handleDescription, 
         checkTheoryNumber, 
-        checkLabNumber
+        checkLabNumber,
+        theory,
+        image,
+        theoryDescription,
+        getDetailTheory,
+        updateTheory
     } = useContext(ModuleContext)
 
     const navigate = useNavigate();
@@ -26,11 +31,23 @@ const AddTheoryForm = () => {
         getDetailModule(id)
         checkTheoryNumber()
         checkLabNumber()
+        getDetailTheory(theoryId)
+        console.log(theory)
     },[])
 
     const handleSubmitTheory = (e) => {
+        if(theoryId !== undefined) {
+            console.log(theoryId)
+            updateTheory(theoryId)
+            goBack()
+        }
+        else {
+            console.log('test')
+            addTheory()
+            goBack()
+        }
+        console.log(theoryId)
         e.preventDefault()
-        goBack()
     }   
 
     return (
@@ -40,9 +57,11 @@ const AddTheoryForm = () => {
             <form onSubmit={handleSubmitTheory}>
                 <input 
                     type="text" 
+                    name='title' 
                     id='title' 
-                    required 
-                    placeholder="Judul Artikel" 
+                    required
+                    value={theory.title}
+                    placeholder="Judul Materi" 
                     className="input-judul input-text" 
                     onChange={handleChangeTheory}
                 />
@@ -59,6 +78,7 @@ const AddTheoryForm = () => {
                 </section>
                 <Editor
                     textareaName="description"
+                    value={theory.description}
                     onEditorChange={(newValue, editor) => handleDescription(newValue)}
                     apiKey="8dotdc22kact10o1q74xf3s2eurvoappeug7wgxa90gwt1sq"
                     onInit={(evt, editor) => editorRef.current = editor}
@@ -72,7 +92,7 @@ const AddTheoryForm = () => {
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                     }}
                 />
-                <button style={{"marginTop": '1rem'}} className="add-form-btn btn-edited" onClick={() => addTheory(id, module.moduleNumber, module.moduleTitle)}>Tambah</button>
+                <button style={{"marginTop": '1rem'}} className="add-form-btn btn-edited">Tambah</button>
             </form>
         </div>
     );

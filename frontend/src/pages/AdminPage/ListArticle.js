@@ -20,17 +20,16 @@ const AdminPanelListArticle = () => {
                 <h1 className="list-title">List Artikel</h1>
                 <Link to='/addForm'><button className="btn-edited add-module-btn">Tambah Article</button></Link>
                 {articleList.map((article) => (
-                    <div className="list" key={article.articleNumber}>
+                    <div className="list" key={article.articleId}>
                         <p className="judul-materi">
-                            {article.title}
+                            {article.articleTitle}
                         </p>
-                        <div className="call-to-action">
-                            <Link to='/addForm' className="edit-btn">
+                        <div className="call-to-action" id={article.articleId}>
+                            <Link to={`/addForm/edit/${article.articleId}`} className="edit-btn">
                                 <img src={editIcon} className='cta-btn' alt="edit"  />
                             </Link>
-                            {console.log(article.theoryNumber)}
-                            <button className="delete-btn" value={article.articleNumber}>
-                                <img src={deleteIcon} className='cta-btn' alt="delete" onClick={(e) => deleteArticle(e.target.parentElement.value)} />
+                            <button className="delete-btn">
+                                <img src={deleteIcon} className='cta-btn' alt="delete" onClick={(e) => deleteArticle(e.target.parentElement.parentElement.id)} />
                             </button>
                         </div>
                     </div>

@@ -16,8 +16,7 @@ const ModulePage = () => {
         theoryList, 
         labList, 
         deleteTheory, 
-        deleteLab, 
-        getDetailTheory,
+        deleteLab,
     } = useContext(ModuleContext)
 
     useEffect(() => {
@@ -40,9 +39,9 @@ const ModulePage = () => {
                                 {`${theory.moduleNumber}.${theory.theoryNumber}: ${theory.title}`}
                             </p>
                             <div className="call-to-action">
-                                <button onClick={getDetailTheory} className="edit-btn" value={theory.theoryNumber}>
+                                <Link to={`/addTheoryForm/edit/${id}/${theory.theoryId}`} className="edit-btn" value={theory.theoryNumber}>
                                     <img src={editIcon} className='cta-btn' alt="edit"/>
-                                </button>
+                                </Link>
                                 <button className="delete-btn" value={theory.theoryNumber}>
                                     <img src={deleteIcon} className='cta-btn' alt="delete" onClick={() => deleteTheory(theory.moduleId, theory.theoryId)} />
                                 </button>

@@ -23,7 +23,10 @@ const AdminPanelListMateri = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if(module.modulId !== undefined) updateModule(module.modulId)
+        if(module.modulId !== undefined) {
+            updateModule(module.modulId)
+            console.log(module.modulId)
+        }
         else if(module.modulId === undefined) addModule()
     }
 
