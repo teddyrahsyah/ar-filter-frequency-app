@@ -1,5 +1,4 @@
 import '../../style/App.css';
-import Popup from 'reactjs-popup';
 
 import { useContext, useEffect, useState } from 'react';
 import { ARContext } from '../../context/ARContext';
@@ -16,6 +15,7 @@ import placeAR from '../../asset/icons/place.svg'
 import rotateLeftIcon from '../../asset/icons/rotate_right.svg'
 import rotateRightIcon from '../../asset/icons/rotate_left.svg'
 import runIcon from '../../asset/icons/run.svg'
+import PopupInput from '../../components/PopupInput';
 
 const ARPages = () => {
     let labTitle;
@@ -32,41 +32,22 @@ const ARPages = () => {
         induktorValue: 0.47,
         resistorTwoValue: 600,
         kapasitorTwoValue: 0.0000001,
+        rButterworth: 600,
+        cButterworth: 100,
+        lButterworth: 100,
+        fcButterWorth: 1000
     })
-    
+
+    // eslint-disable-next-line
     if(labList.length !== 0) labList.map((lab) => { if(lab.labId === labId) labTitle = lab.title;})
     const {checkLab} = useFetchAR(modulId, labTitle, indikatorValue)
     
 
-    const handleRadio = (e) => {
-        if(e.target.value === 'frekuensi') {
-            document.querySelector('.input-freq').style.display = 'block'
-            document.querySelectorAll('.input-kapasitor').forEach(el => el.style.display = 'none')
-            document.querySelectorAll('.input-resistor').forEach(el => el.style.display = 'none')
-            document.querySelector('.input-induktor').style.display = 'none'
-        }
-        else if(e.target.value === 'kapasitor') {
-            document.querySelectorAll('.input-kapasitor').forEach(el => el.style.display = 'block')
-            document.querySelector('.input-freq').style.display = 'none'
-            document.querySelectorAll('.input-resistor').forEach(el => el.style.display = 'none')
-            document.querySelector('.input-induktor').style.display = 'none'
-        }
-        else if(e.target.value === 'resistor') {
-            document.querySelectorAll('.input-resistor').forEach(el => el.style.display = 'block')
-            document.querySelector('.input-freq').style.display = 'none'
-            document.querySelectorAll('.input-kapasitor').forEach(el => el.style.display = 'none')
-            document.querySelector('.input-induktor').style.display = 'none'
-        }
-        else if(e.target.value === 'induktor') {
-            document.querySelectorAll('.input-resistor').forEach(el => el.style.display = 'none')
-            document.querySelector('.input-freq').style.display = 'none'
-            document.querySelectorAll('.input-kapasitor').forEach(el => el.style.display = 'none')
-            document.querySelector('.input-induktor').style.display = 'block'
-        }
-    }
+    
 
     useEffect(() => {
         drawAndCapture()
+        // eslint-disable-next-line
         if(labList.length !== 0) labList.map(lab => {
             if(lab.labId === labId) showObject(lab.modelAR)
         })
@@ -79,20 +60,6 @@ const ARPages = () => {
             capturefrequency()
             captureResponse()
         }, [500] )
-    }
-
-    const handleSumbit = e => {
-        e.preventDefault()
-        drawAndCapture()
-        setIndikatorValue({
-            frequencyValue: indikatorValue.frequencyValue,
-            resistorValue: indikatorValue.resistorValue,
-            kapasitorValue: indikatorValue.kapasitorValue,
-            induktorValue: indikatorValue.induktorValue,
-            resistorTwoValue: indikatorValue.resistorTwoValue,
-            kapasitorTwoValue: indikatorValue.kapasitorTwoValue,
-        })
-        document.querySelector('.keterangan').innerHTML= `Parameter berhasil diubah!`
     }
 
     return (
@@ -132,62 +99,13 @@ const ARPages = () => {
                         <button style={{"marginRight": "0.5rem"}} className="run-btn btn-edited ar-session-btn">
                             <img src={runIcon} alt="" />
                         </button>
-                        <Popup trigger={<button className="frequency-btn ar-session-btn btn-edited"><p>Hz</p></button>} modal>
-                            <form className="box-modal" onSubmit={handleSumbit}>
-                                <div className="input-menu">
-                                    <label htmlFor="indikator">Indikator: </label>
-                                    <select name="indikator" id="indikator" onChange={handleRadio}>
-                                        <option value="frekuensi">frekuensi</option>
-                                        <option value="resistor">Resistor</option>
-                                        {
-                                            labList.length !== 0 ?
-                                            labList.map(lab => lab.labId === labId ? (
-                                                lab.title.toUpperCase().includes('RL') ? 
-                                                <option value="induktor">Induktor</option> : 
-                                                <option value="kapasitor">Kapasitor</option>
-                                            ) : <></>) : <></>
-                                        }
-                                    </select>
-                                </div>
-                                <section className='input-frequency'>
-                                    <input 
-                                        type="number" 
-                                        step="any"
-                                        style={{"display": "block"}}
-                                        className='input-freq-form input-text input-freq'
-                                        placeholder='Frekuensi (Hz)'
-                                        onChange={(e) => indikatorValue.frequencyValue = e.target.value}
-                                    />
-                                    {
-                                        labList.length !== 0? 
-                                        labList.map(lab => lab.labId === labId ?
-                                            lab.title.toUpperCase().includes('BAND PASS') ?
-                                            <>  
-                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-kapasitor' placeholder={'Kapasitor 1 (F)'}onChange={(e) => indikatorValue.kapasitorValue = e.target.value}/>
-                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-kapasitor' placeholder={'Kapasitor 2 (F)'} onChange={(e) => indikatorValue.kapasitorValue = e.target.value}/>
-                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-resistor' placeholder='Resistor 1 (Ohm)' onChange={(e) => indikatorValue.resistorValue = e.target.value} />
-                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-resistor' placeholder='Resistor 2 (Ohm)' onChange={(e) => indikatorValue.resistorValue = e.target.value} />
-                                            </> : 
-                                            <>
-                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-kapasitor' placeholder={'Kapasitor (F)'} onChange={(e) => indikatorValue.kapasitorValue = e.target.value} />
-                                                <input type="number" step="any" style={{"display": "none"}} className='input-freq-form input-text input-resistor' placeholder='Resistor (Ohm)' onChange={(e) => indikatorValue.resistorValue = e.target.value} />
-                                            </>
-                                            : <></>)
-                                        : <></>
-                                    }
-                                    <input 
-                                        type="number"
-                                        step="any"
-                                        style={{"display": "none"}}
-                                        className='input-freq-form input-text input-induktor'
-                                        placeholder={'Induktor (H)'}
-                                        onChange={(e) => indikatorValue.induktorValue = e.target.value}
-                                    />
-                                    <button className='change-freq-btn'>Ubah</button>
-                                </section>
-                                <section className="keterangan"></section>
-                            </form>
-                        </Popup>                    
+                        <PopupInput 
+                            drawAndCapture={drawAndCapture}   
+                            indikatorValue = {indikatorValue}
+                            labList = {labList}
+                            id = {labId}
+                            setIndikatorValue = {setIndikatorValue}
+                        />   
                     </div>
                     <div className="bottom-nav">
                         <button className='rotate-btn rotate-left btn-edited ar-session-btn'>

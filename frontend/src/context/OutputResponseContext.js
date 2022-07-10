@@ -22,7 +22,7 @@ export const OutputResponseProvider = ({children}) => {
                 canvasContext.moveTo(i, canvas.height/3);
                 canvasContext.lineTo(i+50, canvas.height - 20);
                 canvasContext.stroke();
-                canvasContext.font = "20px Arial";
+                canvasContext.font = "15px Arial";
                 const flow = `${fmin.toFixed(2)} Hz`
                 canvasContext.fillText(flow, i + 50, canvas.height);
                 // cutoff
@@ -30,7 +30,7 @@ export const OutputResponseProvider = ({children}) => {
                 canvasContext.moveTo(i, canvas.height/3);
                 canvasContext.lineTo(i, canvas.height - 20);
                 canvasContext.setLineDash([5, 3])
-                canvasContext.font = "20px Arial";
+                canvasContext.font = "15px Arial";
                 const frequency = `${freq.toFixed(2)} Hz`
                 canvasContext.fillText(frequency, i - 50, canvas.height);
                 canvasContext.stroke();
@@ -165,8 +165,52 @@ export const OutputResponseProvider = ({children}) => {
         const fc = `${fn.toFixed(1)} Hz`
         canvasContext.fillText(fc, canvas.width/2, canvas.height);
     }
+
+    const responseButterworth = () => {
+        const canvas = document.querySelector('#canvasResponse');
+    
+        const canvasContext=canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        for(let i = 0; i <= Math.floor(canvas.width /2); i++){
+            canvasContext.beginPath();
+            canvasContext.lineWidth = 3
+            canvasContext.moveTo(0, canvas.height/3);
+            canvasContext.lineTo(i, canvas.height/3);
+            canvasContext.stroke();
+            if(i === Math.floor(canvas.width/2)){
+                // transition band
+                canvasContext.beginPath();
+                canvasContext.moveTo(i, canvas.height/3);
+                canvasContext.lineTo(i+15, canvas.height - 20);
+                canvasContext.stroke();
+            }
+        }
+    }
+
+    const responseChebychev = () => {
+        const canvas = document.querySelector('#canvasResponse');
+        const canvasContext=canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        canvasContext.beginPath();
+        canvasContext.strokeStyle = '#f00';
+        canvasContext.lineWidth = 3
+        canvasContext.moveTo(0, canvas.height/3);
+        canvasContext.bezierCurveTo(canvas.width/6, canvas.height/60+ canvas.height/4, canvas.height/10, canvas.height/3 + canvas.height/10, canvas.width/3, canvas.height/3 );
+        canvasContext.bezierCurveTo(canvas.height/3, canvas.height/60 + canvas.width/4, canvas.height/4, canvas.height + canvas.height/2, canvas.width + canvas.width/2, canvas.height);
+        canvasContext.stroke();
+    }
     return (
-        <OutputResponseContext.Provider value={{responseLPF, responseHPF, responseBPF, responseBSF}}>
+        <OutputResponseContext.Provider value={{
+            responseLPF, 
+            responseHPF, 
+            responseBPF, 
+            responseBSF,
+            responseButterworth,
+            responseChebychev
+        }}>
             {children}
         </OutputResponseContext.Provider>
     )

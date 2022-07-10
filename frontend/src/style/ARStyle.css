@@ -40,6 +40,11 @@
 
 .lab-description ul{ margin-left: 1.5rem;}
 
+.lab-description img { 
+    width: 100%;
+    height: auto;
+}
+
 .show-object h2{
     font-weight: 600;
     text-align: center;
