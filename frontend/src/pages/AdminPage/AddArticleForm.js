@@ -73,7 +73,6 @@ const AddArticleForm = () => {
                     onEditorChange={(newValue, editor) => handleDescription(newValue)}
                     apiKey="8dotdc22kact10o1q74xf3s2eurvoappeug7wgxa90gwt1sq"
                     onInit={(evt, editor) => editorRef.current = editor}
-                    initialValue="Write here..."
                     plugins={['lists', 'nonbreaking', 'preview', 'image']}
                     init={{
                     menubar: false,

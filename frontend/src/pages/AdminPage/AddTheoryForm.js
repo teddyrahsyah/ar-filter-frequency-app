@@ -17,7 +17,6 @@ const AddTheoryForm = () => {
         checkTheoryNumber, 
         checkLabNumber,
         theory,
-        image,
         theoryDescription,
         getDetailTheory,
         updateTheory
@@ -32,21 +31,13 @@ const AddTheoryForm = () => {
         checkTheoryNumber()
         checkLabNumber()
         getDetailTheory(theoryId)
-        console.log(theory)
-    },[])
+        console.log(theory) 
+    }, [])
 
     const handleSubmitTheory = (e) => {
-        if(theoryId !== undefined) {
-            console.log(theoryId)
-            updateTheory(theoryId)
-            goBack()
-        }
-        else {
-            console.log('test')
-            addTheory()
-            goBack()
-        }
-        console.log(theoryId)
+        if(theoryId !== undefined) updateTheory(theoryId)
+        else addTheory(id, module.moduleNumber, module.moduleTitle)
+        goBack()
         e.preventDefault()
     }   
 
@@ -78,11 +69,10 @@ const AddTheoryForm = () => {
                 </section>
                 <Editor
                     textareaName="description"
-                    value={theory.description}
+                    value={theoryDescription }
                     onEditorChange={(newValue, editor) => handleDescription(newValue)}
                     apiKey="8dotdc22kact10o1q74xf3s2eurvoappeug7wgxa90gwt1sq"
                     onInit={(evt, editor) => editorRef.current = editor}
-                    initialValue="Write here..."
                     plugins={['lists', 'nonbreaking', 'preview', 'image']}
                     init={{
                     menubar: false,

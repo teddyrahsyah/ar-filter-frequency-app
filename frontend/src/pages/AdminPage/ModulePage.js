@@ -55,12 +55,12 @@ const ModulePage = () => {
                         <Link to={`/addLabForm/${id}`} className="btn-edited add-btn">Tambah Lab</Link>
                     </div>
                     {labList.map(lab => (
-                        <div className="list" key={lab.labNumber}>
+                        <div className="list" key={lab.labId}>
                             <p className="judul-materi">
                                 {`${lab.moduleNumber}.${lab.labNumber}: ${lab.title}`}
                             </p>
                             <div className="call-to-action">
-                                <Link to='/addForm' className="edit-btn">
+                                <Link to={`/addLabForm/edit/${id}/${lab.labId}`} className="edit-btn">
                                     <img src={editIcon} className='cta-btn' alt="edit"  />
                                 </Link>
                                 <button className="delete-btn" value={lab.labNumber}>

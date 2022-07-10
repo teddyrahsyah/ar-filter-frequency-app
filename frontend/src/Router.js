@@ -27,6 +27,7 @@ const Router = () => {
                 <Route path='/addTheoryForm/:id' element={<AddTheoryForm />} />
                 <Route exact path='/addTheoryForm/edit/:id/:theoryId' element={<AddTheoryForm />} />
                 <Route path='/addLabForm/:id' element={<AddLabForm />} />
+                <Route exact path='/addLabForm/edit/:id/:labId' element={<AddLabForm />} />
                 <Route path='/listArtikel' element={<ListArticle />} />
                 <Route path='/listModul' element={<ListModul />} />
                 <Route path='/modul/:id' element={<ModulePage />} />

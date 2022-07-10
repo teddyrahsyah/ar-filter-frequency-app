@@ -6,14 +6,18 @@ import { useParams } from "react-router"
 import { Editor } from '@tinymce/tinymce-react';
 
 const AddLabForm = () => {
-    const {id} = useParams()
+    const {id, labId} = useParams()
     const {
         handleChangeLab, 
         addLab, 
         handleImage, 
         handleModel, 
         getDetailModule,
-        module, 
+        module,
+        getDetailLab,
+        lab,
+        updateLab,
+        theoryDescription,
         handleDescription
     } = useContext(ModuleContext)
 
@@ -23,13 +27,15 @@ const AddLabForm = () => {
 
     const handleSubmitLab = (e) => {
         e.preventDefault()
-        addLab(id, module.moduleNumber, module.moduleTitle)
+        if( labId !== undefined) updateLab(labId)
+        else addLab(id, module.moduleNumber, module.moduleTitle)
         goBack()
     }
 
     useEffect(() => {
         getDetailModule(id)
-    },[])
+        getDetailLab(labId)
+    }, [])
 
     return (
         <div className="admin-form-container">
@@ -40,6 +46,7 @@ const AddLabForm = () => {
                     type="text" 
                     name='title' 
                     required 
+                    value={lab.title}
                     placeholder="Judul Artikel" 
                     className="input-judul input-text" 
                     onChange={handleChangeLab}
@@ -68,10 +75,10 @@ const AddLabForm = () => {
                 </section>
                 <Editor
                     textareaName="description"
+                    value={theoryDescription}
                     onEditorChange={(newValue, editor) => handleDescription(newValue)}
                     apiKey="8dotdc22kact10o1q74xf3s2eurvoappeug7wgxa90gwt1sq"
                     onInit={(evt, editor) => editorRef.current = editor}
-                    initialValue="Write here..."
                     plugins={['lists', 'nonbreaking', 'preview', 'image']}
                     init={{
                     menubar: false,

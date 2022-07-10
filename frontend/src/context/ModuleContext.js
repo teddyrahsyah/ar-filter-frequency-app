@@ -33,7 +33,6 @@ export const ModuleContextProvider = ({ children }) => {
     const [ lab, setLab ] = useState({
         labNumber: labNum,
         title: '',
-        description: '',
     })
     
     // ---------- Module CRUD ----------
@@ -99,16 +98,6 @@ export const ModuleContextProvider = ({ children }) => {
         })
     }
 
-    const getDetailTheory = (theoryId) => {
-        theoryList.map(theory => {
-            if(theory.theoryId === theoryId) {
-                setTheory({ title: theory.title})
-                setTheoryDescription(theory.description)
-                setImage(theory.image)
-            }
-        })
-    }
-
     const addModule = () => {
         axios.post('http://localhost:8000/api/module/create', {
             moduleNumber: module.moduleNumber,
@@ -156,6 +145,16 @@ export const ModuleContextProvider = ({ children }) => {
         setTheory({
             ...theory,
             [e.target.name]: e.target.value
+        })
+    }
+
+    const getDetailTheory = (theoryId) => {
+        axios.get(`http://localhost:8000/api/module/${theoryId}/get-theory`)
+        .then(data => {
+            let result = data.data.result
+            setTheory({title: result.title})
+            setTheoryDescription(result.description)
+            setImage(result.image)
         })
     }
 
@@ -221,6 +220,16 @@ export const ModuleContextProvider = ({ children }) => {
     }
     const handleModel = (e) => setlabModel(e.target.files[0])
 
+    const getDetailLab = (labId) => {
+        axios.get(`http://localhost:8000/api/module/${labId}/get-lab`)
+        .then(data => {
+            let result = data.data.result
+            setLab({title: result.title})
+            setTheoryDescription(result.description)
+            setImage(result.image)
+        })
+    }
+
     const addLab = (moduleId, modulNumber, modulTitle) => {
         // http://localhost:8000/api/module/:moduleId/create-lab
         const data = new FormData()
@@ -235,6 +244,16 @@ export const ModuleContextProvider = ({ children }) => {
         {headers: {"Authorization" : `Bearer ${token}`, 'Access-Control-Allow-Origin': '*'}})
         .catch(err => console.log(err))
         setLabNum(labNum + 1)
+    }
+
+    const updateLab = (labId) => {
+        const data = new FormData()
+        data.append("title", lab.title)
+        data.append("description", theoryDescription)
+        data.append("image", image, image.name)
+        axios.patch(`http://localhost:8000/api/module/${labId}/update-lab`, data,
+        {headers: {"Authorization" : `Bearer ${token}`}})
+        .catch(err => console.log(err))
     }
     
     const deleteLab = (moduleId, labId) => {
@@ -268,7 +287,10 @@ export const ModuleContextProvider = ({ children }) => {
                 deleteTheory,
                 labList,
                 addLab,
+                lab,
+                updateLab,
                 handleChangeLab,
+                getDetailLab,
                 deleteLab,
                 handleModel,
                 handleImage,
