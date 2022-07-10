@@ -58,6 +58,12 @@ const ARPages = () => {
             captureResponse()
         }, [500] )
     }
+    
+    const checkARSupport = async (model) => {
+        const isArSessionSupported = navigator.xr && navigator.xr.isSessionSupported && await navigator.xr.isSessionSupported("immersive-ar");
+        if (isArSessionSupported) activateAR(model)
+        else alert('kamera hp kamu gak support AR :\'(')
+    }
 
     return (
         <div>
@@ -74,11 +80,10 @@ const ARPages = () => {
                             <h2>susunan rangkaian pada lab ini</h2>
                             <div className="canvas-container"></div>
                         </div>
-                        <button onClick={() => activateAR(lab.modelAR)} className='ar-btn btn-edited'>Start AR</button>
-                        <div id="stabilization"></div>
+                        <button onClick={() => checkARSupport(lab.modelAR)} className='ar-btn btn-edited'>Start AR</button>
                     </div>
                 ) : <></>)
-                : <div>Loading...</div>
+                : <div id='loading'></div>
             }
             </div>
             <div className="output-container">
@@ -88,6 +93,7 @@ const ARPages = () => {
             </div>
 
             {/* inside AR session */}
+            <div id="stabilization"></div>
             <div className="widgets">
                 {/* Navigation */}
                 <div className="navigation">

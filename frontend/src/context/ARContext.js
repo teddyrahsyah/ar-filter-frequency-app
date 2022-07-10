@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 import * as THREE from 'three'
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 import { OrbitControls } from "../controller/OrbitControls";
@@ -11,7 +11,7 @@ export const ARContextProvider = ({ children }) => {
     let session, renderer, camera;
     let reticle, currentModel;
     let imageMaterialOutput, imageMaterialFrequency, imageMaterialResponse;
-
+    const [stabilized, setStabilized] = useState(false)
 
     const activateAR = async (filterModel) => {
 
@@ -22,6 +22,7 @@ export const ARContextProvider = ({ children }) => {
 
         document.querySelector('.ar-container').classList.add('ar')
         document.querySelector('.widgets').classList.add('ar')
+        document.querySelector('#stabilization').classList.add('ar')
         
         renderer = new THREE.WebGLRenderer({
             alpha: true,
@@ -140,7 +141,12 @@ export const ARContextProvider = ({ children }) => {
                 
                 const hitTestResults = frame.getHitTestResults(hitTestSource);
 
-                if (hitTestResults.length > 0) {
+                if(stabilized === false && hitTestResults.length > 0){
+                    setStabilized(true)
+                    document.querySelector('#stabilization').classList.add('stabilized');
+                }
+
+                if (hitTestResults.length > 0 && reticle) {
                     const hitPose = hitTestResults[0].getPose(referenceSpace);
                     reticle.visible = true;
                     reticle.position.set(hitPose.transform.position.x, hitPose.transform.position.y, hitPose.transform.position.z)
