@@ -483,3 +483,59 @@ export const updateLab = async (req, res) => {
   });
 };
 
+export const getTheoryById = async (req, res) => {
+  const theoryId = req.params.theoryId;
+
+  Module.findOne({ "theory._id": theoryId }).then((result) => {
+    if (!result)
+      return res.status(404).json({
+        status: 404,
+        error: {
+          message: "Data not found!",
+        },
+      });
+
+    const theory = result.theory.id(theoryId);
+
+    res.status(201).json({
+      status: 201,
+      result: theory,
+    });
+  }).catch((err) => {
+    res.status(409).json({
+      status: 409,
+      error: {
+        message: err.message || "Some error while updating data!",
+      },
+    });
+  });
+}
+
+export const getLabById = async (req, res) => {
+  const labId = req.params.labId;
+
+  Module.findOne({ "lab._id": labId }).then((result) => {
+    if (!result)
+      return res.status(404).json({
+        status: 404,
+        error: {
+          message: "Data not found!",
+        },
+      });
+
+    const lab = result.lab.id(labId);
+
+    res.status(201).json({
+      status: 201,
+      result: lab,
+    });
+  }).catch((err) => {
+    res.status(409).json({
+      status: 409,
+      error: {
+        message: err.message || "Some error while updating data!",
+      },
+    });
+  });
+}
+
