@@ -289,7 +289,22 @@
     display: none;
 }
 
-.stabilized { display: none; }
+#loading {
+    background-image: url('../asset/loading.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translate(-50%, 0);
+    z-index: 100;
+}
+
+#stabilization.ar{ display: block;}
+
+#stabilization.ar.stabilized { display: none; }
 
 @media only screen and (min-width: 821px) {
     .ar-container {

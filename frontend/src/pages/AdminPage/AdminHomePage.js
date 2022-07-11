@@ -1,7 +1,11 @@
-import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
+import { Link, Navigate } from "react-router-dom";
 import AdminNavbar from "../../components/AdminNavbar";
 
 const AdminHomePage = () => {
+    if( Cookies.get('token') ===undefined){
+        <Navigate to={'/login'} replace />
+    }
     return ( 
         <div className="admin-homepage-container">
             <AdminNavbar />

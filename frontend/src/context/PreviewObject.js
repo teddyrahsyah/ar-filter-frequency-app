@@ -3,10 +3,6 @@ import { createContext } from 'react';
 import { OrbitControls } from "../controller/OrbitControls";
 import { GLTFLoader } from '../Loaders/GLTFLoader'
 
-import frequencyGeneratorModel from '../asset/frekuensi_generator_v4.gltf'
-import osiloskop from '../asset/osiloskop_v5.gltf'
-import LPFRCModel from '../asset/LPF_RC_cables.gltf'
-
 export const PreviewObject = createContext()
 
 export const PreviewObjectProvider = ( { children } ) => {
@@ -39,20 +35,9 @@ export const PreviewObjectProvider = ( { children } ) => {
             })
         }
         loadModel(modelAR)
-        document.querySelectorAll('.object-list').forEach((objek) => {
-            objek.addEventListener('click', (e) => {
-                if(object !== null) previewScene.remove(object)
-                console.log(object)
-
-                if(e.target.id === 'frequencyGeneratorModel') loadModel(frequencyGeneratorModel)
-                else if(e.target.id === 'osiloskop') loadModel(osiloskop)
-                else if(e.target.id === 'LPFRCModel') loadModel(modelAR)
-                
-            })
-            
-        })
        
-        previewCamera.position.z = 7;
+        previewCamera.position.z = 10;
+        previewCamera.position.y = 1;
         // previewCamera.aspect(1)
         previewRenderer.setClearAlpha(0.1)
         previewRenderer.outputEncoding = THREE.sRGBEncoding;

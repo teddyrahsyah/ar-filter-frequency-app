@@ -9,7 +9,7 @@ const AdminNavbar = () => {
     const handleLogout = () => {
         Cookies.remove('username')
         Cookies.remove('token')
-        navigate('/adminLogin')
+        navigate('/login')
     }
 
     return ( 

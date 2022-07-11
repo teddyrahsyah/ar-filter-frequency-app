@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Admin Pages
 import AdminPanelLogin from './pages/AdminPage/AdminPanelLogin';
@@ -13,15 +13,24 @@ import AddLabForm from './pages/AdminPage/AddLabForm';
 
 // AR PAGES
 import ARPagesInfo from './pages/ARPage/ARPagesInfo';
+import Cookies from "js-cookie";
+import LoginRouter from "./LoginRouter";
 
 const Router = () => {
+    
     return (
         <BrowserRouter>
             <Routes>
                 {/* Admin Page */}
-                <Route exact path='/' element={<Home />} />
-                <Route path='/adminLogin' element={<AdminPanelLogin />} />
-                <Route path='/adminHomepage' element={<AdminHomePage />} />
+                {/* <Route exact path='/' element={<AdminHomePage />} /> */}
+                {/* <Route exact path='/' element={<LoginRoute/>} >
+                </Route> */}
+                <Route exact path="/" element={
+                    <LoginRouter>
+                        <AdminHomePage />
+                    </LoginRouter>
+                } />
+                <Route path='/login' element={<AdminPanelLogin />} />
                 <Route path='/addForm' element={<AddArticleForm />} />
                 <Route exact path='/addForm/edit/:id' element={<AddArticleForm />} />
                 <Route path='/addTheoryForm/:id' element={<AddTheoryForm />} />
