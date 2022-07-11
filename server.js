@@ -1,5 +1,6 @@
 import path from "path";
 import dotenv from "dotenv";
+import express from "express";
 import db from "./config/dbConfig.js";
 
 const app = express();
