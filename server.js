@@ -11,7 +11,7 @@ db.on("error", (err) => console.log(err));
 db.once("open", () => console.log("Arsim Database Connected..."));
 
 appServer.listen(process.env.PORT, () => {
-  console.log(`App Server is running at http://localhost:${process.env.PORT || 8000}`);
+  console.log(`App Server is running at http://localhost:${process.env.PORT || 5000}`);
 })
 
 authServer.listen(process.env.AUTH_SERVER_PORT, () => {
