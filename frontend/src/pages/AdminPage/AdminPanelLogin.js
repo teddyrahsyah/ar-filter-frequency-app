@@ -18,7 +18,7 @@ const AdminPanelLogin = () => {
             console.log(username, token)
             Cookies.set('token', token, { expires: 1 })
             Cookies.set('username', username, { expires: 1 })
-            navigate('/adminHomepage')
+            navigate('/')
         }).catch(err => alert(err.message))
     };
     
