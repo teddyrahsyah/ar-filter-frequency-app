@@ -8,8 +8,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "frontend": "cd frontend && npm start",
-    "startAuth": "nodemon authServer.js"
+    "frontend": "cd frontend && npm start"
   },
   "keywords": [
     "ExpressJS",

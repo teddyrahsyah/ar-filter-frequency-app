@@ -10,8 +10,8 @@ dotenv.config();
 db.on("error", (err) => console.log(err));
 db.once("open", () => console.log("Arsim Database Connected..."));
 
-appServer.listen(process.env.APP_SERVER_PORT, () => {
-  console.log(`App Server is running at http://localhost:${process.env.APP_SERVER_PORT || 8000}`);
+appServer.listen(process.env.PORT, () => {
+  console.log(`App Server is running at http://localhost:${process.env.PORT || 8000}`);
 })
 
 authServer.listen(process.env.AUTH_SERVER_PORT, () => {
