@@ -64,9 +64,20 @@ export const createTheory = async (req, res) => {
   const id = req.params.id;
 
   // Upload Thumbnail Image
-  const image = req.files.image[0];
-  const uploadImageResult = await uploadFile(image);
-  await unlinkFile(image.path);
+  let uploadImageResult;
+  try {
+    const image = req.files.image[0];
+    uploadImageResult = await uploadFile(image);
+    await unlinkFile(image.path);
+  } catch (err) {
+    res.status(409).json({
+      status: 409,
+      error: {
+        message: err.message || "Some error while updating data!",
+      },
+    });
+  }
+
 
   Module.findByIdAndUpdate(id, {
     $addToSet: {
@@ -78,7 +89,7 @@ export const createTheory = async (req, res) => {
           theoryNumber: req.body.theoryNumber,
           title: req.body.title,
           description: req.body.description,
-          image: uploadImageResult.Location,
+          image: uploadImageResult.Location ? uploadImageResult.Location : "",
         },
       ],
     },
@@ -120,12 +131,24 @@ export const createLab = async (req, res) => {
   const id = req.params.id;
 
   // Upload Images
-  const model = req.files.model[0];
-  const thumbnail = req.files.thumbnail[0];
-  const uploadModelResult = await uploadFile(model);
-  const uploadThumbnailResult = await uploadFile(thumbnail);
-  await unlinkFile(model.path);
-  await unlinkFile(thumbnail.path);
+  let uploadModelResult
+  let uploadThumbnailResult
+  try {
+    const model = req.files.model[0];
+    const thumbnail = req.files.thumbnail[0];
+    uploadModelResult = await uploadFile(model);
+    uploadThumbnailResult = await uploadFile(thumbnail);
+    await unlinkFile(model.path);
+    await unlinkFile(thumbnail.path);
+  } catch (err) {
+    res.status(409).json({
+      status: 409,
+      error: {
+        message: err.message || "Some error while updating data!",
+      },
+    });
+  }
+
 
   Module.findByIdAndUpdate(id, {
     $addToSet: {
@@ -137,8 +160,8 @@ export const createLab = async (req, res) => {
           labNumber: req.body.labNumber,
           title: req.body.title,
           description: req.body.description,
-          modelAR: uploadModelResult.Location,
-          thumbnailAR: uploadThumbnailResult.Location,
+          modelAR: uploadModelResult.Location ? uploadModelResult.Location : "",
+          thumbnailAR: uploadThumbnailResult.Location ? uploadThumbnailResult.Location : "",
         },
       ],
     },
@@ -407,9 +430,20 @@ export const updateTheory = async (req, res) => {
   const theoryId = req.params.theoryId;
 
   // Upload Thumbnail Image
-  const file = req.files.image[0];
-  const uploadResult = await uploadFile(file);
-  await unlinkFile(file.path);
+  let uploadResult;
+  try {
+    const file = req.files.image[0];
+    uploadResult = await uploadFile(file);
+    await unlinkFile(file.path);
+  } catch (err) {
+    res.status(409).json({
+      status: 409,
+      error: {
+        message: err.message || "Some error while updating data!",
+      },
+    });
+  }
+
 
   Module.findOne({ "theory._id": theoryId }).then((result) => {
     if (!result)
@@ -424,7 +458,7 @@ export const updateTheory = async (req, res) => {
 
     theory.title = req.body.title
     theory.description = req.body.description
-    theory.image = uploadResult.Location
+    theory.image = uploadResult.Location ? uploadModelResult.Location : ""
 
     result.save();
     res.status(201).json({
@@ -445,12 +479,24 @@ export const updateLab = async (req, res) => {
 
   const labId = req.params.labId;
 
-  const model = req.files.model[0];
-  const thumbnail = req.files.thumbnail[0];
-  const uploadModelResult = await uploadFile(model);
-  const uploadThumbnailResult = await uploadFile(thumbnail);
-  await unlinkFile(model.path);
-  await unlinkFile(thumbnail.path);
+
+  let uploadModelResult;
+  let uploadThumbnailResult;
+  try {
+    const model = req.files.model[0];
+    const thumbnail = req.files.thumbnail[0];
+    uploadModelResult = await uploadFile(model);
+    uploadThumbnailResult = await uploadFile(thumbnail);
+    await unlinkFile(model.path);
+    await unlinkFile(thumbnail.path);
+  } catch (err) {
+    res.status(409).json({
+      status: 409,
+      error: {
+        message: err.message || "Some error while updating data!",
+      },
+    });
+  }
 
   Module.findOne({ "lab._id": labId }).then((result) => {
     if (!result)
@@ -465,8 +511,8 @@ export const updateLab = async (req, res) => {
 
     lab.title = req.body.title
     lab.description = req.body.description
-    lab.modelAR = uploadModelResult.Location
-    lab.thumbnailAR = uploadThumbnailResult.Location
+    lab.modelAR = uploadModelResult.Location ? uploadModelResult.Location : ""
+    lab.thumbnailAR = uploadThumbnailResult.Location ? uploadThumbnailResult.Location : ""
 
     result.save();
     res.status(201).json({

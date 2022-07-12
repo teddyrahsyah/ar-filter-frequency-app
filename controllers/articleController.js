@@ -28,15 +28,26 @@ export const create = async (req, res) => {
     });
 
   // Upload Thumbnail Image
-  const file = req.files.image[0];
-  const uploadResult = await uploadFile(file);
-  await unlinkFile(file.path);
+  let uploadResult;
+  try {
+    const file = req.files.image[0];
+    uploadResult = await uploadFile(file);
+    await unlinkFile(file.path);
+  } catch (err) {
+    res.status(409).json({
+      status: 409,
+      error: {
+        message: err.message || "Some error while creating data!",
+      },
+    });
+  }
+
 
   const article = new Article({
     title: req.body.title,
     category: req.body.category,
     description: req.body.description,
-    image: uploadResult.Location,
+    image: uploadResult.Location ? uploadResult.Location : "",
   });
 
   article
@@ -112,15 +123,25 @@ export const update = async (req, res) => {
   const id = req.params.id;
 
   // Upload Thumbnail Image
-  const file = req.files.image[0];
-  const uploadResult = await uploadFile(file);
-  await unlinkFile(file.path);
+  let uploadResult;
+  try {
+    const file = req.files.image[0];
+    uploadResult = await uploadFile(file);
+    await unlinkFile(file.path);
+  } catch (err) {
+    res.status(409).json({
+      status: 409,
+      error: {
+        message: err.message || "Some error while creating data!",
+      },
+    });
+  }
 
   Article.findByIdAndUpdate(id, {
     title: req.body.title,
     category: req.body.category,
     description: req.body.description,
-    image: uploadResult.Location,
+    image: uploadResult.Location ? uploadResult.Location : "",
   })
     .then((result) => {
       if (!result)
