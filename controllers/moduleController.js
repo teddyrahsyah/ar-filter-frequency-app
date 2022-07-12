@@ -458,7 +458,7 @@ export const updateTheory = async (req, res) => {
 
     theory.title = req.body.title
     theory.description = req.body.description
-    theory.image = uploadResult.Location ? uploadModelResult.Location : ""
+    theory.image = uploadResult.Location ? uploadResult.Location : ""
 
     result.save();
     res.status(201).json({
